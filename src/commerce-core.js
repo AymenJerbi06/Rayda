@@ -64,17 +64,3 @@ export function filterProducts(products, { search = '', mode = 'all', sort = 'fe
   });
   return list;
 }
-export function selectionMessage(items, products, name, city = '') {
-  return 'Bonjour Rayda, je m’appelle ' + name + '.\nJe souhaiterais en savoir plus sur cette sélection Issolatej :\n\n' + items.map(item => {
-    const p = products.find(product => product.id === item.productId);
-    const options = [item.variant, item.palette].filter(Boolean).join(' · ');
-    return '• ' + item.quantity + ' × ' + p.name + (options ? ' (' + options + ')' : '') + ' — ' + priceLabel(p, item.variant);
-  }).join('\n') + '\n\nTotal indicatif : ' + selectionTotal(items, products) + ', hors livraison.' + (city ? '\nVille de livraison : ' + city + '.' : '') + '\nPouvez-vous me confirmer les détails, la disponibilité et la livraison ?';
-}
-export function selectionMessageAr(items, products, name, city = '', namesAr = {}) {
-  return 'السلام عليكم رايدة، اسمي ' + name + '.\nأرغب في معرفة المزيد حول هذا الاختيار من إيصولاتاج:\n\n' + items.map(item => {
-    const p = products.find(product => product.id === item.productId);
-    const options = [item.variant, item.palette].filter(Boolean).join(' · ');
-    return '• ' + item.quantity + ' × ' + (namesAr[p.id] || p.name) + (options ? ' (' + options + ')' : '') + ' — ' + priceLabelAr(p, item.variant);
-  }).join('\n') + '\n\nالمجموع التقريبي: ' + selectionTotalAr(items, products) + '، دون احتساب التوصيل.' + (city ? '\nمدينة التوصيل: ' + city + '.' : '') + '\nهل يمكنك تأكيد التفاصيل والتوفر والتوصيل؟';
-}

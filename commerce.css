@@ -90,3 +90,27 @@ body.s-dialog-open{overflow:hidden}.s-selection,.s-lightbox{color:var(--ink);bac
 .s-steps-row svg{width:24px;height:24px;color:var(--green)}
 .s-step-number{display:grid;place-items:center;width:20px;height:20px;flex-shrink:0;border-radius:50%;background:var(--forest);color:var(--paper);font-size:10px;font-weight:700}
 @media(max-width:700px){.s-benefits{margin:16px 0;padding:16px 0;gap:11px}.s-benefits li{font-size:12px}.s-trust-row{gap:12px 18px}.s-steps-row{gap:12px 20px;margin-top:22px}}
+
+/* Add to cart vs. buy now: buy now is the urgent, filled action; add to cart stays secondary
+   so someone can keep browsing instead of being pushed straight to checkout. */
+.s-buy-row{display:flex;gap:14px;flex-wrap:wrap}
+.s-buy-row>button{flex:1;min-width:160px}
+.s-add-secondary{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:50px;padding:11px 21px;border:1px solid var(--green);border-radius:9px;background:none;color:var(--green);font:600 13px/1.5 var(--sans);letter-spacing:.04em;text-transform:uppercase}
+.s-add-secondary:hover{background:var(--green);color:var(--paper)}
+.s-add-secondary:disabled,.s-buy-row .s-add:disabled{opacity:.45;cursor:not-allowed}
+
+/* A buy bar pinned to the bottom of the screen on mobile removes the need to scroll back up
+   to the purchase button after reading the description, benefits and details lower on the page. */
+.s-mobile-buybar{display:none}
+@media(max-width:700px){
+  .s-product{padding-bottom:104px}
+  .s-mobile-buybar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:40;align-items:center;justify-content:space-between;gap:14px;padding:12px 18px calc(12px + env(safe-area-inset-bottom,0px));background:var(--paper);border-top:1px solid var(--line);box-shadow:0 -8px 24px #0001}
+  .s-mobile-buybar strong{font-size:17px;color:var(--green);font-weight:700}
+  .s-mobile-buybar .g-button{min-height:46px;padding-inline:20px;flex-shrink:0}
+  [dir="rtl"] .s-mobile-buybar{direction:rtl}
+}
+
+/* Mobile header: keep the Boutique button reachable without opening the menu first, by
+   shrinking its neighbours instead of hiding it (it was hidden by the 1024px rule above). */
+@media(max-width:1024px){.g-header-cta{display:inline-flex}}
+@media(max-width:700px){.g-header{gap:8px;padding:16px 14px}.g-header .g-brand>span{font-size:26px}.g-header .g-brand>small{display:none}.g-header-cta{padding-inline:11px;font-size:10px}.g-lang-switch{min-width:36px;padding:0 8px}.s-selection-toggle{padding:2px;min-width:38px}.g-menu-toggle{width:38px}}

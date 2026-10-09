@@ -141,10 +141,8 @@ test("search and filters distinguish custom from non-custom pieces", async () =>
 });
 
 test("legacy selections are validated and no personal fields persist", async () => {
-  const {normalizeSelection,selectionMessage}=await import('../src/commerce-core.js');
+  const {normalizeSelection}=await import('../src/commerce-core.js');
   const clean=normalizeSelection([null,{productId:'removed',quantity:2},{productId:'bracelet-bazi',quantity:500,note:'private',variant:'bad-value'}],catalog.products);
   assert.equal(clean.length,1);assert.equal(clean[0].quantity,20);assert.equal(clean[0].variant,'Composition sur mesure');
   assert.ok(!('note' in clean[0]));
-  const message=selectionMessage(clean,catalog.products,'Test','Tunis');
-  assert.match(message,/Bonjour Rayda/);assert.match(message,/Tunis/);assert.match(message,/hors livraison/);
 });

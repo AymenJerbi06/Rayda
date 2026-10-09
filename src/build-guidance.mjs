@@ -71,5 +71,5 @@ export async function buildGuidance(project, output, config) {
     await mkdir(dir, { recursive: true });
     await writeFile(path.join(dir, 'index.html'), render());
   }
-  console.log('Built ' + (1 + guidanceRoutes.length + shopRoutes.length) + ' Issolatej pages (' + (1 + arGuidanceRoutes.length + arShopRoutes.length) + ' in Arabic) and a ' + adminRoutes.length + '-page admin demo: Rayda, vos mots, 12 products, 8 collections and a WhatsApp selection flow.');
+  console.log('Built ' + (1 + guidanceRoutes.length + shopRoutes.length) + ' Issolatej pages (' + (1 + arGuidanceRoutes.length + arShopRoutes.length) + ' in Arabic) and a ' + adminRoutes.length + '-page admin demo: Rayda, vos mots, 12 products, 8 collections and a buy-now checkout flow.');
 }

@@ -1,10 +1,9 @@
-import { escapeHtml as esc, priceLabel, priceLabelAr, selectionTotal, selectionTotalAr, normalizeSelection, filterProducts, selectionMessage, selectionMessageAr } from './commerce-core.js';
+import { escapeHtml as esc, priceLabel, priceLabelAr, priceBounds, selectionTotal, selectionTotalAr, normalizeSelection, filterProducts } from './commerce-core.js';
 const isAr = document.documentElement.lang === 'ar';
 const priceLabelAuto = isAr ? priceLabelAr : priceLabel;
 const selectionTotalAuto = isAr ? selectionTotalAr : selectionTotal;
 
 const products = window.STORE_CATALOG.products;
-const config = window.STORE_CONFIG;
 const key = 'atelier-cart'; // Keep selections made in the previous storefront.
 let items = [];
 try { items = normalizeSelection(JSON.parse(localStorage.getItem(key) || '[]'), products); } catch { /* A malformed or blocked store starts empty. */ }
@@ -45,7 +44,7 @@ function renderSelection() {
   if (form) {
     form.hidden = !items.length;
     form.querySelector('.g-form-result').hidden = true;
-    form.querySelector('[data-selection-whatsapp]').removeAttribute('href');
+    form.querySelector('[type="submit"]').disabled = false;
   }
 }
 function persist() {
@@ -123,35 +122,75 @@ if (productRoot) {
   form.querySelectorAll('[data-quantity]').forEach(button => button.addEventListener('click',()=>{ quantity.value=Math.max(1,Math.min(20,Number(quantity.value || 1)+Number(button.dataset.quantity))); }));
   form.elements.variant?.addEventListener('change', () => {
     const variant = form.elements.variant.value;
-    productRoot.querySelector('[data-price]').textContent = priceLabelAuto(p,variant);
+    productRoot.querySelectorAll('[data-price]').forEach(el => { el.textContent = priceLabelAuto(p,variant); });
     if (p.variantImageIndex?.[variant] !== undefined) showImage(p.variantImageIndex[variant]);
   });
-  if (p.availability==='sold-out') form.querySelector('[type="submit"]').disabled = true;
+  if (p.availability==='sold-out') form.querySelectorAll('[type="submit"]').forEach(button => { button.disabled = true; });
   form.addEventListener('submit',event=>{
     event.preventDefault();
     if (!form.reportValidity() || p.availability==='sold-out') return;
+    const intent = event.submitter?.dataset.intent || 'cart';
     const item = normalizeSelection([{productId:p.id,quantity:quantity.value,variant:form.elements.variant?.value,palette:form.elements.palette?.value}],products)[0];
     const existing = items.find(line=>line.productId===item.productId && line.variant===item.variant && line.palette===item.palette);
     if (existing) existing.quantity=Math.min(20,existing.quantity+item.quantity); else items.push(item);
-    persist();openDialog(selection,form.querySelector('[type="submit"]'));
+    persist();
+    if (intent === 'buy') { window.location.href = (isAr ? '/ar' : '') + '/checkout/'; return; }
+    openDialog(selection,event.submitter);
   });
+}
+
+// Placing an order here is a demo: it records the order and decrements stock in the same
+// localStorage the admin panel reads, so the two stay in sync without a real backend yet.
+// Rayda reaches out to the customer directly — there is no WhatsApp hand-off at this step.
+function readAdminStore(storeKey, fallback) { try { const raw = localStorage.getItem(storeKey); return raw ? JSON.parse(raw) : fallback; } catch { return fallback; } }
+function writeAdminStore(storeKey, value) { try { localStorage.setItem(storeKey, JSON.stringify(value)); } catch { /* Private browsing or a full quota: the order still completes for this visit. */ } }
+// Mirrors admin.js's STOCK_SEED so stock still decrements correctly even if nobody has opened
+// /admin/ on this browser yet (the two stay in sync whichever page is visited first).
+const STOCK_SEED = {
+  'bracelet-bazi': null, 'collier-bazi': null,
+  'bracelet-amour': 14, 'porte-cles-pierre': 9, 'porte-cles-arbre-vie': 11,
+  'portefeuille-hafidha': 6, 'carte-million-dollar': 20, 'decor-abondance': 8,
+  'cle-de-vie': 10, 'fleur-de-vie': 0, 'pendentif-voiture-fleur': 15, 'pendentif-voiture-ankh': 15
+};
+function submitOrder({ name, phone, city }) {
+  const orderItems = items.map(item => {
+    const p = products.find(product => product.id === item.productId);
+    return { productId: item.productId, qty: item.quantity, price: priceBounds(p, item.variant)?.min ?? 0 };
+  });
+  const deliveryFee = Number(readAdminStore('admin_settings', {}).deliveryFee ?? 10);
+  const total = orderItems.reduce((sum, item) => sum + item.qty * item.price, 0) + deliveryFee;
+  const stock = readAdminStore('admin_stock', {});
+  orderItems.forEach(item => {
+    if (!stock[item.productId]) { const seed = STOCK_SEED[item.productId]; stock[item.productId] = { stock: seed, soldOut: seed === 0 }; }
+    const entry = stock[item.productId];
+    if (entry.stock == null) return;
+    entry.stock = Math.max(0, entry.stock - item.qty);
+    if (entry.stock === 0) entry.soldOut = true;
+  });
+  writeAdminStore('admin_stock', stock);
+  const orders = readAdminStore('admin_orders', []);
+  orders.push({ id: 'order-' + Math.random().toString(36).slice(2,9), name, phone, city, items: orderItems, status: 'Nouvelle', date: new Date().toISOString(), total });
+  writeAdminStore('admin_orders', orders);
 }
 
 const selectionForm = document.querySelector('[data-selection-form]');
 if (selectionForm) {
   const result = selectionForm.querySelector('.g-form-result');
-  selectionForm.addEventListener('input',event=>{ result.hidden=true;event.target.setCustomValidity?.('');result.querySelector('a').removeAttribute('href'); });
+  selectionForm.addEventListener('input',event=>{ result.hidden=true;event.target.setCustomValidity?.(''); });
   selectionForm.addEventListener('submit',event=>{
     event.preventDefault();
     if (!items.length || !selectionForm.reportValidity()) return;
     const name = selectionForm.elements.name.value.trim();
+    const phone = selectionForm.elements.phone.value.trim();
     if (!name) { selectionForm.elements.name.setCustomValidity(isAr ? 'يرجى إدخال اسمكم.' : 'Merci de renseigner votre prénom.'); selectionForm.reportValidity(); return; }
-    const message = isAr
-      ? selectionMessageAr(items,products,name,selectionForm.elements.city.value.trim(),window.STORE_PRODUCT_NAMES_AR||{})
-      : selectionMessage(items,products,name,selectionForm.elements.city.value.trim());
-    result.querySelector('[data-message-preview]').textContent=message;
-    result.querySelector('a').href='https://wa.me/'+config.contact.phone.replace(/\D/g,'')+'?text='+encodeURIComponent(message);
-    result.hidden=false;
+    if (!phone) { selectionForm.elements.phone.setCustomValidity(isAr ? 'يرجى إدخال رقم هاتفكم.' : 'Merci de renseigner votre numéro de téléphone.'); selectionForm.reportValidity(); return; }
+    submitOrder({ name, phone, city: selectionForm.elements.city.value.trim() });
+    items = [];
+    persist();
+    // persist() just hid the form (empty selection) and the result panel — show the confirmation instead.
+    selectionForm.hidden = false;
+    result.hidden = false;
+    selectionForm.querySelector('[type="submit"]').disabled = true;
   });
 }
 
