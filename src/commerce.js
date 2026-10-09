@@ -36,7 +36,7 @@ function renderSelection() {
   const count = items.reduce((sum,item) => sum + item.quantity, 0);
   document.querySelectorAll('[data-selection-count]').forEach(badge => { badge.textContent = count; });
   const markup = items.length ? items.map(lineMarkup).join('') : (isAr
-    ? '<div class="s-empty"><h3>تبدأ رغباتكنّ هنا.</h3><p>أعجبتكنّ قطعة؟ أضفنها إلى اختياركنّ للحديث عنها مع رايدة.</p><a class="g-button" href="/ar/boutique/">اكتشفن الإبداعات ↗</a></div>'
+    ? '<div class="s-empty"><h3>تبدأ رغباتكم هنا.</h3><p>أعجبتكم قطعة؟ أضيفوها إلى اختياركم للحديث عنها مع رايدة.</p><a class="g-button" href="/ar/boutique/">اكتشفوا الإبداعات ↗</a></div>'
     : '<div class="s-empty"><h3>Vos envies commencent ici.</h3><p>Une pièce vous plaît ? Ajoutez-la à votre sélection pour en parler avec Rayda.</p><a class="g-button" href="/collections/all/">Découvrir les créations ↗</a></div>');
   document.querySelectorAll('[data-selection-lines],[data-checkout-lines]').forEach(el => { el.innerHTML = markup; });
   document.querySelector('[data-selection-footer]').hidden = !items.length;
@@ -145,7 +145,7 @@ if (selectionForm) {
     event.preventDefault();
     if (!items.length || !selectionForm.reportValidity()) return;
     const name = selectionForm.elements.name.value.trim();
-    if (!name) { selectionForm.elements.name.setCustomValidity(isAr ? 'يرجى إدخال اسمكنّ.' : 'Merci de renseigner votre prénom.'); selectionForm.reportValidity(); return; }
+    if (!name) { selectionForm.elements.name.setCustomValidity(isAr ? 'يرجى إدخال اسمكم.' : 'Merci de renseigner votre prénom.'); selectionForm.reportValidity(); return; }
     const message = isAr
       ? selectionMessageAr(items,products,name,selectionForm.elements.city.value.trim(),window.STORE_PRODUCT_NAMES_AR||{})
       : selectionMessage(items,products,name,selectionForm.elements.city.value.trim());

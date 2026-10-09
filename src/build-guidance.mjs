@@ -56,7 +56,7 @@ export async function buildGuidance(project, output, config) {
     await writeFile(path.join(dir, 'index.html'), renderGuidancePageAr(route, config, catalog));
   }
   const arShopRoutes = catalog.collections.filter(c => c.slug !== 'all').map(collection => ({ route: 'collections/' + collection.slug, title: collectionsAr[collection.slug]?.name || collection.name, content: null, kind: 'collection', data: collection }))
-    .concat(catalog.products.map(product => ({ route: 'products/' + product.slug, title: productsAr[product.id]?.name || product.name, content: productPageAr(product, catalog) })), [{ route: 'checkout', title: 'اختياركنّ، مع رايدة', content: checkoutPageAr }]);
+    .concat(catalog.products.map(product => ({ route: 'products/' + product.slug, title: productsAr[product.id]?.name || product.name, content: productPageAr(product, catalog) })), [{ route: 'checkout', title: 'اختياركم، مع رايدة', content: checkoutPageAr }]);
   for (const entry of arShopRoutes) {
     const dir = path.join(output, 'ar', entry.route);
     await mkdir(dir, { recursive: true });
