@@ -100,8 +100,8 @@ test("the opening hero and its animation hooks are preserved exactly", async () 
 test("homepage carries the full brand narrative with illustrated categories and real product photos in the shop", async () => {
   const home = await readFile(path.join(root,'dist/index.html'),'utf8');
   const main = home.match(/<main[^>]*>([\s\S]*?)<\/main>/)[1];
-  // Hero, intro, two pillars + shifts, categories, Rayda's bio, two paths, testimonial teaser, closing.
-  assert.equal((main.match(/<section /g)||[]).length,8);
+  // Hero, products, approach intro, pillars, Rayda's bio, shifts/benefits, testimonial teaser.
+  assert.equal((main.match(/<section /g)||[]).length,7);
   assert.equal((main.match(/class="s-category"/g)||[]).length,6);
   assert.doesNotMatch(main,/assets\/products\//);
   for (const name of ['bracelets','colliers','porte-cles','portefeuilles','objets-dores','voiture']) {
