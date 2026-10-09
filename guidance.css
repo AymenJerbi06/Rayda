@@ -45,3 +45,17 @@
 @media(max-width:1024px){[dir="rtl"] .g-hero-photo{border-radius:0;border-top-right-radius:230px}[dir="rtl"] .g-reviews-grid{border-bottom-right-radius:110px}}
 @media(max-width:700px){[dir="rtl"] .g-hero-text .g-botanical{right:auto;left:-15px}[dir="rtl"] .g-hero-photo{border-radius:0;border-top-right-radius:190px}[dir="rtl"] .g-reviews-grid{border-bottom-right-radius:70px}}
 @media(prefers-reduced-motion:reduce){[dir="rtl"]{direction:rtl}}
+/* Homepage additions: the founder-bio heading had no size rule of its own, and the services
+   eyebrow needed the same breathing room every other section's eyebrow already gets. */
+.g-about-copy h2{font-size:38px;line-height:1.2;margin-bottom:10px}
+.g-services>.g-eyebrow{margin-bottom:16px}
+/* Header social menu: a small icon-button that opens a compact popover of social links. */
+.g-social-menu{position:relative}
+.g-social-toggle{display:inline-flex;align-items:center;justify-content:center;min-width:44px;min-height:44px;border:1px solid #ffffff3a;border-radius:50%;background:none;color:var(--sage);font:700 16px/1 var(--serif)}
+.g-social-toggle:hover,.g-social-toggle[aria-expanded="true"]{background:var(--sage);color:var(--forest);border-color:var(--sage)}
+.g-social-popover{position:absolute;top:calc(100% + 10px);left:50%;transform:translateX(-50%);z-index:60;min-width:190px;padding:8px;background:var(--forest);border:1px solid #ffffff28;border-radius:14px;box-shadow:0 14px 40px #0004;display:flex;flex-direction:column;gap:2px}
+.g-social-popover a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:9px;color:var(--paper);font:600 13px/1.4 var(--sans)}
+.g-social-popover a:hover{background:#ffffff14;color:var(--sage)}
+.g-social-popover svg{width:19px;height:19px;flex-shrink:0;color:var(--sage)}
+.g-menu .g-social-row{display:flex;gap:10px;margin-top:20px}
+@media(max-width:1024px){.g-social-menu{display:none}}

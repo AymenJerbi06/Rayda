@@ -47,7 +47,8 @@ test("the build respects the selected presentation mode and excludes review scre
     assert.match(home, /Issolatej/);
     assert.match(home, /Rayda/);
     assert.match(home, /s-category-grid/);
-    assert.doesNotMatch(home, /data-featured|s-product-grid|s-process|g-about-copy/);
+    // g-about-copy is now legitimately used by the homepage's Rayda bio section, added deliberately.
+    assert.doesNotMatch(home, /data-featured|s-product-grid|s-process/);
     assert.match(home, /data-open-selection/);
     await access(path.join(dist, 'src/catalog.js'));
     await access(path.join(dist, 'products'));
@@ -96,10 +97,11 @@ test("the opening hero and its animation hooks are preserved exactly", async () 
   assert.equal(await readFile(path.join(root,'src/guidance.js'),'utf8'),await readFile(path.join(root,'backups/issolatej-before-products-2026-10-08/guidance.js'),'utf8'));
 });
 
-test("homepage stays simple with six illustrated categories and real product photos in the shop", async () => {
+test("homepage carries the full brand narrative with illustrated categories and real product photos in the shop", async () => {
   const home = await readFile(path.join(root,'dist/index.html'),'utf8');
   const main = home.match(/<main[^>]*>([\s\S]*?)<\/main>/)[1];
-  assert.equal((main.match(/<section /g)||[]).length,3);
+  // Hero, intro, two pillars + shifts, categories, Rayda's bio, two paths, testimonial teaser, closing.
+  assert.equal((main.match(/<section /g)||[]).length,8);
   assert.equal((main.match(/class="s-category"/g)||[]).length,6);
   assert.doesNotMatch(main,/assets\/products\//);
   for (const name of ['bracelets','colliers','porte-cles','portefeuilles','objets-dores','voiture']) {

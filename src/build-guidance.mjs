@@ -15,7 +15,7 @@ export async function buildGuidance(project, output, config) {
     await cp(path.join(project, 'assets', 'brand', asset), path.join(output, 'assets', 'brand', asset));
   }
   for (const file of ['guidance.css', 'commerce.css']) await cp(path.join(project, file), path.join(output, file));
-  for (const file of ['guidance.js', 'commerce.js', 'commerce-core.js', 'site-config.js', 'catalog.js']) {
+  for (const file of ['guidance.js', 'social-menu.js', 'commerce.js', 'commerce-core.js', 'site-config.js', 'catalog.js']) {
     await cp(path.join(project, 'src', file), path.join(output, 'src', file));
   }
   await mkdir(path.join(output, 'assets', 'products'), { recursive: true });
