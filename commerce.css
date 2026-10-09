@@ -58,11 +58,7 @@ body.s-dialog-open{overflow:hidden}.s-selection,.s-lightbox{color:var(--ink);bac
 .s-shop-categories{background:var(--cream);color:var(--ink);padding:70px max(var(--gutter),calc((100vw - 1440px)/2)) 85px;border-bottom-left-radius:130px;overflow:clip}
 .s-shop-categories .s-category-heading{position:static;max-width:640px;margin:0 auto 40px;text-align:center;padding:0}
 .s-shop-categories .s-category-intro{margin:18px auto 0;max-width:520px}
-.s-shop-categories .s-category-grid{max-width:1440px;margin:auto;border-radius:0 85px 0 65px;grid-template-columns:repeat(4,minmax(0,1fr))}
-.s-shop-categories .s-category:nth-child(1),.s-shop-categories .s-category:nth-child(2){grid-row:span 2;display:flex;flex-direction:column}
-.s-shop-categories .s-category:nth-child(1) .s-category-photo,.s-shop-categories .s-category:nth-child(2) .s-category-photo{aspect-ratio:auto;flex:1;min-height:0}
-.s-shop-categories .s-category:nth-child(1) h3,.s-shop-categories .s-category:nth-child(2) h3{font-size:27px}
-.s-shop-categories .s-category:nth-child(1) .s-category-label,.s-shop-categories .s-category:nth-child(2) .s-category-label{flex:none}
+.s-shop-categories .s-category-grid{max-width:1440px;margin:auto;border-radius:0 85px 0 65px}
 /* Custom BaZi pieces read as the signature offering: a filled, higher-contrast badge versus the plain outline badge on ready-made pieces. */
 .s-card[data-custom="true"] .s-badge{background:var(--forest);color:var(--paper);font-weight:700}
 .s-catalog>.s-section-heading{margin:55px 0 30px}
@@ -74,12 +70,7 @@ body.s-dialog-open{overflow:hidden}.s-selection,.s-lightbox{color:var(--ink);bac
 [dir="rtl"] .s-home-categories{border-radius:0;border-bottom-right-radius:150px}
 [dir="rtl"] .s-category-grid{border-radius:85px 0 65px 0}
 [dir="rtl"] .s-category-heading .g-botanical{left:auto;right:-90px}
-@media(max-width:1024px){[dir="rtl"] .s-shop-categories{border-bottom-right-radius:95px}[dir="rtl"] .s-home-categories{border-bottom-right-radius:110px}[dir="rtl"] .s-category-grid{border-top-right-radius:75px;border-top-left-radius:0}
-  .s-shop-categories .s-category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .s-shop-categories .s-category:nth-child(1),.s-shop-categories .s-category:nth-child(2){grid-row:span 1;display:block}
-  .s-shop-categories .s-category:nth-child(1) .s-category-photo,.s-shop-categories .s-category:nth-child(2) .s-category-photo{aspect-ratio:1;flex:none}
-  .s-shop-categories .s-category:nth-child(1) h3,.s-shop-categories .s-category:nth-child(2) h3{font-size:inherit}
-}
+@media(max-width:1024px){[dir="rtl"] .s-shop-categories{border-bottom-right-radius:95px}[dir="rtl"] .s-home-categories{border-bottom-right-radius:110px}[dir="rtl"] .s-category-grid{border-top-right-radius:75px;border-top-left-radius:0}}
 @media(max-width:700px){[dir="rtl"] .s-shop-categories{border-bottom-right-radius:60px}[dir="rtl"] .s-home-categories{border-bottom-right-radius:70px}[dir="rtl"] .s-category-grid{border-radius:0 55px 0 45px}}
 /* Product page: an icon-led benefits list and a compact trust row replace dense paragraphs. */
 .s-benefits{list-style:none;margin:16px 0;padding:15px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 18px}
