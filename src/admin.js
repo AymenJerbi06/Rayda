@@ -29,15 +29,15 @@
   function formatDate(d) { return new Intl.DateTimeFormat("fr-TN", { day: "2-digit", month: "2-digit", year: "numeric" }).format(d); }
 
   var ORDER_SEED = [
-    { name: "Sirine B.", phone: "+216 20 123 456", city: "Tunis", items: [{ productId: "bracelet-amour", qty: 1, price: 100 }], status: "Livrée", daysAgo: 21 },
-    { name: "Yosra K.", phone: "+216 55 987 321", city: "Sousse", items: [{ productId: "collier-bazi", qty: 1, price: 320 }], status: "Livrée", daysAgo: 18 },
-    { name: "Ahmed T.", phone: "+216 28 456 789", city: "Sfax", items: [{ productId: "carte-million-dollar", qty: 2, price: 50 }], status: "Confirmée", daysAgo: 14 },
-    { name: "Nour E.", phone: "+216 22 334 556", city: "Tunis", items: [{ productId: "bracelet-bazi", qty: 1, price: 160 }], status: "Confirmée", daysAgo: 12 },
-    { name: "Mohamed A.", phone: "+216 50 112 233", city: "Nabeul", items: [{ productId: "decor-abondance", qty: 1, price: 60 }, { productId: "cle-de-vie", qty: 1, price: 70 }], status: "Livrée", daysAgo: 9 },
-    { name: "Salma R.", phone: "+216 29 887 665", city: "Tunis", items: [{ productId: "portefeuille-hafidha", qty: 1, price: 90 }], status: "Nouvelle", daysAgo: 4 },
-    { name: "Houssem G.", phone: "+216 24 556 778", city: "Bizerte", items: [{ productId: "pendentif-voiture-fleur", qty: 1, price: 80 }], status: "Nouvelle", daysAgo: 2 },
-    { name: "Ines M.", phone: "+216 21 998 776", city: "Tunis", items: [{ productId: "porte-cles-arbre-vie", qty: 3, price: 35 }], status: "Annulée", daysAgo: 7 },
-    { name: "Rania S.", phone: "+216 26 443 221", city: "Monastir", items: [{ productId: "fleur-de-vie", qty: 1, price: 80 }], status: "Livrée", daysAgo: 1 }
+    { name: "Sirine B.", phone: "+216 20 123 456", address: "12 Rue de Marseille", city: "Tunis", postalCode: "1002", items: [{ productId: "bracelet-amour", qty: 1, price: 100 }], status: "Livrée", daysAgo: 21 },
+    { name: "Yosra K.", phone: "+216 55 987 321", address: "5 Avenue Habib Bourguiba", city: "Sousse", postalCode: "4000", items: [{ productId: "collier-bazi", qty: 1, price: 320 }], status: "Livrée", daysAgo: 18 },
+    { name: "Ahmed T.", phone: "+216 28 456 789", address: "Résidence Essalem, bloc B", city: "Sfax", postalCode: "3000", items: [{ productId: "carte-million-dollar", qty: 2, price: 50 }], status: "Confirmée", daysAgo: 14 },
+    { name: "Nour E.", phone: "+216 22 334 556", address: "27 Rue du Lac", city: "Tunis", postalCode: "1053", items: [{ productId: "bracelet-bazi", qty: 1, price: 160 }], status: "Confirmée", daysAgo: 12 },
+    { name: "Mohamed A.", phone: "+216 50 112 233", address: "Cité El Wafa, villa 9", city: "Nabeul", postalCode: "8000", items: [{ productId: "decor-abondance", qty: 1, price: 60 }, { productId: "cle-de-vie", qty: 1, price: 70 }], status: "Livrée", daysAgo: 9 },
+    { name: "Salma R.", phone: "+216 29 887 665", address: "3 Rue Ibn Khaldoun", city: "Tunis", postalCode: "1001", items: [{ productId: "portefeuille-hafidha", qty: 1, price: 90 }], status: "Nouvelle", daysAgo: 4 },
+    { name: "Houssem G.", phone: "+216 24 556 778", address: "18 Avenue de la Liberté", city: "Bizerte", postalCode: "7000", items: [{ productId: "pendentif-voiture-fleur", qty: 1, price: 80 }], status: "Nouvelle", daysAgo: 2 },
+    { name: "Ines M.", phone: "+216 21 998 776", address: "9 Rue des Oliviers", city: "Tunis", postalCode: "1004", items: [{ productId: "porte-cles-arbre-vie", qty: 3, price: 35 }], status: "Annulée", daysAgo: 7 },
+    { name: "Rania S.", phone: "+216 26 443 221", address: "Résidence Yasmine, apt 4", city: "Monastir", postalCode: "5000", items: [{ productId: "fleur-de-vie", qty: 1, price: 80 }], status: "Livrée", daysAgo: 1 }
   ];
 
   var PROMO_SEED = [
@@ -88,7 +88,7 @@
     if (stored) return stored;
     var seeded = ORDER_SEED.map(function (order) {
       return {
-        id: uid("order"), name: order.name, phone: order.phone, city: order.city,
+        id: uid("order"), name: order.name, phone: order.phone, address: order.address, city: order.city, postalCode: order.postalCode,
         items: order.items, status: order.status, date: daysAgo(order.daysAgo).toISOString(),
         total: order.items.reduce(function (sum, item) { return sum + item.qty * item.price; }, 0) + 10
       };
@@ -315,8 +315,9 @@
       var list = orders().slice().sort(function (a, b) { return new Date(b.date) - new Date(a.date); });
       document.querySelector("[data-orders-table]").innerHTML = list.map(function (o) {
         var itemsLabel = o.items.map(function (item) { return item.qty + "× " + productName(item.productId); }).join(", ");
+        var addressLabel = [o.address, o.city, o.postalCode].filter(Boolean).join(", ") || "—";
         var options = statuses.map(function (s) { return '<option value="' + s + '" ' + (s === o.status ? "selected" : "") + ">" + s + "</option>"; }).join("");
-        return "<tr><td>" + o.name + "</td><td>" + o.phone + "</td><td>" + itemsLabel + "</td><td>" + money(o.total) + '</td><td><select class="a-field" style="padding:7px 10px" data-order-status="' + o.id + '">' + options + "</select></td><td>" + formatDate(new Date(o.date)) + "</td></tr>";
+        return "<tr><td>" + o.name + "</td><td>" + o.phone + "</td><td>" + addressLabel + "</td><td>" + itemsLabel + "</td><td>" + money(o.total) + '</td><td><select class="a-field" style="padding:7px 10px" data-order-status="' + o.id + '">' + options + "</select></td><td>" + formatDate(new Date(o.date)) + "</td></tr>";
       }).join("");
       document.querySelectorAll("[data-order-status]").forEach(function (select) {
         select.addEventListener("change", function () {

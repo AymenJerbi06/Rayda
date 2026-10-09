@@ -16,7 +16,7 @@ function openDialog(dialog, trigger) {
   document.body.classList.add('s-dialog-open');
 }
 document.querySelectorAll('.s-selection,.s-lightbox').forEach(dialog => {
-  dialog.querySelector('[data-close-dialog]').addEventListener('click', () => dialog.close());
+  dialog.querySelectorAll('[data-close-dialog]').forEach(button => button.addEventListener('click', () => dialog.close()));
   dialog.addEventListener('close', () => { document.body.classList.remove('s-dialog-open'); dialogTrigger?.focus({ preventScroll: true }); });
   dialog.addEventListener('click', event => {
     if (event.target !== dialog) return;
@@ -152,7 +152,7 @@ const STOCK_SEED = {
   'portefeuille-hafidha': 6, 'carte-million-dollar': 20, 'decor-abondance': 8,
   'cle-de-vie': 10, 'fleur-de-vie': 0, 'pendentif-voiture-fleur': 15, 'pendentif-voiture-ankh': 15
 };
-function submitOrder({ name, phone, city }) {
+function submitOrder({ name, phone, address, city, postalCode }) {
   const orderItems = items.map(item => {
     const p = products.find(product => product.id === item.productId);
     return { productId: item.productId, qty: item.quantity, price: priceBounds(p, item.variant)?.min ?? 0 };
@@ -169,7 +169,7 @@ function submitOrder({ name, phone, city }) {
   });
   writeAdminStore('admin_stock', stock);
   const orders = readAdminStore('admin_orders', []);
-  orders.push({ id: 'order-' + Math.random().toString(36).slice(2,9), name, phone, city, items: orderItems, status: 'Nouvelle', date: new Date().toISOString(), total });
+  orders.push({ id: 'order-' + Math.random().toString(36).slice(2,9), name, phone, address, city, postalCode, items: orderItems, status: 'Nouvelle', date: new Date().toISOString(), total });
   writeAdminStore('admin_orders', orders);
 }
 
@@ -182,9 +182,12 @@ if (selectionForm) {
     if (!items.length || !selectionForm.reportValidity()) return;
     const name = selectionForm.elements.name.value.trim();
     const phone = selectionForm.elements.phone.value.trim();
-    if (!name) { selectionForm.elements.name.setCustomValidity(isAr ? 'يرجى إدخال اسمكم.' : 'Merci de renseigner votre prénom.'); selectionForm.reportValidity(); return; }
-    if (!phone) { selectionForm.elements.phone.setCustomValidity(isAr ? 'يرجى إدخال رقم هاتفكم.' : 'Merci de renseigner votre numéro de téléphone.'); selectionForm.reportValidity(); return; }
-    submitOrder({ name, phone, city: selectionForm.elements.city.value.trim() });
+    submitOrder({
+      name, phone,
+      address: selectionForm.elements.address.value.trim(),
+      city: selectionForm.elements.city.value.trim(),
+      postalCode: selectionForm.elements.postalCode.value.trim()
+    });
     items = [];
     persist();
     // persist() just hid the form (empty selection) and the result panel — show the confirmation instead.

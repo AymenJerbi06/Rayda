@@ -97,6 +97,10 @@ body.s-dialog-open{overflow:hidden}.s-selection,.s-lightbox{color:var(--ink);bac
 .s-buy-row>button{flex:1;min-width:160px}
 .s-add-secondary{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:50px;padding:11px 21px;border:1px solid var(--green);border-radius:9px;background:none;color:var(--green);font:600 13px/1.5 var(--sans);letter-spacing:.04em;text-transform:uppercase}
 .s-add-secondary:hover{background:var(--green);color:var(--paper)}
+
+/* Cart drawer: a clear way back to shopping sits next to the checkout action, not just the × close. */
+.s-dialog-actions{display:flex;flex-direction:column;gap:12px;margin-top:24px}
+.s-dialog-actions .g-button,.s-dialog-actions .s-add-secondary{width:100%;margin:0}
 .s-add-secondary:disabled,.s-buy-row .s-add:disabled{opacity:.45;cursor:not-allowed}
 
 /* A buy bar pinned to the bottom of the screen on mobile removes the need to scroll back up
@@ -111,6 +115,17 @@ body.s-dialog-open{overflow:hidden}.s-selection,.s-lightbox{color:var(--ink);bac
 }
 
 /* Mobile header: keep the Boutique button reachable without opening the menu first, by
-   shrinking its neighbours instead of hiding it (it was hidden by the 1024px rule above). */
+   shrinking its neighbours instead of hiding it (it was hidden by the 1024px rule above).
+   The logo stays the most prominent element — everything else shrinks around it. */
 @media(max-width:1024px){.g-header-cta{display:inline-flex}}
-@media(max-width:700px){.g-header{gap:8px;padding:16px 14px}.g-header .g-brand>span{font-size:26px}.g-header .g-brand>small{display:none}.g-header-cta{padding-inline:11px;font-size:10px}.g-lang-switch{min-width:36px;padding:0 8px}.s-selection-toggle{padding:2px;min-width:38px}.g-menu-toggle{width:38px}}
+@media(max-width:700px){
+  .g-header{gap:6px;padding:16px 12px}
+  .g-header .g-brand>span{font-size:38px}
+  .g-header .g-brand>small{display:none}
+  .g-lang-switch{min-width:32px;min-height:32px;padding:0;gap:0}
+  .g-lang-switch span{display:none}
+  .g-header-cta{padding-inline:8px;font-size:9px}
+  .s-selection-toggle{padding:0;min-width:32px;min-height:32px;gap:0}
+  .s-selection-toggle span{font-size:9px}
+  .g-menu-toggle{width:32px}
+}

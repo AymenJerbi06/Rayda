@@ -40,7 +40,7 @@ export function adminPromoCodesPage() {
 }
 
 export function adminOrdersPage() {
-  const content = `<div class="a-panel"><div class="a-panel-head"><div><h2>Commandes</h2><p>Données de démonstration — la vraie boutique enverra ses commandes ici une fois connectée, avec confirmation par e-mail via Resend.</p></div></div><div class="a-table-wrap"><table class="a-table"><thead><tr><th>Cliente / client</th><th>Téléphone</th><th>Pièces</th><th>Montant</th><th>Statut</th><th>Date</th></tr></thead><tbody data-orders-table></tbody></table></div></div>`;
+  const content = `<div class="a-panel"><div class="a-panel-head"><div><h2>Commandes</h2><p>Données de démonstration — la vraie boutique enverra ses commandes ici une fois connectée, avec confirmation par e-mail via Resend.</p></div></div><div class="a-table-wrap"><table class="a-table"><thead><tr><th>Cliente / client</th><th>Téléphone</th><th>Adresse de livraison</th><th>Pièces</th><th>Montant</th><th>Statut</th><th>Date</th></tr></thead><tbody data-orders-table></tbody></table></div></div>`;
   return shell('orders', 'Commandes', 'Suivi des commandes et de leur statut.', content);
 }
 
