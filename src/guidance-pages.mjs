@@ -15,7 +15,7 @@ export function renderGuidancePage(page, config, catalog = { products: [] }, cus
   const nav = `<a href="/">Accueil</a><a href="/vos-mots/">Vos Mots</a><a href="/contact/">Contact</a><a href="/contact/">Parlons ensemble</a>`;
   const wordmark = `<a class="g-brand" href="/" aria-label="${brand} — accueil"><span>${brand}</span><small>AVEC RAYDA · UN CHEMIN PERSONNEL</small></a>`;
   const arMap = { '': '/ar/', 'a-propos': '/ar/a-propos/', 'accompagnement': '/ar/accompagnement/', 'contact': '/ar/contact/', 'vos-mots': '/ar/vos-mots/', 'collections/all': '/ar/boutique/' };
-  const arHref = arMap[page] ?? '/ar/';
+  const arHref = arMap[page] ?? ('/ar/' + page + '/');
   const langSwitch = `<a class="g-lang-switch" href="${arHref}" aria-label="اقرأ بالعربية">${icon('globe')}<span>AR</span></a>`;
   const socialLinks = [
     config.contact.instagram ? ['instagram', config.contact.instagram, 'Instagram'] : null,

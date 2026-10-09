@@ -66,7 +66,9 @@ test("the build respects the selected presentation mode and excludes review scre
 test("guidance pages use Issolatej, local assets, and valid internal destinations", async () => {
   if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
   const dist = path.join(root, 'dist');
-  const pages = ['', 'a-propos', 'accompagnement', 'contact', 'vos-mots', 'checkout', ...catalog.collections.map(c=>'collections/'+c.slug), ...catalog.products.map(p=>'products/'+p.slug), 'ar', 'ar/a-propos', 'ar/accompagnement', 'ar/contact', 'ar/vos-mots', 'ar/boutique'];
+  const pages = ['', 'a-propos', 'accompagnement', 'contact', 'vos-mots', 'checkout', ...catalog.collections.map(c=>'collections/'+c.slug), ...catalog.products.map(p=>'products/'+p.slug),
+    'ar', 'ar/a-propos', 'ar/accompagnement', 'ar/contact', 'ar/vos-mots', 'ar/boutique', 'ar/checkout',
+    ...catalog.collections.filter(c=>c.slug!=='all').map(c=>'ar/collections/'+c.slug), ...catalog.products.map(p=>'ar/products/'+p.slug)];
   for (const page of pages) {
     const html = await readFile(path.join(dist, page, 'index.html'), 'utf8');
     assert.match(html, /<title>[^<]+ — Issolatej<\/title>/);

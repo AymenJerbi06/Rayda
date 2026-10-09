@@ -1,4 +1,7 @@
-import { escapeHtml as esc, priceLabel, selectionTotal, normalizeSelection, filterProducts, selectionMessage } from './commerce-core.js';
+import { escapeHtml as esc, priceLabel, priceLabelAr, selectionTotal, selectionTotalAr, normalizeSelection, filterProducts, selectionMessage, selectionMessageAr } from './commerce-core.js';
+const isAr = document.documentElement.lang === 'ar';
+const priceLabelAuto = isAr ? priceLabelAr : priceLabel;
+const selectionTotalAuto = isAr ? selectionTotalAr : selectionTotal;
 
 const products = window.STORE_CATALOG.products;
 const config = window.STORE_CONFIG;
@@ -25,15 +28,19 @@ document.querySelectorAll('.s-selection,.s-lightbox').forEach(dialog => {
 function lineMarkup(item, index) {
   const p = products.find(product => product.id === item.productId);
   const image = p.images[p.variantImageIndex?.[item.variant] ?? p.coverImageIndex ?? 0];
-  return `<article class="s-line"><a href="/products/${p.slug}/" tabindex="-1" aria-hidden="true"><img src="${image.src}" alt="" width="100" height="120" /></a><div><h3><a href="/products/${p.slug}/">${esc(p.name)}</a></h3><p>${esc([item.variant,item.palette].filter(Boolean).join(' · '))}</p><strong>${priceLabel(p, item.variant)}</strong><div class="s-line-quantity"><button type="button" data-line-step="-1" data-index="${index}" aria-label="Diminuer la quantité de ${esc(p.name)}" ${item.quantity === 1 ? 'disabled' : ''}>−</button><span aria-label="Quantité">${item.quantity}</span><button type="button" data-line-step="1" data-index="${index}" aria-label="Augmenter la quantité de ${esc(p.name)}" ${item.quantity === 20 ? 'disabled' : ''}>+</button><button type="button" data-remove="${index}" aria-label="Retirer ${esc(p.name)}">Retirer</button></div></div></article>`;
+  const displayName = isAr ? (window.STORE_PRODUCT_NAMES_AR?.[p.id] || p.name) : p.name;
+  const href = (isAr ? '/ar' : '') + '/products/' + p.slug + '/';
+  return `<article class="s-line"><a href="${href}" tabindex="-1" aria-hidden="true"><img src="${image.src}" alt="" width="100" height="120" /></a><div><h3><a href="${href}">${esc(displayName)}</a></h3><p>${esc([item.variant,item.palette].filter(Boolean).join(' · '))}</p><strong>${priceLabelAuto(p, item.variant)}</strong><div class="s-line-quantity"><button type="button" data-line-step="-1" data-index="${index}" aria-label="${isAr ? 'إنقاص كمية ' : 'Diminuer la quantité de '}${esc(displayName)}" ${item.quantity === 1 ? 'disabled' : ''}>−</button><span aria-label="${isAr ? 'الكمية' : 'Quantité'}">${item.quantity}</span><button type="button" data-line-step="1" data-index="${index}" aria-label="${isAr ? 'زيادة كمية ' : 'Augmenter la quantité de '}${esc(displayName)}" ${item.quantity === 20 ? 'disabled' : ''}>+</button><button type="button" data-remove="${index}" aria-label="${isAr ? 'إزالة ' : 'Retirer '}${esc(displayName)}">${isAr ? 'إزالة' : 'Retirer'}</button></div></div></article>`;
 }
 function renderSelection() {
   const count = items.reduce((sum,item) => sum + item.quantity, 0);
   document.querySelectorAll('[data-selection-count]').forEach(badge => { badge.textContent = count; });
-  const markup = items.length ? items.map(lineMarkup).join('') : '<div class="s-empty"><h3>Vos envies commencent ici.</h3><p>Une pièce vous plaît ? Ajoutez-la à votre sélection pour en parler avec Rayda.</p><a class="g-button" href="/collections/all/">Découvrir les créations ↗</a></div>';
+  const markup = items.length ? items.map(lineMarkup).join('') : (isAr
+    ? '<div class="s-empty"><h3>تبدأ رغباتكنّ هنا.</h3><p>أعجبتكنّ قطعة؟ أضفنها إلى اختياركنّ للحديث عنها مع رايدة.</p><a class="g-button" href="/ar/boutique/">اكتشفن الإبداعات ↗</a></div>'
+    : '<div class="s-empty"><h3>Vos envies commencent ici.</h3><p>Une pièce vous plaît ? Ajoutez-la à votre sélection pour en parler avec Rayda.</p><a class="g-button" href="/collections/all/">Découvrir les créations ↗</a></div>');
   document.querySelectorAll('[data-selection-lines],[data-checkout-lines]').forEach(el => { el.innerHTML = markup; });
   document.querySelector('[data-selection-footer]').hidden = !items.length;
-  document.querySelectorAll('[data-selection-total],[data-checkout-total]').forEach(el => { el.textContent = selectionTotal(items,products); });
+  document.querySelectorAll('[data-selection-total],[data-checkout-total]').forEach(el => { el.textContent = selectionTotalAuto(items,products); });
   const form = document.querySelector('[data-selection-form]');
   if (form) {
     form.hidden = !items.length;
@@ -79,10 +86,12 @@ if (catalog) {
   if (params.get('q')) search.value = params.get('q');
   function updateCatalog() {
     catalog.querySelectorAll('[data-shop-mode]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.shopMode===mode.value)));
-    const filtered = filterProducts(list,{search:search.value,mode:mode.value,sort:sort.value});
+    const filtered = filterProducts(list,{search:search.value,mode:mode.value,sort:sort.value,extraText:p=>isAr?(window.STORE_PRODUCT_NAMES_AR?.[p.id]||''):''});
     cards.forEach(card => { card.hidden = true; });
     filtered.forEach(p => { const card=cards.get(p.id); card.hidden=false; container.append(card); });
-    catalog.querySelector('[data-results]').textContent = filtered.length + (filtered.length === 1 ? ' pièce à découvrir' : ' pièces à découvrir');
+    catalog.querySelector('[data-results]').textContent = isAr
+      ? (filtered.length === 1 ? 'قطعة واحدة للاكتشاف' : filtered.length + ' قطعة للاكتشاف')
+      : filtered.length + (filtered.length === 1 ? ' pièce à découvrir' : ' pièces à découvrir');
     catalog.querySelector('[data-empty]').hidden = !!filtered.length;
   }
   search.addEventListener('input', updateCatalog); mode.addEventListener('change',updateCatalog); sort.addEventListener('change',updateCatalog);
@@ -114,7 +123,7 @@ if (productRoot) {
   form.querySelectorAll('[data-quantity]').forEach(button => button.addEventListener('click',()=>{ quantity.value=Math.max(1,Math.min(20,Number(quantity.value || 1)+Number(button.dataset.quantity))); }));
   form.elements.variant?.addEventListener('change', () => {
     const variant = form.elements.variant.value;
-    productRoot.querySelector('[data-price]').textContent = priceLabel(p,variant);
+    productRoot.querySelector('[data-price]').textContent = priceLabelAuto(p,variant);
     if (p.variantImageIndex?.[variant] !== undefined) showImage(p.variantImageIndex[variant]);
   });
   if (p.availability==='sold-out') form.querySelector('[type="submit"]').disabled = true;
@@ -136,8 +145,10 @@ if (selectionForm) {
     event.preventDefault();
     if (!items.length || !selectionForm.reportValidity()) return;
     const name = selectionForm.elements.name.value.trim();
-    if (!name) { selectionForm.elements.name.setCustomValidity('Merci de renseigner votre prénom.'); selectionForm.reportValidity(); return; }
-    const message = selectionMessage(items,products,name,selectionForm.elements.city.value.trim());
+    if (!name) { selectionForm.elements.name.setCustomValidity(isAr ? 'يرجى إدخال اسمكنّ.' : 'Merci de renseigner votre prénom.'); selectionForm.reportValidity(); return; }
+    const message = isAr
+      ? selectionMessageAr(items,products,name,selectionForm.elements.city.value.trim(),window.STORE_PRODUCT_NAMES_AR||{})
+      : selectionMessage(items,products,name,selectionForm.elements.city.value.trim());
     result.querySelector('[data-message-preview]').textContent=message;
     result.querySelector('a').href='https://wa.me/'+config.contact.phone.replace(/\D/g,'')+'?text='+encodeURIComponent(message);
     result.hidden=false;

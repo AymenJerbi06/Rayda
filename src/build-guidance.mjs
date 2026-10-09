@@ -4,6 +4,8 @@ import vm from 'node:vm';
 import { guidanceRoutes, renderGuidancePage } from './guidance-pages.mjs';
 import { collectionPage, productPage, checkoutPage } from './shop-pages.mjs';
 import { arGuidanceRoutes, renderGuidancePageAr } from './guidance-pages-ar.mjs';
+import { productPageAr, checkoutPageAr, collectionPageAr } from './shop-pages-ar.mjs';
+import { collectionsAr, productsAr } from './catalog-ar.mjs';
 
 export async function buildGuidance(project, output, config) {
   // output is resolved by build.mjs to this project's dist directory.
@@ -43,13 +45,23 @@ export async function buildGuidance(project, output, config) {
     await mkdir(dir, { recursive: true });
     await writeFile(path.join(dir, 'index.html'), renderGuidancePage(entry.route, config, catalog, entry));
   }
-  const arHome = renderGuidancePageAr('', config);
+  const arNamesScript = 'window.STORE_PRODUCT_NAMES_AR = ' + JSON.stringify(Object.fromEntries(catalog.products.map(p => [p.id, productsAr[p.id]?.name || p.name]))) + ';';
+  await writeFile(path.join(output, 'src', 'catalog-ar-names.js'), arNamesScript);
+  const arHome = renderGuidancePageAr('', config, catalog);
   await mkdir(path.join(output, 'ar'), { recursive: true });
   await writeFile(path.join(output, 'ar', 'index.html'), arHome);
   for (const route of arGuidanceRoutes) {
     const dir = path.join(output, 'ar', route);
     await mkdir(dir, { recursive: true });
-    await writeFile(path.join(dir, 'index.html'), renderGuidancePageAr(route, config));
+    await writeFile(path.join(dir, 'index.html'), renderGuidancePageAr(route, config, catalog));
   }
-  console.log('Built ' + (1 + guidanceRoutes.length + shopRoutes.length) + ' Issolatej pages (' + (1 + arGuidanceRoutes.length) + ' in Arabic): Rayda, vos mots, 12 products, 8 collections and a WhatsApp selection flow.');
+  const arShopRoutes = catalog.collections.filter(c => c.slug !== 'all').map(collection => ({ route: 'collections/' + collection.slug, title: collectionsAr[collection.slug]?.name || collection.name, content: null, kind: 'collection', data: collection }))
+    .concat(catalog.products.map(product => ({ route: 'products/' + product.slug, title: productsAr[product.id]?.name || product.name, content: productPageAr(product, catalog) })), [{ route: 'checkout', title: 'اختياركنّ، مع رايدة', content: checkoutPageAr }]);
+  for (const entry of arShopRoutes) {
+    const dir = path.join(output, 'ar', entry.route);
+    await mkdir(dir, { recursive: true });
+    const content = entry.kind === 'collection' ? collectionPageAr(entry.data, catalog) : entry.content;
+    await writeFile(path.join(dir, 'index.html'), renderGuidancePageAr(entry.route, config, catalog, { title: entry.title, content }));
+  }
+  console.log('Built ' + (1 + guidanceRoutes.length + shopRoutes.length) + ' Issolatej pages (' + (1 + arGuidanceRoutes.length + arShopRoutes.length) + ' in Arabic): Rayda, vos mots, 12 products, 8 collections and a WhatsApp selection flow.');
 }
