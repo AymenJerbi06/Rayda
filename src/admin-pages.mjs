@@ -1,0 +1,50 @@
+// Admin panel shell. This is a visual/interaction DEMO: every page is guarded by a hardcoded
+// credential check and all data (stock, orders, promo codes, settings) lives only in the browser's
+// localStorage via admin.js. No server, auth token or database is wired up yet — that lands once
+// Supabase is connected, at which point these pages switch from reading localStorage to calling the
+// real API and the hardcoded credential in admin.js is replaced by a server-checked login.
+const navItems = [
+  ['dashboard', '/admin/', 'Tableau de bord'],
+  ['products', '/admin/products/', 'Produits'],
+  ['promo-codes', '/admin/promo-codes/', 'Codes promo'],
+  ['orders', '/admin/orders/', 'Commandes'],
+  ['settings', '/admin/settings/', 'Paramètres']
+];
+
+function head(title) {
+  return `<meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><meta name="robots" content="noindex, nofollow" /><title>${title} — Espace admin Issolatej</title><link rel="icon" href="/assets/brand/leaf-mark.svg" type="image/svg+xml" /><link rel="preconnect" href="https://fonts.googleapis.com" /><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin /><link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" /><link rel="stylesheet" href="/guidance.css" /><link rel="stylesheet" href="/admin.css" />`;
+}
+
+export function adminLoginPage() {
+  return `<!doctype html><html lang="fr"><head>${head('Connexion')}</head><body class="a-body"><div class="a-login-shell"><div class="a-login-card"><div class="a-brand">Issolatej<small>Espace admin</small></div><p class="a-login-sub">Connectez-vous pour gérer le site.</p><div class="a-login-error" data-login-error hidden></div><form data-login-form class="a-form"><label class="a-field">E-mail<input name="email" type="email" required autocomplete="username" /></label><label class="a-field">Mot de passe<input name="password" type="password" required autocomplete="current-password" /></label><button class="g-button a-full" type="submit">Se connecter ↗</button></form><p class="a-login-hint">Aperçu de démonstration — identifiants fournis par le développeur.</p></div></div><script defer src="/src/admin.js"></script></body></html>`;
+}
+
+function shell(active, title, subtitle, content) {
+  const nav = navItems.map(([key, href, label]) => `<a href="${href}" ${key === active ? 'aria-current="page"' : ''}>${label}</a>`).join('');
+  return `<!doctype html><html lang="fr"><head>${head(title)}</head><body class="a-body" data-admin-page="${active}"><div class="a-shell"><aside class="a-sidebar"><div class="a-brand">Issolatej<small>Espace admin</small></div><nav class="a-nav" aria-label="Navigation admin">${nav}</nav><div class="a-sidebar-bottom"><a class="a-viewsite" href="/" target="_blank" rel="noopener noreferrer">Voir le site ↗</a><button class="a-signout" type="button" data-admin-logout>Se déconnecter</button></div></aside><main class="a-main"><div class="a-demo-banner"><span aria-hidden="true">ⓘ</span><div><b>Aperçu de démonstration</b>Ces données sont fictives et stockées uniquement dans ce navigateur. La connexion à la vraie base de données, aux commandes réelles et aux e-mails Resend arrive dans une prochaine étape.</div></div><div class="a-topbar"><div><h1>${title}</h1><p>${subtitle}</p></div></div>${content}</main></div><script defer src="/src/catalog.js"></script><script defer src="/src/admin.js"></script></body></html>`;
+}
+
+export function adminDashboardPage() {
+  const content = `<div class="a-stat-grid" data-stat-grid></div><div class="a-panel"><div class="a-panel-head"><div><h2>Meilleures ventes</h2><p>Quantité vendue par pièce, d'après les commandes de démonstration.</p></div></div><div class="a-table-wrap"><table class="a-table"><thead><tr><th>Pièce</th><th>Quantité vendue</th><th>Stock restant</th><th>Statut</th></tr></thead><tbody data-top-products></tbody></table></div></div><div class="a-panel"><div class="a-panel-head"><div><h2>Dernières commandes</h2><p>Les commandes réelles remplaceront cette liste une fois la boutique connectée.</p></div></div><div class="a-table-wrap"><table class="a-table"><thead><tr><th>Cliente / client</th><th>Téléphone</th><th>Montant</th><th>Statut</th><th>Date</th></tr></thead><tbody data-recent-orders></tbody></table></div></div>`;
+  return shell('dashboard', 'Tableau de bord', 'Revenu, ventes et stock, en un coup d’œil.', content);
+}
+
+export function adminProductsPage() {
+  const content = `<div class="a-panel"><div class="a-panel-head"><div><h2>Ajouter une nouvelle pièce</h2><p>Visible uniquement dans cet aperçu pour l’instant — pas encore sur le site en ligne.</p></div></div><form class="a-form" data-add-product-form><div class="a-form-grid"><label class="a-field">Nom (français)<input name="name" required placeholder="Bracelet Énergie Sérénité" /></label><label class="a-field">Nom (arabe)<input name="nameAr" dir="rtl" placeholder="سوار طاقة السكينة" /></label><label class="a-field">Catégorie<select name="collection" data-collection-options></select></label><label class="a-field">Prix (TND)<input name="price" type="number" min="0" step="1" required /></label><label class="a-field">Stock initial<input name="stock" type="number" min="0" step="1" value="10" /></label><label class="a-field a-checkbox"><input type="checkbox" name="custom" /> Création personnalisée (sur commande, sans stock fixe)</label></div><div class="a-form-actions"><button class="g-button" type="submit">Ajouter la pièce ↗</button></div></form></div><div class="a-panel"><div class="a-panel-head"><div><h2>Catalogue</h2><p>Stock et disponibilité. Cliquez sur le stock ou l’interrupteur pour mettre à jour.</p></div></div><div class="a-table-wrap"><table class="a-table"><thead><tr><th>Pièce</th><th>Prix</th><th>Stock</th><th>Épuisé</th><th></th></tr></thead><tbody data-products-table></tbody></table></div></div><div class="a-panel"><div class="a-panel-head"><div><h2>Formules (bundles)</h2><p>Associez plusieurs pièces à un tarif groupé.</p></div></div><form class="a-form" data-add-bundle-form><div class="a-form-grid"><label class="a-field">Nom de la formule<input name="name" required placeholder="Duo Sérénité" /></label><label class="a-field">Prix groupé (TND)<input name="price" type="number" min="0" step="1" required /></label></div><div class="a-field"><span>Pièces incluses</span><div data-bundle-product-options></div></div><div class="a-form-actions"><button class="g-button" type="submit">Créer la formule ↗</button></div></form><div class="a-table-wrap"><table class="a-table"><thead><tr><th>Formule</th><th>Pièces</th><th>Prix</th><th></th></tr></thead><tbody data-bundles-table></tbody></table><p class="a-empty-note" data-bundles-empty hidden>Aucune formule pour l’instant.</p></div></div>`;
+  return shell('products', 'Produits', 'Catalogue, stock et formules.', content);
+}
+
+export function adminPromoCodesPage() {
+  const content = `<div class="a-panel"><div class="a-panel-head"><div><h2>Créer un code promo</h2></div></div><form class="a-form" data-add-promo-form><div class="a-form-grid"><label class="a-field">Code<input name="code" required placeholder="BIENVENUE10" /></label><label class="a-field">Type de remise<select name="type"><option value="percent">Pourcentage (%)</option><option value="amount">Montant fixe (TND)</option></select></label><label class="a-field">Valeur<input name="value" type="number" min="1" step="1" required /></label><label class="a-field">Utilisations autorisées<input name="limit" type="number" min="1" step="1" value="50" required /></label></div><div class="a-form-actions"><button class="g-button" type="submit">Créer le code ↗</button></div></form></div><div class="a-panel"><div class="a-panel-head"><div><h2>Codes existants</h2><p>Activez, désactivez ou retirez un code à tout moment.</p></div></div><div class="a-table-wrap"><table class="a-table"><thead><tr><th>Code</th><th>Remise</th><th>Utilisations</th><th>Actif</th><th></th></tr></thead><tbody data-promo-table></tbody></table></div></div>`;
+  return shell('promo-codes', 'Codes promo', 'Remises, limites d’utilisation et activation.', content);
+}
+
+export function adminOrdersPage() {
+  const content = `<div class="a-panel"><div class="a-panel-head"><div><h2>Commandes</h2><p>Données de démonstration — la vraie boutique enverra ses commandes ici une fois connectée, avec confirmation par e-mail via Resend.</p></div></div><div class="a-table-wrap"><table class="a-table"><thead><tr><th>Cliente / client</th><th>Téléphone</th><th>Pièces</th><th>Montant</th><th>Statut</th><th>Date</th></tr></thead><tbody data-orders-table></tbody></table></div></div>`;
+  return shell('orders', 'Commandes', 'Suivi des commandes et de leur statut.', content);
+}
+
+export function adminSettingsPage() {
+  const content = `<div class="a-panel"><div class="a-panel-head"><div><h2>Livraison</h2></div></div><form class="a-form" data-delivery-form><div class="a-form-grid"><label class="a-field">Frais de livraison (TND)<input name="deliveryFee" type="number" min="0" step="0.5" required /></label></div><div class="a-form-actions"><button class="g-button" type="submit">Enregistrer ↗</button></div></form></div><div class="a-panel"><div class="a-panel-head"><div><h2>Notifications par e-mail (Resend)</h2><p>Préparez la configuration maintenant ; l’envoi réel s’activera avec la connexion Resend.</p></div></div><form class="a-form" data-email-form><div class="a-form-grid"><label class="a-field a-checkbox"><input type="checkbox" name="resendEnabled" /> Recevoir un e-mail à chaque nouvelle commande</label><label class="a-field">E-mail de réception<input name="notifyEmail" type="email" placeholder="rayda@issolatej.com" /></label></div><div class="a-form-actions"><button class="g-button" type="submit">Enregistrer ↗</button></div></form></div>`;
+  return shell('settings', 'Paramètres', 'Livraison et notifications.', content);
+}

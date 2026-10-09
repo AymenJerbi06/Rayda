@@ -6,6 +6,7 @@ import { collectionPage, productPage, checkoutPage } from './shop-pages.mjs';
 import { arGuidanceRoutes, renderGuidancePageAr } from './guidance-pages-ar.mjs';
 import { productPageAr, checkoutPageAr, collectionPageAr } from './shop-pages-ar.mjs';
 import { collectionsAr, productsAr } from './catalog-ar.mjs';
+import { adminLoginPage, adminDashboardPage, adminProductsPage, adminPromoCodesPage, adminOrdersPage, adminSettingsPage } from './admin-pages.mjs';
 
 export async function buildGuidance(project, output, config) {
   // output is resolved by build.mjs to this project's dist directory.
@@ -17,7 +18,8 @@ export async function buildGuidance(project, output, config) {
     await cp(path.join(project, 'assets', 'brand', asset), path.join(output, 'assets', 'brand', asset));
   }
   for (const file of ['guidance.css', 'commerce.css']) await cp(path.join(project, file), path.join(output, file));
-  for (const file of ['guidance.js', 'social-menu.js', 'contact-ar.js', 'commerce.js', 'commerce-core.js', 'site-config.js', 'catalog.js']) {
+  await cp(path.join(project, 'src', 'admin.css'), path.join(output, 'admin.css'));
+  for (const file of ['guidance.js', 'social-menu.js', 'contact-ar.js', 'commerce.js', 'commerce-core.js', 'site-config.js', 'catalog.js', 'admin.js']) {
     await cp(path.join(project, 'src', file), path.join(output, 'src', file));
   }
   await mkdir(path.join(output, 'assets', 'products'), { recursive: true });
@@ -63,5 +65,11 @@ export async function buildGuidance(project, output, config) {
     const content = entry.kind === 'collection' ? collectionPageAr(entry.data, catalog) : entry.content;
     await writeFile(path.join(dir, 'index.html'), renderGuidancePageAr(entry.route, config, catalog, { title: entry.title, content }));
   }
-  console.log('Built ' + (1 + guidanceRoutes.length + shopRoutes.length) + ' Issolatej pages (' + (1 + arGuidanceRoutes.length + arShopRoutes.length) + ' in Arabic): Rayda, vos mots, 12 products, 8 collections and a WhatsApp selection flow.');
+  const adminRoutes = [['login', adminLoginPage], ['', adminDashboardPage], ['products', adminProductsPage], ['promo-codes', adminPromoCodesPage], ['orders', adminOrdersPage], ['settings', adminSettingsPage]];
+  for (const [route, render] of adminRoutes) {
+    const dir = path.join(output, 'admin', route);
+    await mkdir(dir, { recursive: true });
+    await writeFile(path.join(dir, 'index.html'), render());
+  }
+  console.log('Built ' + (1 + guidanceRoutes.length + shopRoutes.length) + ' Issolatej pages (' + (1 + arGuidanceRoutes.length + arShopRoutes.length) + ' in Arabic) and a ' + adminRoutes.length + '-page admin demo: Rayda, vos mots, 12 products, 8 collections and a WhatsApp selection flow.');
 }
