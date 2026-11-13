@@ -179,7 +179,9 @@ if (productRoot) {
     if (event.key==='ArrowLeft'||event.key==='ArrowRight') { event.preventDefault();showImage(imageIndex+(event.key==='ArrowLeft'?-1:1)); }
   });
   form.querySelectorAll('[data-quantity]').forEach(button => button.addEventListener('click',()=>{ quantity.value=Math.max(1,Math.min(20,Number(quantity.value || 1)+Number(button.dataset.quantity))); }));
-  form.elements.variant?.addEventListener('change', () => {
+  // Models, sizes and colours are radio buttons now (a select or a hidden field also works): listen on the form.
+  form.addEventListener('change', event => {
+    if (event.target.name !== 'variant') return;
     const variant = form.elements.variant.value;
     productRoot.querySelectorAll('[data-price]').forEach(el => { el.textContent = priceLabelAuto(p,variant); });
     if (p.variantImageIndex?.[variant] !== undefined) showImage(p.variantImageIndex[variant]);

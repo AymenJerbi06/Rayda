@@ -167,3 +167,8 @@ body.has-floating-header{padding-top:var(--header-space,100px)}
   /* A soft cross-fade between pages in browsers that support it; others simply load the next page. */
   @view-transition{navigation:auto}
 }
+
+/* The language switch reads "عر" in Arabic letters on French pages, set in the site's Arabic typeface (Tajawal, loaded for just these two letters). Arabic letters are never letter-spaced, so they stay joined. */
+.g-lang-switch span[lang="ar"]{font-family:var(--sans);font-size:15px;letter-spacing:0;line-height:1;transform:translateY(-1px)}
+@media(max-width:700px){.g-header .g-lang-switch span[lang="ar"]{font-size:14px}}
+.g-menu nav a.g-lang-switch span[lang="ar"]{font-size:16px}

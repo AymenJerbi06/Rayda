@@ -1,0 +1,147 @@
+/* Layers (13 November 2026). Rayda's two colours, forest green and cream, layered the way the homepage hero
+   and shop sections already are: no plain white surface is left. Each layer carries the site's own leaf,
+   drawn faintly in a darker beige on cream and a lighter green on forest. Only colours, backgrounds, borders
+   and shapes change here: the typefaces and text styles stay exactly as they are. */
+:root{--cream-deep:#e6dfd4;--petal:#f3eee6;--leaf-cream:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 610' fill='none'%3E%3Cpath d='M206 602C249 476 135 369 214 215C242 157 263 90 242 16' stroke='%23dedad2' stroke-width='10'/%3E%3Cg fill='%23dedad2'%3E%3Cpath d='M225 132C145 121 129 73 139 40C192 49 233 82 225 132Z'/%3E%3Cpath d='M253 108C250 44 282 14 318 7C327 56 300 100 253 108Z'/%3E%3Cpath d='M205 216C132 207 111 172 110 126C170 133 205 165 205 216Z'/%3E%3Cpath d='M223 242C225 176 275 141 320 146C312 199 281 235 223 242Z'/%3E%3Cpath d='M184 311C110 303 69 254 79 205C138 213 181 250 184 311Z'/%3E%3Cpath d='M190 340C214 275 266 259 305 276C285 325 243 351 190 340Z'/%3E%3Cpath d='M205 421C128 420 79 380 76 333C137 329 187 365 205 421Z'/%3E%3Cpath d='M217 457C237 392 286 362 335 376C317 434 274 463 217 457Z'/%3E%3Cpath d='M224 535C150 540 104 514 86 465C141 450 196 479 224 535Z'/%3E%3Cpath d='M218 573C245 518 288 498 332 513C310 561 266 581 218 573Z'/%3E%3C/g%3E%3C/svg%3E");--leaf-deep:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 610' fill='none'%3E%3Cpath d='M206 602C249 476 135 369 214 215C242 157 263 90 242 16' stroke='%23d8d3c8' stroke-width='10'/%3E%3Cg fill='%23d8d3c8'%3E%3Cpath d='M225 132C145 121 129 73 139 40C192 49 233 82 225 132Z'/%3E%3Cpath d='M253 108C250 44 282 14 318 7C327 56 300 100 253 108Z'/%3E%3Cpath d='M205 216C132 207 111 172 110 126C170 133 205 165 205 216Z'/%3E%3Cpath d='M223 242C225 176 275 141 320 146C312 199 281 235 223 242Z'/%3E%3Cpath d='M184 311C110 303 69 254 79 205C138 213 181 250 184 311Z'/%3E%3Cpath d='M190 340C214 275 266 259 305 276C285 325 243 351 190 340Z'/%3E%3Cpath d='M205 421C128 420 79 380 76 333C137 329 187 365 205 421Z'/%3E%3Cpath d='M217 457C237 392 286 362 335 376C317 434 274 463 217 457Z'/%3E%3Cpath d='M224 535C150 540 104 514 86 465C141 450 196 479 224 535Z'/%3E%3Cpath d='M218 573C245 518 288 498 332 513C310 561 266 581 218 573Z'/%3E%3C/g%3E%3C/svg%3E");--leaf-forest:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 420 610' fill='none'%3E%3Cpath d='M206 602C249 476 135 369 214 215C242 157 263 90 242 16' stroke='%232d413a' stroke-width='10'/%3E%3Cg fill='%232d413a'%3E%3Cpath d='M225 132C145 121 129 73 139 40C192 49 233 82 225 132Z'/%3E%3Cpath d='M253 108C250 44 282 14 318 7C327 56 300 100 253 108Z'/%3E%3Cpath d='M205 216C132 207 111 172 110 126C170 133 205 165 205 216Z'/%3E%3Cpath d='M223 242C225 176 275 141 320 146C312 199 281 235 223 242Z'/%3E%3Cpath d='M184 311C110 303 69 254 79 205C138 213 181 250 184 311Z'/%3E%3Cpath d='M190 340C214 275 266 259 305 276C285 325 243 351 190 340Z'/%3E%3Cpath d='M205 421C128 420 79 380 76 333C137 329 187 365 205 421Z'/%3E%3Cpath d='M217 457C237 392 286 362 335 376C317 434 274 463 217 457Z'/%3E%3Cpath d='M224 535C150 540 104 514 86 465C141 450 196 479 224 535Z'/%3E%3Cpath d='M218 573C245 518 288 498 332 513C310 561 266 581 218 573Z'/%3E%3C/g%3E%3C/svg%3E");--leaf-mark:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='125 33 112 104'%3E%3Cpath d='M225 132C145 121 129 73 139 40C192 49 233 82 225 132Z' fill='black'/%3E%3C/svg%3E")}
+
+/* Product pages: a cream buy area with the leaf behind it, Rayda's description on forest, related pieces on beige. */
+.s-product{background:var(--cream)}
+.s-pdp{--pdp-side:max(var(--gutter),calc((100vw - 1440px)/2));position:relative;isolation:isolate}
+.s-pdp::before{content:"";position:absolute;z-index:-1;pointer-events:none;top:70px;right:0;width:min(470px,42vw);aspect-ratio:420/610;background:var(--leaf-cream) no-repeat center/contain}
+[dir="rtl"] .s-pdp::before{right:auto;left:0;transform:scaleX(-1)}
+.s-pdp:has(>.s-story){padding-bottom:0}
+.s-pdp>.s-story{position:relative;isolation:isolate;margin:75px calc(var(--pdp-side) * -1) 0;padding:75px var(--pdp-side) 85px;border-top:0;background:var(--forest);color:var(--paper)}
+.s-pdp>.s-story::before{content:"";position:absolute;z-index:-1;pointer-events:none;left:0;bottom:0;height:min(540px,calc(100% - 30px));max-width:62vw;aspect-ratio:420/610;background:var(--leaf-forest) no-repeat center bottom/contain}
+[dir="rtl"] .s-pdp>.s-story::before{left:auto;right:0;transform:scaleX(-1)}
+.s-pdp>.s-story .g-eyebrow,.s-pdp>.s-story .s-story-steps li>span,.s-pdp>.s-story .s-story-closing,.s-pdp>.s-story .s-story-more>summary{color:var(--sage)}
+.s-pdp>.s-story .s-story-list,.s-pdp>.s-story .s-story-list li{border-color:#fcf8f724}
+.s-pdp>.s-story .s-story-body>p,.s-pdp>.s-story .s-story-more>p{color:#fcf8f7e0}
+.s-main-image{background:var(--cream-deep)}
+.s-main-image>span{background:#ece6deeb}
+.s-pdp-steps{position:relative;isolation:isolate;overflow:hidden;padding:24px 24px 12px;border-radius:6px 6px 48px 6px;background:var(--forest);color:var(--paper)}
+[dir="rtl"] .s-pdp-steps{border-radius:6px 6px 6px 48px}
+.s-pdp-steps::before{content:"";position:absolute;z-index:-1;pointer-events:none;right:-18px;bottom:-60px;width:150px;aspect-ratio:420/610;background:var(--leaf-forest) no-repeat center/contain;transform:rotate(14deg)}
+[dir="rtl"] .s-pdp-steps::before{right:auto;left:-18px;transform:scaleX(-1) rotate(14deg)}
+.s-pdp-steps .g-eyebrow,.s-pdp-steps .s-story-steps li>span{color:var(--sage)}
+.s-pdp-steps .s-story-list,.s-pdp-steps .s-story-list li{border-color:#fcf8f724}
+.s-pdp-steps .s-story-list li:last-child{border-bottom:0}
+.s-pdp-review{background:var(--cream-deep);border-color:transparent;border-top-left-radius:42px}
+[dir="rtl"] .s-pdp-review{border-top-left-radius:0;border-top-right-radius:42px}
+.s-related{background:var(--cream-deep)}
+.s-related .s-card-image,.s-catalog .s-card-image{background:var(--cream)}
+
+/* Choosing a model, size, colour or colour preference: soft cream pills; the picked one turns forest green
+   with the hero's light green and a small leaf. */
+.s-choice span{background:var(--petal);border-color:#c9c1b4;color:var(--forest)}
+.s-choice:hover span{border-color:var(--forest)}
+.s-choice input:checked+span{background:var(--forest);border-color:var(--forest);color:var(--sage)}
+.s-choice input:checked+span::before{content:"";flex:0 0 auto;width:13px;height:13px;margin-inline-end:8px;background:var(--sage);-webkit-mask:var(--leaf-mark) center/contain no-repeat;mask:var(--leaf-mark) center/contain no-repeat}
+.s-swatch{display:inline-flex;margin-inline-end:9px}
+.s-swatch b{width:14px;height:14px;border-radius:50%;border:1.5px solid var(--petal);margin-inline-start:-5px}
+.s-swatch b:first-child{margin-inline-start:0}
+.s-swatch-open b{background:transparent;border-color:currentColor;opacity:.55}
+.s-palettes .s-choice input:checked+span::before{display:none}
+.s-choice input:checked+span .s-swatch b{border-color:var(--forest)}
+.s-choice input:checked+span .s-swatch-open b{border-color:var(--sage);opacity:.8}
+
+/* Phones: the pinned buy bar is a forest ribbon with the hero's light green. */
+.s-mobile-buybar{background:var(--forest);color:var(--paper);border-top:1px solid #fcf8f71f}
+.s-mobile-buybar strong{color:var(--sage)}
+.s-mobile-buybar .g-button{background:var(--sage);color:var(--forest)}
+.s-mobile-buybar .g-button:hover{background:var(--paper);color:var(--forest)}
+
+/* Photo zoom on forest; the selection drawer on cream; small labels on cream instead of white. */
+.s-lightbox{background:var(--forest);color:var(--paper)}
+.s-lightbox-controls button{border-color:#fcf8f740}
+.s-lightbox .s-dialog-close{color:var(--paper)}
+.s-selection{background:var(--cream)}
+.s-badge{background:#ece6deeb}
+
+/* Boutique: the full collection sits on a deeper beige with the leaf; filters and fields are cream pills;
+   the "Vous hésitez" box is a forest card. */
+.s-catalog,.s-featured{background:var(--cream-deep)}
+.s-catalog{position:relative;isolation:isolate}
+.s-catalog::before{content:"";position:absolute;z-index:-1;pointer-events:none;top:20px;right:0;width:min(420px,45vw);aspect-ratio:420/610;background:var(--leaf-deep) no-repeat center/contain}
+[dir="rtl"] .s-catalog::before{right:auto;left:0;transform:scaleX(-1)}
+.s-feature-filters button{background:var(--petal);border-color:#c9c1b4;color:var(--forest)}
+.s-feature-filters button:hover{background:var(--petal);border-color:var(--forest);color:var(--forest)}
+.s-feature-filters button[aria-pressed="true"]{background:var(--forest);border-color:var(--forest);color:var(--sage)}
+.s-toolbar input,.s-toolbar select,.s-options select,.g-contact-form input,.g-contact-form select,.g-contact-form textarea{background:var(--petal)}
+.s-help{position:relative;isolation:isolate;overflow:hidden;background:var(--forest);color:var(--paper);border-color:var(--forest)}
+.s-help::before{content:"";position:absolute;z-index:-1;pointer-events:none;right:-20px;bottom:-70px;width:180px;aspect-ratio:420/610;background:var(--leaf-forest) no-repeat center/contain;transform:rotate(14deg)}
+[dir="rtl"] .s-help::before{right:auto;left:-20px;transform:scaleX(-1) rotate(14deg)}
+.s-help .g-text-link{color:var(--sage)}
+
+/* Checkout: the details card on beige rather than white. */
+.s-checkout-form{background:var(--cream-deep);border-color:transparent}
+
+/* Homepage: the approach block becomes a forest panel on cream; the testimonial teaser and the closing
+   sections move from near-white to the deeper beige. */
+.g-intro{background:var(--cream)}
+.g-intro-copy{background:var(--forest);color:var(--paper)}
+.g-intro-copy .g-eyebrow{color:var(--sage)}
+.g-intro-copy blockquote{color:var(--sage);border-color:#a7ce9a80}
+.g-testimonials-teaser,.g-closing{background:var(--cream-deep)}
+.g-closing-photo:after{background:linear-gradient(90deg,transparent 60%,var(--cream-deep))}
+@media(max-width:700px){.g-closing-photo:after{background:linear-gradient(180deg,transparent 65%,var(--cream-deep))}}
+
+/* Accompagnement: the second block alternates to forest, like the homepage. */
+.g-work-reverse{position:relative;isolation:isolate;background:var(--forest);color:var(--paper)}
+.g-work-reverse .g-eyebrow{color:var(--sage)}
+.g-work-reverse p{color:#fcf8f7e0}
+
+/* Rayda's homepage photo, unchanged, set into the cream: a cream arch rises beside it from the section below
+   (a border drawn just outside the photo, so the photo keeps its size and crop), and its lower edge melts into
+   that cream instead of stopping on a hard line. The bottom 82px (40px on tablets) sit under the next
+   section, so the fade ends where the photo is last seen. On phones the arch is a cream rim along the top. */
+.g-hero-photo{--hidden:82px;background:var(--cream);border-inline-start:16px solid var(--cream);margin-inline-start:-16px}
+.g-hero-photo::after{content:"";position:absolute;z-index:2;pointer-events:none;left:-2px;right:-2px;bottom:-2px;height:calc(min(36%,270px) + var(--hidden) + 2px);background:linear-gradient(180deg,#ece6de00 0%,#ece6de14 18%,#ece6de4d 38%,#ece6de99 58%,#ece6dedb 80%,#ece6de 100%) top/100% calc(100% - var(--hidden) - 2px) no-repeat,linear-gradient(var(--cream),var(--cream)) bottom/100% calc(var(--hidden) + 2px) no-repeat}
+@media(max-width:1024px){.g-hero-photo{--hidden:40px}}
+
+/* Product photos keep their size and crop, with softer corners. */
+.s-card-image{border-top-right-radius:18px;border-bottom-right-radius:18px;border-bottom-left-radius:18px}
+.s-card:nth-child(3n) .s-card-image{border-top-left-radius:18px;border-top-right-radius:18px;border-bottom-left-radius:18px}
+.s-category-photo{border-radius:18px}
+.s-line img{border-radius:12px}
+
+/* The main product photo: the beige frame keeps its size and its big corner, and the photo inside is shown
+   whole, exactly as large as before, with its own rounded corners instead of square ones. */
+.s-main-image{aspect-ratio:1/1.12;border-top-right-radius:26px;border-bottom-right-radius:26px;border-bottom-left-radius:26px}
+.s-main-image>img{position:absolute;inset:0;margin:auto;width:auto;height:auto;max-width:100%;max-height:100%;aspect-ratio:auto;border-radius:24px}
+.s-main-image>span{left:auto;right:14px;bottom:14px;gap:12px;padding:5px 5px 5px 15px;border-radius:999px;background:#f3eee6f0;color:var(--forest);transition:background-color .2s ease,color .2s ease}
+[dir="rtl"] .s-main-image>span{right:auto;left:14px;padding:5px 15px 5px 5px}
+.s-main-image>span b{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--forest);color:var(--sage);font-size:15px;line-height:1;transition:background-color .2s ease,color .2s ease}
+.s-main-image:hover>span{background:var(--forest);color:var(--paper)}
+.s-main-image:hover>span b{background:var(--sage);color:var(--forest)}
+
+/* Moving between photos: the arrows are cream pills that turn forest, like the choices; the photo on show
+   is ringed in forest. */
+.s-gallery-controls button{background:var(--petal);border-color:#c9c1b4;color:var(--forest);transition:background-color .2s ease,border-color .2s ease,color .2s ease}
+.s-gallery-controls button:hover{background:var(--forest);border-color:var(--forest);color:var(--sage)}
+.s-gallery-controls span{color:var(--forest)}
+.s-thumbnails{gap:10px}
+.s-thumbnails button{border-radius:14px;transition:border-color .2s ease}
+.s-thumbnails button:hover{border-color:#c9c1b4}
+.s-thumbnails button[aria-pressed="true"]{border-color:var(--forest)}
+.s-thumbnails img{border-radius:10px}
+
+/* The enlarged photo, on forest, is shown whole with rounded corners; its arrows turn light green. */
+.s-lightbox img{display:block;width:auto;height:auto;max-width:100%;max-height:70dvh;margin-inline:auto;border-radius:22px}
+.s-lightbox-controls button{transition:background-color .2s ease,border-color .2s ease,color .2s ease}
+.s-lightbox-controls button:hover{background:var(--sage);border-color:var(--sage);color:var(--forest)}
+
+/* Focus rings stay visible on the new forest layers. */
+:is(.s-pdp>.s-story,.s-pdp-steps,.s-help,.s-mobile-buybar,.s-lightbox,.g-intro-copy,.g-work-reverse) :focus-visible{outline-color:var(--sage)}
+
+@media(max-width:700px){
+  .s-pdp{--pdp-side:22px}
+  .g-hero-photo{--hidden:0px;border-inline-start:0;margin-inline-start:0;box-shadow:0 0 0 12px var(--cream)}
+  .s-pdp::before{top:auto;bottom:38%;width:62vw}
+  .s-pdp>.s-story{margin-top:55px;padding:55px var(--pdp-side) 70px}
+  .s-catalog::before{width:60vw}
+  .s-main-image{max-height:580px}
+  .s-card-image{border-top-right-radius:14px;border-bottom-right-radius:14px;border-bottom-left-radius:14px}
+  .s-card:nth-child(3n) .s-card-image{border-top-left-radius:14px;border-top-right-radius:14px;border-bottom-left-radius:14px}
+  .s-category-photo{border-radius:14px}
+}
+@media(max-width:359px){.s-mobile-buybar{gap:8px;padding-inline:12px}.s-mobile-buybar .g-button{padding-inline:12px;gap:6px}}

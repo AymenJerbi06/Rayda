@@ -207,3 +207,89 @@ test("product pages carry Rayda's own description: her Arabic on /ar/, its Frenc
   const fleur = await readFile(path.join(root, 'dist/ar/products/fleur-de-vie/index.html'), 'utf8');
   assert.ok(fleur.includes('أعجوبة التناغم الكوني'));
 });
+
+test("product pages get to the point: a line on the piece, the price, one order button, no internal notes", async () => {
+  const { productPitch } = await import('../src/product-pitch.mjs');
+  for (const product of catalog.products) {
+    for (const [page, lang] of [['products/', 'fr'], ['ar/products/', 'ar']]) {
+      const html = await readFile(path.join(root, 'dist', page + product.slug, 'index.html'), 'utf8');
+      assert.ok(productPitch[product.id]?.[lang], 'missing pitch for ' + product.id + ' (' + lang + ')');
+      assert.match(html, /<p class="s-pitch">/);
+      assert.equal((html.match(/class="g-button s-add" data-intent="buy"/g) || []).length, 1, product.id);
+      assert.doesNotMatch(html, /À confirmer avec Rayda|تُؤكَّد مع رايدة|Prix non communiqué dans les éléments reçus|name="quantity" type="number"/);
+      // Models, sizes and colours are buttons to tap, keyed on the catalogue's own values (prices and photos use them).
+      const variants = product.options?.variant || [];
+      if (variants.length > 1) for (const value of variants) assert.ok(html.includes('type="radio" name="variant" value="' + value + '"'), product.id + ': ' + value);
+    }
+  }
+});
+
+test("client words on product pages are exact pieces of real messages, shown like on Vos mots", async () => {
+  const { productReviewParts } = await import('../src/product-pitch.mjs');
+  const { reviews } = await import('../src/reviews.mjs');
+  const flat = text => text.replace(/\s+/g, ' ');
+  for (const [productId, parts] of Object.entries(productReviewParts)) {
+    const review = reviews.find(r => r.id === parts.id);
+    for (const piece of parts.ar) assert.ok(flat(review.ar).includes(piece), productId + ': ' + piece);
+    for (const piece of parts.fr) assert.ok(flat(review.fr).includes(piece), productId + ': ' + piece);
+    const slug = catalog.products.find(p => p.id === productId).slug;
+    const fr = await readFile(path.join(root, 'dist/products', slug, 'index.html'), 'utf8');
+    assert.match(fr, /family=Markazi\+Text/);
+    assert.match(fr, /Traduit de l’arabe/);
+  }
+});
+
+test("the product page styles change layout and sizes only, never the site's fonts", async () => {
+  const css = await readFile(path.join(root, 'commerce.css'), 'utf8');
+  const block = css.slice(css.indexOf('/* Product pages that get to the point')).replace(/\/\*[\s\S]*?\*\//g, '');
+  assert.ok(block.length > 200);
+  assert.doesNotMatch(block, /font-family|font:/);
+});
+
+test("every page layers the site's two colours with layers.css, which never changes a typeface", async () => {
+  const css = await readFile(path.join(root, 'layers.css'), 'utf8');
+  assert.doesNotMatch(css.replace(/\/\*[\s\S]*?\*\//g, ''), /font-family|font:/);
+  for (const page of ['index.html', 'vos-mots/index.html', 'collections/all/index.html', 'products/bracelet-bazi/index.html', 'checkout/index.html', 'ar/index.html', 'ar/boutique/index.html', 'ar/products/bracelet-bazi/index.html', 'ar/checkout/index.html']) {
+    const html = await readFile(path.join(root, 'dist', page), 'utf8');
+    assert.match(html, /href="\/polish\.css" \/><link rel="stylesheet" href="\/layers\.css" \/>/, page);
+  }
+});
+
+test("colour preferences are swatches keyed on the catalogue's own values, in French and Arabic", async () => {
+  for (const product of catalog.products.filter(p => p.options?.palettes?.length)) {
+    for (const page of ['products/', 'ar/products/']) {
+      const html = await readFile(path.join(root, 'dist', page + product.slug, 'index.html'), 'utf8');
+      for (const value of product.options.palettes) assert.ok(html.includes('type="radio" name="palette" value="' + value + '"'), product.id + ': ' + value);
+      assert.doesNotMatch(html, /<select name="palette">/);
+    }
+  }
+});
+
+test("the language switch on French pages reads عر in Arabic letters, in the site's Arabic typeface", async () => {
+  for (const page of ['index.html', 'vos-mots/index.html', 'collections/all/index.html', 'products/bracelet-bazi/index.html', 'checkout/index.html']) {
+    const html = await readFile(path.join(root, 'dist', page), 'utf8');
+    assert.match(html, /<span lang="ar" dir="rtl">عر<\/span><\/a>/, page);
+    assert.doesNotMatch(html, /<span>AR<\/span>/, page);
+    assert.match(html, /family=Tajawal:wght@700&text=%D8%B9%D8%B1/, page);
+  }
+  const polish = await readFile(path.join(root, 'polish.css'), 'utf8');
+  assert.match(polish, /\.g-lang-switch span\[lang="ar"\]\{font-family:var\(--sans\);/);
+});
+
+test("the homepage keeps Rayda's own photo as it is and styles only its frame", async () => {
+  for (const page of ['index.html', 'ar/index.html']) {
+    const html = await readFile(path.join(root, 'dist', page), 'utf8');
+    assert.match(html, /<div class="g-hero-photo"><img src="\/assets\/brand\/rayda\.jpg"/, page);
+  }
+  const css = (await readFile(path.join(root, 'layers.css'), 'utf8')).replace(/\/\*[\s\S]*?\*\//g, '');
+  assert.match(css, /\.g-hero-photo\{[^}]*border-inline-start:16px solid var\(--cream\);margin-inline-start:-16px/);
+  assert.doesNotMatch(css, /\.g-hero-photo img/);
+});
+
+test("product photos keep their size and crop: the main photo is shown whole and only its corners are rounded", async () => {
+  const css = (await readFile(path.join(root, 'layers.css'), 'utf8')).replace(/\/\*[\s\S]*?\*\//g, '');
+  const rule = css.match(/\.s-main-image>img\{([^}]*)\}/)[1];
+  assert.match(rule, /max-width:100%;max-height:100%/);
+  assert.match(rule, /border-radius:/);
+  assert.doesNotMatch(rule, /object-fit|padding|transform|scale/);
+});
