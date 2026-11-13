@@ -38,8 +38,9 @@ test("every product photo is a local imported asset", async () => {
 test("the active storefront uses Issolatej and the organized catalog", () => {
   assert.equal(configContext.window.STORE_CONFIG.previewStage, false);
   assert.equal(configContext.window.STORE_CONFIG.brand.name, "Issolatej");
-  // Rayda's 44 photos, plus 11 lifestyle scenes made from them (one leading each of 11 products).
-  assert.equal(catalog.products.reduce((count, product) => count + product.images.length, 0), 55);
+  // 11 lifestyle scenes (one leading each of 11 products), 50 ChatGPT photos made from Rayda's photos for 10 of them,
+  // and Rayda's own 3 photos of the two pieces without AI photos (the Arbre de Vie keyring and the Fleur de Vie pendant).
+  assert.equal(catalog.products.reduce((count, product) => count + product.images.length, 0), 64);
 });
 test("the build respects the selected presentation mode and excludes review screenshots", async () => {
   const dist = path.join(root, "dist");
@@ -292,4 +293,31 @@ test("product photos keep their size and crop: the main photo is shown whole and
   assert.match(rule, /max-width:100%;max-height:100%/);
   assert.match(rule, /border-radius:/);
   assert.doesNotMatch(rule, /object-fit|padding|transform|scale/);
+});
+test("AI photos follow each lifestyle scene instead of Rayda's photos, colours show their own photo, and the gallery says so", async () => {
+  const ai = catalog.products.filter((p) => p.images.some((image) => image.src.includes('-ai-')));
+  assert.equal(ai.length, 10);
+  for (const p of ai) {
+    assert.ok(p.images[0].src.endsWith('-ugc.jpg'), p.id + ' keeps its lifestyle photo first');
+    assert.equal(p.coverImageIndex, 0);
+    for (const image of p.images.slice(1)) {
+      assert.match(image.src, new RegExp('/' + p.id + '-ai-[a-z-]+\\.jpg$'));
+      assert.ok(image.alt.length > 10);
+    }
+  }
+  assert.equal(ai.reduce((n, p) => n + p.images.length - 1, 0), 50);
+  const wallet = catalog.products.find((p) => p.id === 'portefeuille-hafidha');
+  for (const [colour, file] of [['Vert', 'vert'], ['Jaune', 'jaune'], ['Rose / fuchsia', 'rose'], ['Rouge', 'rouge']]) {
+    assert.match(wallet.images[wallet.variantImageIndex[colour]].src, new RegExp('-ai-' + file + '-flatlay\\.jpg$'));
+  }
+  const amour = catalog.products.find((p) => p.id === 'bracelet-amour');
+  assert.match(amour.images[amour.variantImageIndex['Quartz rose uni · 100 TND']].src, /-ai-uni-wrist\.jpg$/);
+  assert.match(amour.images[amour.variantImageIndex['Composition avec cœur · tarif à confirmer']].src, /-ai-coeur-wrist\.jpg$/);
+  if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
+  const fr = await readFile(path.join(root, 'dist/products/bracelet-bazi/index.html'), 'utf8');
+  assert.match(fr, /Les photos sont des mises en scène créées à partir des photos de Rayda\. Votre pièce est composée pour vous/);
+  const ar = await readFile(path.join(root, 'dist/ar/products/bracelet-bazi/index.html'), 'utf8');
+  assert.match(ar, /الصور مشاهد مُعَدّة انطلاقًا من صور رايدة\./);
+  const keyring = await readFile(path.join(root, 'dist/products/porte-cles-arbre-vie/index.html'), 'utf8');
+  assert.doesNotMatch(keyring, /mises en scène/);
 });
