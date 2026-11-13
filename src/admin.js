@@ -97,7 +97,7 @@
     return seeded;
   }
   function saveOrders(list) { setStore("admin_orders", list); }
-  function settings() { return getStore("admin_settings", { deliveryFee: 10, resendEnabled: false, notifyEmail: "" }); }
+  function settings() { return getStore("admin_settings", { deliveryFee: 7, resendEnabled: false, notifyEmail: "" }); }
   function saveSettings(value) { setStore("admin_settings", value); }
 
   function allProductsWithStock() {

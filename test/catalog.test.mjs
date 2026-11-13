@@ -38,7 +38,8 @@ test("every product photo is a local imported asset", async () => {
 test("the active storefront uses Issolatej and the organized catalog", () => {
   assert.equal(configContext.window.STORE_CONFIG.previewStage, false);
   assert.equal(configContext.window.STORE_CONFIG.brand.name, "Issolatej");
-  assert.equal(catalog.products.reduce((count, product) => count + product.images.length, 0), 44);
+  // Rayda's 44 photos, plus 11 lifestyle scenes made from them (one leading each of 11 products).
+  assert.equal(catalog.products.reduce((count, product) => count + product.images.length, 0), 55);
 });
 test("the build respects the selected presentation mode and excludes review screenshots", async () => {
   const dist = path.join(root, "dist");
@@ -145,4 +146,64 @@ test("legacy selections are validated and no personal fields persist", async () 
   const clean=normalizeSelection([null,{productId:'removed',quantity:2},{productId:'bracelet-bazi',quantity:500,note:'private',variant:'bad-value'}],catalog.products);
   assert.equal(clean.length,1);assert.equal(clean[0].quantity,20);assert.equal(clean[0].variant,'Composition sur mesure');
   assert.ok(!('note' in clean[0]));
+});
+
+test("every product photo has a lighter 480px copy for cards, thumbnails and the cart", async () => {
+  const {thumbSrc}=await import('../src/commerce-core.js');
+  for (const product of catalog.products) for (const image of product.images) {
+    await access(path.join(root, thumbSrc(image.src).replace(/^\//, '')));
+  }
+  const shop = await readFile(path.join(root,'dist/collections/all/index.html'),'utf8');
+  assert.match(shop,/assets\/products\/organized\/480\//);
+});
+
+test("the polish layer loads on every kind of page and French punctuation stays with its word", async () => {
+  if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
+  for (const page of ['', 'vos-mots', 'collections/all', 'products/bracelet-bazi', 'checkout', 'ar', 'ar/boutique', 'ar/products/bracelet-bazi']) {
+    const html = await readFile(path.join(root, 'dist', page, 'index.html'), 'utf8');
+    assert.match(html, /href="\/polish\.css"/);
+    assert.match(html, /src="\/src\/ux\.js"/);
+  }
+  const shop = await readFile(path.join(root,'dist/collections/all/index.html'),'utf8');
+  assert.match(shop,/pièces \?/);
+  assert.doesNotMatch(shop,/pièces \?/);
+});
+
+test("reviews quote the clients' Arabic word for word, with a labelled French translation on French pages", async () => {
+  const { reviews } = await import('../src/reviews.mjs');
+  assert.equal(reviews.length, 5);
+  const page = await readFile(path.join(root, 'dist/vos-mots/index.html'), 'utf8');
+  assert.equal((page.match(/<blockquote lang="ar" dir="rtl">/g) || []).length, 5);
+  assert.equal((page.match(/class="g-translation"/g) || []).length, 5);
+  assert.match(page, /Traduit de l’arabe/);
+  assert.match(page, /family=Markazi\+Text/);
+  const ar = await readFile(path.join(root, 'dist/ar/vos-mots/index.html'), 'utf8');
+  assert.ok(ar.includes('ربي يباركلك مدام رايدة حبيتي'));
+  assert.doesNotMatch(ar, /g-translation/);
+});
+
+test("delivery is 7 TND on every order and the phone number is asked twice at checkout", async () => {
+  const { DELIVERY_FEE, selectionTotalWithDelivery } = await import('../src/commerce-core.js');
+  assert.equal(DELIVERY_FEE, 7);
+  assert.equal(selectionTotalWithDelivery([{productId:'bracelet-bazi',quantity:2}],catalog.products),'287 TND – 367 TND');
+  assert.equal(selectionTotalWithDelivery([{productId:'portefeuille-hafidha',quantity:1}],catalog.products),'7 TND + tarifs à confirmer');
+  for (const page of ['checkout', 'ar/checkout']) {
+    const html = await readFile(path.join(root, 'dist', page, 'index.html'), 'utf8');
+    assert.match(html, /name="phone"[^>]*required/);
+    assert.match(html, /name="phoneConfirm"[^>]*required/);
+    assert.match(html, /data-checkout-grand-total/);
+  }
+});
+
+test("product pages carry Rayda's own description: her Arabic on /ar/, its French translation on French pages", async () => {
+  const { productTexts } = await import('../src/product-texts.mjs');
+  for (const product of catalog.products.filter(p => productTexts[p.id])) {
+    for (const page of ['products/', 'ar/products/']) {
+      const html = await readFile(path.join(root, 'dist', page + product.slug, 'index.html'), 'utf8');
+      assert.match(html, /<div class="s-story" id="description">/);
+      assert.match(html, /href="#description"/);
+    }
+  }
+  const fleur = await readFile(path.join(root, 'dist/ar/products/fleur-de-vie/index.html'), 'utf8');
+  assert.ok(fleur.includes('أعجوبة التناغم الكوني'));
 });

@@ -2,6 +2,8 @@
   "use strict";
   // Source: organized Products/Catalogue Produits - Issolatej.xlsx.
   // Image files are copied from the numbered source folders without editing them.
+  // Eleven products also lead with a lifestyle scene, <id>-ugc.jpg, made with CreateUGC from Rayda's own photo of
+  // the piece (originals in "om Adem/UGC photos (CreateUGC)"); the product pages say so under the gallery.
   function amount(min, max, confirmationRequired) {
     return min == null ? null : { min: min, max: max == null ? min : max, currency: "TND", confirmationRequired: !!confirmationRequired };
   }
@@ -16,6 +18,12 @@
         alt: (item.photoAlt || item.name) + (item.photoCount > 1 ? " — vue " + (index + 1) : "")
       };
     });
+    if (item.lifestyle) {
+      item.images.unshift({ src: "/assets/products/organized/" + item.id + "-ugc.jpg", alt: item.lifestyle });
+      item.coverImageIndex = 0;
+      if (item.variantImageIndex) Object.keys(item.variantImageIndex).forEach(function (key) { item.variantImageIndex[key] += 1; });
+    }
+    delete item.lifestyle;
     delete item.photoCount;
     delete item.photoAlt;
     return item;
@@ -23,8 +31,8 @@
   var products = [
     make({
       id: "bracelet-bazi", name: "Bracelet BaZi sur mesure", eyebrow: "Bracelet · création personnalisée", type: "jewelry", collections: ["creations-bazi", "bracelets"],
-      price: amount(140, 180, true), availability: "made-to-order", custom: true, photoCount: 16, photoAlt: "Exemple de bracelet BaZi composé par la créatrice",
-      description: "Chaque bracelet est composé après un échange autour de la carte BaZi de la personne. Les photographies montrent plusieurs exemples ; pierres, couleurs et détails varient selon la création.",
+      price: amount(140, 180, true), availability: "made-to-order", custom: true, photoCount: 16, lifestyle: "Bracelet BaZi porté au poignet, à côté d’un verre de thé à la menthe", photoAlt: "Exemple de bracelet BaZi composé par la créatrice",
+      description: "Parce que chaque personne a une carte énergétique différente… une empreinte énergétique unique… une alchimie qui lui est propre, les accessoires BaZi — une création à laquelle je suis parvenue après des années d’expérience dans le domaine des pierres et des sciences de l’énergie — sont des pièces conçues de façon personnelle à partir de votre carte BaZi : on y analyse la composition de vos éléments, et ceux qui ont besoin d’être soutenus ou équilibrés, puis on choisit les composants de l’accessoire en fonction de ces données.",
       benefits: [
         { icon: "personalization", label: "Unique : composé selon votre propre carte BaZi" },
         { icon: "calm", label: "Pensé pour apporter calme et équilibre au quotidien" },
@@ -37,8 +45,8 @@
     }),
     make({
       id: "collier-bazi", coverImageIndex: 2, name: "Collier BaZi complet", eyebrow: "Collier · création personnalisée", type: "jewelry", collections: ["creations-bazi", "colliers"],
-      price: amount(320), availability: "made-to-order", custom: true, photoCount: 3, photoAlt: "Exemple de collier BaZi aux pierres et perles variées",
-      description: "Collier personnalisé selon la démarche BaZi de la créatrice. Les photos montrent plusieurs compositions, dont un exemple vendu à 320 TND avec pyrite, lapis-lazuli, quartz rose et aigue-marine selon le catalogue reçu.",
+      price: amount(320), availability: "made-to-order", custom: true, photoCount: 3, lifestyle: "Collier BaZi porté sur un haut en lin crème", photoAlt: "Exemple de collier BaZi aux pierres et perles variées",
+      description: "Parce que chaque personne a une carte énergétique différente… une empreinte énergétique unique… une alchimie qui lui est propre, les accessoires BaZi — une création à laquelle je suis parvenue après des années d’expérience dans le domaine des pierres et des sciences de l’énergie — sont des pièces conçues de façon personnelle à partir de votre carte BaZi : on y analyse la composition de vos éléments, et ceux qui ont besoin d’être soutenus ou équilibrés, puis on choisit les composants de l’accessoire en fonction de ces données.",
       benefits: [
         { icon: "personalization", label: "Composition unique selon votre lecture BaZi" },
         { icon: "calm", label: "Pensé pour la sérénité et l'apaisement" },
@@ -51,8 +59,8 @@
     }),
     make({
       id: "bracelet-amour", name: "Bracelet Énergie Amour", eyebrow: "Bracelet · quartz rose", type: "jewelry", collections: ["bracelets"],
-      price: amount(100), availability: "quote", custom: false, photoCount: 3, photoAlt: "Bracelet Énergie Amour photographié par la créatrice",
-      description: "Bracelet présenté autour d’une intention d’amour. L’exemple vendu à 100 TND est en perles de quartz rose selon le catalogue ; une autre photo montre une composition avec tourmaline rose et cœur.",
+      price: amount(100), availability: "quote", custom: false, photoCount: 3, lifestyle: "Bracelet Énergie Amour en quartz rose porté au poignet, près d’une tasse de thé", photoAlt: "Bracelet Énergie Amour photographié par la créatrice",
+      description: "Un bracelet pour activer l’énergie de l’amour, charger l’aura de vibrations d’amour et purifier le chakra du cœur des sentiments de tristesse.",
       benefits: [
         { icon: "love", label: "Associé à l'énergie d'amour et de douceur" },
         { icon: "calm", label: "Quartz rose, pierre traditionnellement liée à l'apaisement" }
@@ -65,7 +73,7 @@
     }),
     make({
       id: "porte-cles-pierre", name: "Porte-clés Pierre", eyebrow: "Accessoire · pierre", type: "accessory", collections: ["porte-cles"],
-      price: null, availability: "quote", custom: false, featured: false, photoCount: 1,
+      price: null, availability: "quote", custom: false, featured: false, photoCount: 1, lifestyle: "Porte-clés Pierre tenu en main avec des clés, devant une porte d’entrée",
       description: "Porte-clés ou bijou de sac photographié avec une pierre pendante, un anneau doré et une breloque en forme de clé.",
       benefits: [
         { icon: "protection", label: "Pensé comme un petit porte-bonheur à garder sur soi" },
@@ -89,23 +97,23 @@
     }),
     make({
       id: "portefeuille-hafidha", name: "Portefeuille Hafidha El Mel", eyebrow: "Portefeuille · quatre coloris", type: "accessory", collections: ["creations-bazi", "portefeuilles"],
-      price: null, availability: "quote", custom: true, photoCount: 8, photoAlt: "Portefeuille Hafidha El Mel photographié dans un coloris proposé",
-      description: "Portefeuille présenté par la créatrice comme « Hafidha El Mel ». Les photographies montrent des modèles verts, jaunes, roses et rouges. Elle associe sa préparation à sa lecture BaZi, au Feng Shui, au Reiki et à des récitations coraniques.",
+      price: null, availability: "quote", custom: true, photoCount: 8, lifestyle: "Portefeuille Hafidha El Mel vert, fermé, tenu en main au-dessus d’une table de café", photoAlt: "Portefeuille Hafidha El Mel photographié dans un coloris proposé",
+      description: "Depuis plus de 9 ans, j’étudie la relation entre l’être humain et l’argent, et les différentes pratiques qui peuvent aider à créer un lien plus conscient avec l’énergie de l’argent… la réception et l’abondance.",
       benefits: [
         { icon: "abundance", label: "Pensé pour accompagner une relation plus sereine à l'argent" },
         { icon: "protection", label: "Préparation associant Reiki et lecture BaZi, selon la démarche de Rayda" },
         { icon: "personalization", label: "Disponible en quatre coloris" }
       ],
-      details: ["Dimensions communiquées : 19,5 × 11 cm", "Cuir véritable indiqué dans le catalogue ; à confirmer pour chaque modèle", "Aucune promesse de résultat financier"],
+      details: ["Dimensions communiquées : 19,5 × 11 cm", "Cuir naturel de très bonne qualité", "Livré avec des cartes chargées et un exercice pour développer la réception financière", "Aucune promesse de résultat financier"],
       options: { variant: ["Vert", "Jaune", "Rose / fuchsia", "Rouge"] },
       variantImageIndex: { "Vert": 7, "Jaune": 1, "Rose / fuchsia": 2, "Rouge": 3 },
       priceNote: "Prix non communiqué dans les éléments reçus. Tarif et contenu exact à confirmer avec la créatrice.",
-      missing: ["Prix", "Matière confirmée par variante", "Contenu livré", "Disponibilité"]
+      missing: ["Prix", "Disponibilité"]
     }),
     make({
       id: "carte-million-dollar", name: "Carte Million Dollar dorée", eyebrow: "Objet doré · deux tailles", type: "decor", collections: ["objets-dores"],
-      price: amount(45, 50), variantPrices: { "Petite · 16 × 5,5 cm": 45, "Grande · 19 × 6 cm": 50 }, availability: "quote", custom: false, photoCount: 1,
-      description: "Carte décorative dorée gravée « One Million Dollars », proposée en deux tailles. Rayda l’inscrit dans sa démarche symbolique autour de l’abondance.",
+      price: amount(45, 50), variantPrices: { "Petite · 16 × 5,5 cm": 45, "Grande · 19 × 6 cm": 50 }, availability: "quote", custom: false, photoCount: 1, lifestyle: "Carte Million Dollar dorée tenue en main au-dessus d’un bureau",
+      description: "Êtes-vous prêt(e) à ouvrir les portes de la prospérité financière et à transformer votre réalité économique ? Nous vous présentons la luxueuse carte Million Dollar dorée, conçue avec art pour être bien plus qu’un bel objet : un véritable aimant pour attirer l’argent et les opportunités d’investissement dans votre vie.",
       benefits: [
         { icon: "abundance", label: "Symbole d'abondance à placer dans votre espace" },
         { icon: "clarity", label: "Une intention positive, simple à offrir" }
@@ -117,8 +125,8 @@
     }),
     make({
       id: "decor-abondance", name: "Décor Abondance doré", eyebrow: "Décoration · doré", type: "decor", collections: ["objets-dores"],
-      price: amount(60), availability: "quote", custom: false, photoCount: 2,
-      description: "Objet décoratif doré réunissant les motifs du dollar, de la couronne et de l’infini. Il peut être posé sur un bureau ou dans un espace personnel.",
+      price: amount(60), availability: "quote", custom: false, photoCount: 2, lifestyle: "Décor Abondance doré posé sur un bureau, à côté d’un ordinateur portable",
+      description: "Faites de votre espace une source d’énergie positive et de prospérité financière ! Nous vous présentons l’exclusif décor doré de la richesse, une œuvre unique conçue spécialement pour être un aimant visuel et énergétique qui attire l’argent et le succès dans votre vie.",
       benefits: [
         { icon: "abundance", label: "Motifs dollar, couronne et infini pour une intention d'abondance" },
         { icon: "clarity", label: "Objet décoratif pensé pour votre bureau ou votre intérieur" }
@@ -128,8 +136,8 @@
     }),
     make({
       id: "cle-de-vie", name: "Clé de Vie dorée · Ankh", eyebrow: "Décoration · symbole Ankh", type: "decor", collections: ["objets-dores"],
-      price: amount(70), availability: "quote", custom: false, photoCount: 4,
-      description: "Objet doré reprenant la forme de la Clé de Vie, ou Ankh. Les photographies montrent plusieurs angles de la même pièce.",
+      price: amount(70), availability: "quote", custom: false, photoCount: 4, lifestyle: "Clé de Vie dorée posée sur une console d’entrée, près d’un vase de branches",
+      description: "Vous cherchez l’outil qui vous aide, sur le plan énergétique, à briser les chaînes de la stagnation financière et à ouvrir les portes fermées devant vos objectifs et vos ambitions ? Nous vous présentons la « Clé de Vie dorée » (Ankh) dans sa version énergétique et spirituelle de prestige.",
       benefits: [
         { icon: "protection", label: "Symbole ancien d'énergie et de vitalité" },
         { icon: "clarity", label: "Pièce chargée selon la démarche spirituelle de Rayda" }
@@ -139,8 +147,8 @@
     }),
     make({
       id: "fleur-de-vie", name: "Décor Fleur de Vie dorée", eyebrow: "Décoration · fleur de vie", type: "decor", collections: ["objets-dores"],
-      price: amount(80), availability: "quote", custom: false, photoCount: 2,
-      description: "Décor rond à motif Fleur de Vie en finition miroir doré, photographié sous deux angles.",
+      price: amount(80), availability: "quote", custom: false, photoCount: 2, lifestyle: "Décor Fleur de Vie doré posé sur une console en bois, près d’un olivier en pot",
+      description: "Vous souhaitez un décor qui aide à transformer votre maison ou votre bureau en une oasis de paix énergétique, d’équilibre et de programmation vers une abondance infinie ? Nous vous présentons le luxueux décor doré « Fleur de Vie », l’œuvre la plus remarquable de la géométrie sacrée.",
       benefits: [
         { icon: "clarity", label: "Symbole d'harmonie et d'équilibre" },
         { icon: "abundance", label: "Finition miroir dorée pour sublimer votre intérieur" }
@@ -150,8 +158,8 @@
     }),
     make({
       id: "pendentif-voiture-fleur", name: "Pendentif voiture · Fleur de Vie", eyebrow: "Accessoire voiture · doré", type: "car", collections: ["voiture"],
-      price: amount(80), availability: "quote", custom: false, photoCount: 2,
-      description: "Pendentif à suspendre dans la voiture, avec motif Fleur de Vie et finition dorée.",
+      price: amount(80), availability: "quote", custom: false, photoCount: 2, lifestyle: "Pendentif Fleur de Vie suspendu au rétroviseur d’une voiture",
+      description: "Nous vous présentons le luxueux pendentif de voiture au symbole doré de la « Fleur de Vie » : un accessoire élégant, conçu avec soin pour apporter une touche de beauté exceptionnelle à votre voiture, et pour être en même temps une source de sérénité et d’harmonie énergétique pendant la conduite.",
       benefits: [
         { icon: "protection", label: "Pensé pour accompagner vos trajets sereinement" },
         { icon: "clarity", label: "Symbole Fleur de Vie, doré, discret" }
@@ -162,8 +170,8 @@
     }),
     make({
       id: "pendentif-voiture-ankh", name: "Pendentif voiture · Clé de Vie", eyebrow: "Accessoire voiture · doré", type: "car", collections: ["voiture"],
-      price: amount(80), availability: "quote", custom: false, photoCount: 1,
-      description: "Variante du pendentif pour voiture avec motif Clé de Vie, ou Ankh, et finition dorée.",
+      price: amount(80), availability: "quote", custom: false, photoCount: 1, lifestyle: "Pendentif Clé de Vie suspendu au rétroviseur d’une voiture, face à la mer",
+      description: "Nous vous présentons le luxueux pendentif de voiture au symbole doré de la « Clé de Vie » : un accessoire élégant, conçu avec soin pour apporter une touche de beauté exceptionnelle à votre voiture, et pour être en même temps une source de sérénité et d’harmonie énergétique pendant la conduite.",
       benefits: [
         { icon: "protection", label: "Pensé pour accompagner vos trajets sereinement" },
         { icon: "clarity", label: "Symbole Clé de Vie, doré, discret" }

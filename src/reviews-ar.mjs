@@ -1,8 +1,13 @@
-// Arabic excerpts matching the same three messages in reviews.mjs, in the customers' own original
-// words (not a re-translation of the French), each trimmed to the same portion as the French excerpt.
-// Source screenshots (names, faces and contact details) never enter the public build.
-export const reviewsAr = [
-  { id: 'message-1', theme: 'شعور بالهدوء', quote: 'نحس في هدوء وقبول و راحة نفسية', context: 'شعور شاركته الزبونة مع رايدة · القطعة غير محددة' },
-  { id: 'message-4', theme: 'العلاقة مع رايدة', quote: 'خذيت من عندك و نحبك نحبك نحبك، شكرا ربي الي عرفتك', context: 'رسالة لرايدة بعد عملية شراء' },
-  { id: 'message-5', theme: 'الثقة بالنفس', quote: 'حتى أني موش عارفة كيفاش اكتسبت هذه الثقة بالنفس', context: 'مقتطف من رسالة حول سوار BaZi شخصي' }
-];
+// Arabic pages show the same messages as reviews.mjs, in the clients' own words, with Arabic labels.
+// The Arabic text itself lives only in reviews.mjs, so the two language versions can never drift apart.
+import { reviews } from './reviews.mjs';
+
+const labels = {
+  calme: { theme: 'شعور بالهدوء', context: 'رسالة وصلت لرايدة · القطعة غير محددة' },
+  lien: { theme: 'العلاقة مع رايدة', context: 'ردًّا على ستوري فيها سوار' },
+  fille: { theme: 'من أجل ابنتها', context: 'بعد قلادة طلبتها لابنتها' },
+  confiance: { theme: 'الثقة بالنفس', context: 'حول سوار صُمّم حسب خريطة البازي الخاصة بها' },
+  'trois-ans': { theme: 'بعد ثلاث سنوات', context: 'رسالة بعد ثلاث سنوات من شراء سوارين' }
+};
+
+export const reviewsAr = reviews.map(review => ({ id: review.id, theme: labels[review.id].theme, quote: review.ar, context: labels[review.id].context }));

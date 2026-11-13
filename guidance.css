@@ -69,3 +69,24 @@
 .g-social-popover svg{width:19px;height:19px;flex-shrink:0;color:var(--sage)}
 .g-menu .g-social-row{display:flex;gap:10px;margin-top:20px}
 @media(max-width:1024px){.g-social-menu{display:none}}
+
+/* Vos mots: each client's message in her own Arabic words, with the French translation one tap away and labelled as such. */
+.g-translation summary{display:inline-flex;align-items:center;min-height:44px;cursor:pointer;list-style:none;font:600 11px/1.5 var(--sans);letter-spacing:.04em;text-transform:uppercase}
+.g-translation summary::-webkit-details-marker{display:none}
+.g-translation summary>span{padding:2px 0 4px;border-bottom:1px solid currentColor;transition:color .2s,border-color .2s}
+.g-translation summary:hover>span{color:var(--green);border-color:transparent}
+.g-translation[open] .g-translation-show,.g-translation:not([open]) .g-translation-hide{display:none}
+.g-translation>div{margin-top:6px;padding-top:16px;border-top:1px solid var(--line);animation:g-fade .4s ease both}
+.g-translation blockquote{font:500 14px/1.8 var(--sans)}
+.g-translation p{margin-top:12px;font-size:11px;font-weight:600;letter-spacing:.04em;opacity:.65}
+.g-testimonials-teaser .g-translation{width:100%;max-width:620px;margin-top:14px}
+.g-testimonials-teaser .g-translation blockquote{font-size:15px}
+@media(min-width:1025px){
+  .g-reviews-grid>div{grid-template-columns:repeat(6,minmax(0,1fr))}
+  .g-review-card{grid-column:span 2}
+  .g-review-card:nth-child(4):nth-last-child(2),.g-review-card:nth-child(5):last-child{grid-column:span 3}
+}
+@media(min-width:701px) and (max-width:1024px){.g-review-card:nth-child(odd):last-child{grid-column:1/-1}}
+@media(max-width:700px){
+  .g-testimonials-teaser .g-translation blockquote{font-size:14px}
+}

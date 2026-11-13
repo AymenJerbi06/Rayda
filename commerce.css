@@ -130,3 +130,45 @@ body.s-dialog-open{overflow:hidden}.s-selection,.s-lightbox{color:var(--ink);bac
   .s-selection-toggle span{font-size:9px}
   .g-menu-toggle{width:32px}
 }
+
+/* Product page: Rayda's full description of the piece, under the photos and buy box. Same two-column grid,
+   serif headings, hairlines and green numbers as the rest of the site; one column from tablet down. */
+.s-product-copy>.s-story-link{margin:-12px 0 24px}
+.s-story{display:grid;grid-template-columns:1fr 1fr;gap:7%;margin-top:75px;padding-top:65px;border-top:1px solid var(--line);scroll-margin-top:90px}
+.s-story-head .g-display{margin-top:16px;font-size:clamp(34px,3vw,46px);letter-spacing:-.025em}
+.s-story-body{min-width:0;max-width:640px;font-size:15px;line-height:1.85}
+.s-story-body>p+p{margin-top:18px}
+.s-story-body h3{margin:46px 0 18px;font-size:27px;line-height:1.25}
+.s-story-body>h3:first-child{margin-top:0}
+.s-story-body>p+h3,.s-story-body>ul+h3,.s-story-body>ol+h3{margin-top:46px}
+.s-story-list{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.s-story-list li{padding:18px 0;border-bottom:1px solid var(--line)}
+.s-story-list b{display:block;margin-bottom:4px;font-weight:600}
+.s-story-steps li{display:grid;grid-template-columns:42px minmax(0,1fr);align-items:baseline}
+.s-story-steps li>span{font-size:26px;line-height:1;font-weight:700;color:#3e7b60}
+.s-story-closing{margin-top:40px!important;font:400 25px/1.4 var(--serif)}
+[dir="rtl"] .s-story-body{font-size:16px}
+@media(min-width:1025px){.s-story-head{position:sticky;top:110px;align-self:start}}
+@media(max-width:1190px){.s-story{gap:5%}}
+@media(max-width:1024px){
+  .s-story{grid-template-columns:1fr;gap:30px;margin-top:60px;padding-top:50px}
+  .s-story-head,.s-story-body{max-width:720px}
+}
+@media(max-width:700px){
+  .s-story{gap:22px;margin-top:50px;padding-top:42px}
+  .s-story-head .g-display{font-size:33px}
+  .s-story-body h3,.s-story-body>p+h3,.s-story-body>ul+h3,.s-story-body>ol+h3{margin-top:38px;font-size:24px}
+  .s-story-body>h3:first-child{margin-top:0}
+  .s-story-steps li{grid-template-columns:34px minmax(0,1fr)}
+  .s-story-steps li>span{font-size:23px}
+  .s-story-closing{font-size:22px}
+}
+
+/* Checkout: sub-total, the 7 TND delivery and the total, as three quiet lines. */
+.s-checkout-totals>.s-total+.s-total{margin-top:0;padding-top:0}
+.s-checkout-totals>.s-total.s-total-grand{align-items:baseline;margin-top:2px;padding-top:14px;border-top:1px solid var(--line);font-weight:600}
+.s-checkout-totals>.s-total-grand strong{font-size:16px}
+
+/* Category cards now show photos of Rayda's own pieces, so no colour blending; soft corners like the product photos. */
+.s-category-photo{mix-blend-mode:normal;border-radius:5px}
+.s-category-photo img{object-fit:cover}

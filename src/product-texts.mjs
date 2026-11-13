@@ -1,0 +1,580 @@
+// Rayda's own descriptions of her pieces, as she sent them on WhatsApp: her Arabic word for word (only the
+// emojis and the spacing around punctuation are tidied), with a French translation for the French pages.
+// The opening lines of each text are the product `description` in catalog.js (French) and catalog-ar.mjs
+// (Arabic), shown beside the price; everything after them appears under the photos and buy box.
+// The car pendant with the Key of Life uses the Flower of Life pendant's text with the symbol changed:
+// Rayda only said it is the same pendant (same size, same price) with the Ankh, so she should confirm it.
+const bazi = {
+  fr: {
+    "title": "Une pièce qui porte votre empreinte",
+    "intro": [
+      "Des couleurs et des formes jusqu’aux composants et aux nombres, l’accessoire est construit selon une lecture individuelle de votre carte, pour devenir une pièce qui porte votre empreinte. Votre pièce est ensuite chargée selon les objectifs auxquels vous aspirez, avec l’énergie du Reiki, les plus beaux noms d’Allah et le Saint Coran, pour que le bracelet ou le collier, par exemple, soit pour vous le plus bel ajout."
+    ]
+  },
+  ar: {
+    "title": "قطعة تحمل طابعك الخاص",
+    "intro": [
+      "من الألوان والأشكال إلى المكونات و الأرقام، يتم بناء الأكسسوار وفق قراءة فردية لخريطتك، ليصبح قطعة تحمل طابعك الخاص ثم يتم بعد ذلك شحن قطعتك الخاصة وفق الاهداف التي تطمح إليها بطاقة الريكي و أسماء الله الحسنى و القرآن الكريم ليقدم لك السوار أو القلادة مثلا أجمل إضافة."
+    ]
+  }
+};
+const portefeuilleHafidha = {
+  fr: {
+    "title": "Un système complet, réuni dans un seul objet",
+    "intro": [
+      "C’est de cette recherche qu’est née Hafidha El Mel (la gardienne de l’argent), pour être un système complet réuni dans un seul objet.",
+      "C’est une alchimie énergétique conçue avec soin, qui rassemble différents savoirs et pratiques : elle intègre des éléments inspirés du Feng Shui, la science de l’énergie des lieux, et du Reiki de l’argent (Money Reiki), et sa couleur est choisie à partir d’une étude attentive de la carte BaZi, qui donne une image réelle de l’ADN énergétique de la personne.",
+      "De plus, Hafidha El Mel est chargée de versets du Saint Coran et des plus beaux noms d’Allah. Elle vous parvient avec des cartes chargées, à contempler pour purifier et renforcer votre énergie financière, ainsi qu’un exercice qui aide à développer votre capacité à recevoir l’argent."
+    ]
+  },
+  ar: {
+    "title": "منظومة متكاملة داخل منتج واحد",
+    "intro": [
+      "ومن هذا البحث ولدت حافظة المال لتكون منظومة متكاملة داخل منتج واحد.",
+      "إنها خلطة طاقية صُممت بعناية و جمعت معارف وممارسات مختلفة، ففيها عناصر مستوحاة من علم طاقة المكان Feng Shui وريكي المال Money Reiki، و يقع اختيار لونها انطلاقا من بحث دقيق في خريطة البازي التي تقدم صورة فعلية عن الحمض النووي الطاقي للشخص.",
+      "إلى جانب ذلك فإن حافظة المال مشحونة بآيات من القرآن الكريم وأسماء الله الحسنى، وتصلك معها بطاقات مشحونة تتأملها لتنظيف طاقتك المالية و تقويتها، بالإضافة إلى تمرين يساعد على تطوير القدرة على الاستقبال المالي."
+    ]
+  }
+};
+const carteMillionDollar = {
+  fr: {
+    "title": "La carte Million Dollar dorée : votre porte énergétique pour attirer la richesse et l’abondance !",
+    "sections": [
+      {
+        "title": "Le secret de sa force : une charge spéciale d’énergie « Reiki de l’argent » (Money Reiki)",
+        "paragraphs": [
+          "Cette carte n’est pas un simple objet de décoration : chaque carte passe par une préparation énergétique intense, au cours de laquelle je la charge et la programme avec l’énergie du Reiki de l’argent et le Saint Coran. C’est ce qui lui permet de vous aider à élever les fréquences du lieu, pour qu’elles s’accordent aux vibrations de l’abondance et de la richesse. Elle contribue ainsi à attirer des opportunités financières inattendues et à faciliter le flux du rizq dans votre quotidien, si Dieu le veut.",
+          "La carte se présente dans une couleur or éclatante, avec des détails fins qui symbolisent le sommet de la réussite financière (le million de dollars), dans un design luxueux.",
+          "Placée dans votre portefeuille, sur votre bureau ou sur votre lieu de travail, elle devient un ancrage visuel et énergétique qui rappelle sans cesse à votre subconscient l’objectif et l’abondance que vous méritez."
+        ]
+      },
+      {
+        "title": "Que vous apporte la carte Million Dollar dorée ?",
+        "items": [
+          {
+            "term": "Activer la loi de l’attraction",
+            "text": "Elle agit comme un outil puissant pour concrétiser les grands objectifs financiers."
+          },
+          {
+            "term": "Un cadeau idéal et un soutien énergétique",
+            "text": "Idéale à s’offrir, ou à offrir à toute personne à qui vous souhaitez réussite et succès dans son nouveau projet."
+          }
+        ]
+      }
+    ]
+  },
+  ar: {
+    "title": "كرت المليون دولار الذهبي: بوابتك الطاقية لجذب الثراء والوفرة!",
+    "sections": [
+      {
+        "title": "سر القوة: شحن خاص بطاقة «ريكي المال» (Money Reiki)",
+        "paragraphs": [
+          "هذا الكرت ليس مجرد قطعة زينة؛ فكل كرت يمر بوعاء طاقي مكثف، حيث أقوم بـشحنه وبرمجته بطاقة ريكي المال و القرآن الكريم و هو ما يجعله يساعدك على رفع ترددات المكان لتتوافق مع ذبذبات الوفرة والثراء. الشيء الذي يساهم في جذب الفرص المالية غير المتوقعة وتيسير تدفق الرزق في حياتك اليومية بإذن الله.",
+          "يأتي الكرت بلون ذهبي براق وبتفاصيل دقيقة ترمز لقمة النجاح المالي (المليون دولار) في تصميم فاخر.",
+          "وضعه في محفظتك، أو على مكتبك، أو في مكان عملك، يجعله مرساة بصرية وطاقية تذكر عقلك الباطن دائماً بالهدف والوفرة التي تستحقها."
+        ]
+      },
+      {
+        "title": "ماذا يقدم لك كرت المليون دولار الذهبي؟",
+        "items": [
+          {
+            "term": "تفعيل قانون الجذب",
+            "text": "يعمل كأداة قوية لتجسيد الأهداف المالية الكبرى."
+          },
+          {
+            "term": "هدية مثالية ودعم طاقي",
+            "text": "مثالي لتهديه لنفسك، أو لأي شخص تبحث له عن النجاح والتوفيق في مشروعه الجديد."
+          }
+        ]
+      }
+    ]
+  }
+};
+const decorAbondance = {
+  fr: {
+    "title": "Le décor Abondance de luxe : un symbole doré de richesse, chargé d’énergie Reiki",
+    "intro": [
+      "Ce décor réunit trois des plus puissants symboles de manifestation : le symbole du dollar, qui représente la valeur et le flux financier ; en son centre, la couronne royale, symbole de pouvoir, d’excellence et de leadership ; et le symbole de l’infini, qui les complète pour stimuler le flux de l’abondance, charger le lieu et programmer l’inconscient avec l’énergie de l’abondance et du flux financier.",
+      "Chaque pièce est fabriquée dans un or pur et brillant, et a été chargée spirituellement avec l’énergie du Reiki de l’argent et le Saint Coran."
+    ],
+    "sections": [
+      {
+        "title": "En quoi ce décor transforme votre bureau ou votre maison ?",
+        "items": [
+          {
+            "term": "La triade des symboles de manifestation",
+            "text": "Il associe (dollar + couronne + infini) pour programmer chaque jour votre subconscient à vous sentir digne d’une richesse illimitée, d’un simple regard."
+          },
+          {
+            "term": "Une touche de décoration royale",
+            "text": "Un design moderne et luxueux, d’une couleur or qui attire les regards, qui apporte une élégance exceptionnelle à votre bureau, à votre salon ou à votre coin de méditation."
+          },
+          {
+            "term": "Le cadeau idéal pour la réussite",
+            "text": "La plus belle pièce à offrir aux entrepreneurs, aux associés, ou à toute personne qui cherche à faire évoluer sa réalité financière."
+          }
+        ]
+      },
+      {
+        "title": "Où placer ce décor pour en tirer le meilleur bénéfice énergétique ?",
+        "steps": true,
+        "items": [
+          {
+            "term": "Sur votre bureau",
+            "text": "Pour attirer les grosses affaires, les clients de qualité et les décisions d’investissement réussies."
+          },
+          {
+            "term": "Dans le coin de l’abondance (au sud-est de la maison)",
+            "text": "Pour activer l’énergie de l’argent et la baraka dans votre foyer."
+          },
+          {
+            "term": "Bien en vue lors de vos rendez-vous et réunions",
+            "text": "Pour imposer le prestige de la réussite et donner une impression de richesse et d’excellence."
+          }
+        ]
+      }
+    ],
+    "closing": "N’attendez pas les opportunités : créez dès maintenant l’environnement énergétique qui leur convient."
+  },
+  ar: {
+    "title": "ديكور الوفرة الفاخر: رمز الثراء الذهبي المشحون بطاقة الريكي",
+    "intro": [
+      "هذا الديكور يجمع بين ثلاثة من أقوى رموز التجلي: رمز الدولار الذي يمثل القيمة والتدفق المالي، يتوسطه التاج الملكي الذي يرمز للسلطة والتميز والريادة، ويتكامل مع رمز اللانهاية لتحفيز تدفق الوفرة و شحن المكان و برمجة اللاوعي بطاقة الوفرة و التدفق المالي.",
+      "كل قطعة مصنعة باللون الذهبي النقي اللامع، وتم شحنها روحانياً بطاقة ريكي المال و القرآن الكريم."
+    ],
+    "sections": [
+      {
+        "title": "لماذا يمثل هذا الديكور تحولاً لمكتبك أو منزلك؟",
+        "items": [
+          {
+            "term": "ثلاثية رموز التجلي",
+            "text": "يدمج (الدولار + التاج + اللانهاية) لبرمجة عقلك الباطن يومياً على استحقاق الثراء غير المحدود بمجرد النظر إليه."
+          },
+          {
+            "term": "لمسة ديكور ملكية",
+            "text": "تصميم عصري فاخر بلون ذهبي خاطف للأنظار، يضفي فخامة استثنائية على مكتبك، غرفة المعيشة، أو ركن التأمل الخاص بك."
+          },
+          {
+            "term": "هدية مثالية للنجاح",
+            "text": "القطعة الأجمل لتقديمها لرواد الأعمال، الشركاء، أو أي شخص يسعى لتطوير واقعه المالي."
+          }
+        ]
+      },
+      {
+        "title": "أين تضع هذا الديكور لتحقيق أقصى استفادة طاقية؟",
+        "steps": true,
+        "items": [
+          {
+            "term": "على مكتب العمل",
+            "text": "لجذب الصفقات الكبرى، العملاء المميزين، والقرارات الاستثمارية الناجحة."
+          },
+          {
+            "term": "في ركن الوفرة (جنوب شرق المنزل)",
+            "text": "لتفعيل طاقة المال والبركة في بيتك."
+          },
+          {
+            "term": "في واجهة المقابلات أو الاجتماعات",
+            "text": "لفرض هيبة النجاح وإعطاء انطباع بالثراء والتميز."
+          }
+        ]
+      }
+    ],
+    "closing": "لا تنتظر الفرص بل اصنع بيئتها الطاقية المناسبة الآن."
+  }
+};
+const cleDeVie = {
+  fr: {
+    "title": "Le chef-d’œuvre suprême de la manifestation : la Clé de Vie dorée, chargée de l’énergie du Reiki de l’argent et de la baraka du Saint Coran",
+    "intro": [
+      "Cette pièce n’est pas une simple sculpture décorative de luxe : c’est un véritable portail géométrique et spirituel pour le flux de l’abondance et de la baraka. Nous y avons réuni la richesse de l’histoire et les secrets de l’énergie vitale, grâce à une charge de Reiki de l’argent, associée à la protection et à la baraka des versets du rizq et de l’ouverture du Saint Coran."
+    ],
+    "sections": [
+      {
+        "title": "Les propriétés uniques et les bienfaits exceptionnels de la Clé de Vie dorée",
+        "items": [
+          {
+            "term": "Géométrie sacrée et flux d’énergie",
+            "text": "La Clé de Vie (Ankh) se distingue par un design géométrique unique qui agit comme un récepteur et un diffuseur d’énergie vitale. La boucle supérieure représente le flux infini de l’énergie spirituelle, tandis que la croix allongée représente l’incarnation de cette énergie dans notre monde matériel, ce qui en fait un outil idéal pour purifier votre environnement des énergies négatives et de la stagnation financière."
+          },
+          {
+            "term": "Symbole d’ouverture et de renouveau",
+            "text": "La présence de ce symbole doré et chargé dans votre espace envoie des signaux forts à votre subconscient pour qu’il s’accorde aux fréquences des ouvertures, des grandes chances et des nouveaux départs faciles et sereins, soutenus par la baraka du Saint Coran et son bel élan spirituel."
+          },
+          {
+            "term": "L’harmonie de l’or royal",
+            "text": "C’est la couleur associée, sur le plan énergétique, à la conscience de la richesse, au sentiment de mériter le meilleur et au bien-être. Son éclat apporte aussi une touche royale envoûtante, qui valorise tout lieu où il est posé."
+          }
+        ]
+      },
+      {
+        "title": "Comment utiliser ce chef-d’œuvre pour transformer votre réalité financière et spirituelle ?",
+        "steps": true,
+        "items": [
+          {
+            "term": "Au centre de l’abondance de votre bureau ou de votre maison",
+            "text": "Placez-le dans votre espace de travail ou d’accueil pour qu’il « filtre » l’énergie en continu et attire à vous les clients de qualité et les affaires réussies."
+          },
+          {
+            "term": "Un outil de méditation et de concentration des intentions",
+            "text": "Posez votre regard sur la géométrie sacrée de la clé pendant vos séances d’affirmations financières, pour accélérer la manifestation de vos objectifs et la construction de votre nouvelle réalité."
+          },
+          {
+            "term": "Un aimant pour la baraka au quotidien",
+            "text": "Gardez-le près de l’endroit où vous prenez vos décisions d’investissement ou écrivez vos projets, pour trouver l’inspiration et avancer avec aisance et une réussite bénie."
+          }
+        ]
+      }
+    ]
+  },
+  ar: {
+    "title": "تحفة التجلي الأسمى: مفتاح الحياة الذهبي المشحون بطاقة ريكي المال وبركة القرآن الكريم",
+    "intro": [
+      "هذه القطعة ليست مجرد مجسم ديكوري فاخر، بل هي بوابة هندسية وروحانية متكاملة لتدفق الوفرة والبركة. لقد دمجنا فيه عراقة التاريخ، وأسرار الطاقة الحيوية عبر شحن الريكي المالي مع التحصين والبركة من خلال آيات الرزق والفتح من القرآن الكريم."
+    ],
+    "sections": [
+      {
+        "title": "الخصائص الفريدة والإيجابيات الاستثنائية لمفتاح الحياة الذهبي",
+        "items": [
+          {
+            "term": "الهندسة المقدسة وتدفق الطاقة",
+            "text": "يتميز مفتاح الحياة (العنخ) بتصميم هندسي فريد يعمل كمستقبل وموزع للطاقة الحيوية. الحلقة العلوية تمثل التدفق اللانهائي للطاقة الروحية، بينما يمثل التقاطع الممتد تجسيد هذه الطاقة في عالمنا المادي، مما يجعله أداة مثالية لتنظيف بيئتك من الطاقات السلبية والركود المالي."
+          },
+          {
+            "term": "رمزية الفتح والتجدد",
+            "text": "إن وجود هذا الرمز الذهبي المشحون في مساحتك يرسل إشارات قوية لعقلك الباطن بأن يكون على ترددات الفتوحات و الحظوظ العظيمة و البدايات الجديدة السهلة اليسيرة التي تتدعم ببركة القرآن الكريم و دفقه الروحاني الجميل."
+          },
+          {
+            "term": "تناغم اللون الذهبي الملكي",
+            "text": "وهو اللون المرتبط طاقياً بوعي الثراء، والاستحقاق العالي، والرفاهية. كما يُضفي لمعانه لمسة ملكية ساحرة ترفع من قيمة أي مكان يُوضع فيه."
+          }
+        ]
+      },
+      {
+        "title": "كيف تستثمر هذه التحفة لتغيير واقعك المالي والروحي؟",
+        "steps": true,
+        "items": [
+          {
+            "term": "في مركز الوفرة بمكتبك أو منزلك",
+            "text": "ضعه في زاوية العمل أو الاستقبال ليقوم بعملية «فلترة» مستمرة للطاقة، ويجذب إليك العملاء المميزين والصفقات الناجحة."
+          },
+          {
+            "term": "أداة للتأمل وتركيز النوايا",
+            "text": "ركز بصرك على الهندسة المقدسة للمفتاح أثناء جلسات التوكيدات المالية، لتسريع عملية تجلي الأهداف وصناعة واقعك الجديد."
+          },
+          {
+            "term": "مغناطيس للبركة اليومية",
+            "text": "اجعله قريباً من مكان اتخاذ قراراتك الاستثمارية أو كتابة خططك، لتستلهم الحلول وتتحرك بيسر وتوفيق مبارك."
+          }
+        ]
+      }
+    ]
+  }
+};
+const fleurDeVie = {
+  fr: {
+    "title": "La merveille de l’harmonie cosmique : le décor Fleur de Vie doré, chargé d’énergie vitale",
+    "intro": [
+      "Ce décor n’est pas une simple pièce esthétique : c’est un portail énergétique et une source continue d’élévation des vibrations du lieu. Il a été conçu dans un or pur, qui symbolise le sentiment de mériter le meilleur, puis chargé et activé par vibration pour ramener l’harmonie dans votre vie et votre espace."
+    ],
+    "sections": [
+      {
+        "title": "Les propriétés exceptionnelles et les atouts uniques du décor Fleur de Vie doré",
+        "items": [
+          {
+            "term": "Le secret de la géométrie sacrée et de la naissance de l’univers",
+            "text": "La Fleur de Vie est formée de cercles entrelacés selon des proportions géométriques d’une grande précision ; elle représente le code génétique de l’univers et le plan fondamental de la création. Ce motif unique émet une fréquence vibratoire naturelle qui organise les énergies dispersées et rétablit aussitôt l’équilibre du lieu."
+          },
+          {
+            "term": "Nettoyer et purifier l’énergie du lieu",
+            "text": "Cet objet agit comme un filtre énergétique intelligent : dès qu’il est placé dans une pièce, il commence à absorber les énergies négatives, la stagnation et la tension, et les remplace par une énergie vitale renouvelée qui apporte vitalité et sérénité."
+          },
+          {
+            "term": "Une charge énergétique intense et programmée",
+            "text": "Chaque pièce a reçu une charge et une programmation qui favorisent l’abondance financière et accordent les vibrations de votre subconscient au flux universel des opportunités positives."
+          },
+          {
+            "term": "Un aimant pour la concentration et la manifestation",
+            "text": "La Fleur de Vie est considérée comme l’outil le plus puissant au monde pour les pratiquants de la méditation et du yoga : fixer le regard sur ses détails aide à apaiser l’esprit, à élever la conscience et à accélérer la manifestation des objectifs et des intentions écrites."
+          },
+          {
+            "term": "Le luxe de l’or royal",
+            "text": "Fabriquée avec une qualité exceptionnelle et un revêtement doré brillant qui reflète la lumière. La couleur or n’apporte pas seulement une touche décorative classique et luxueuse : elle renforce aussi, sur le plan énergétique, le sentiment de richesse, la confiance en soi et le bien-être."
+          }
+        ]
+      },
+      {
+        "title": "Où placer la Fleur de Vie dorée pour en tirer le meilleur bénéfice ?",
+        "steps": true,
+        "items": [
+          {
+            "term": "Dans le salon ou la pièce de réception",
+            "text": "Pour créer une atmosphère d’harmonie, de convivialité et de paix entre les membres de la famille ou les invités, et apaiser les tensions de la journée."
+          },
+          {
+            "term": "Sur le bureau ou dans le coin d’étude",
+            "text": "Pour renforcer la concentration, la créativité et l’organisation des idées, et ouvrir la voie à des solutions nouvelles."
+          },
+          {
+            "term": "Dans le coin de méditation ou près du lit",
+            "text": "Pour aider à une relaxation profonde, à un sommeil paisible et à charger l’aura d’énergie positive pendant la nuit."
+          }
+        ]
+      }
+    ]
+  },
+  ar: {
+    "title": "أعجوبة التناغم الكوني: ديكور زهرة الحياة الذهبي المشحون بالطاقة الحيوية",
+    "intro": [
+      "هذا الديكور ليس مجرد قطعة جمالية، بل هو بوابة طاقية ومصدر مستمر لترقية ذبذبات المكان، حيث تم تصميمه باللون الذهبي النقي الذي يرمز للاستحقاق العالي، وشحنه وتفعيله اهتزازياً ليعيد التناغم إلى حياتك ومساحتك الخاصة."
+    ],
+    "sections": [
+      {
+        "title": "الخصائص الاستثنائية والمزايا الفريدة لديكور زهرة الحياة الذهبي",
+        "items": [
+          {
+            "term": "سر الهندسة المقدسة ونشأة الكون",
+            "text": "تتكون زهرة الحياة من دوائر متداخلة بنسب هندسية بالغة الدقة، وهي تمثل الشفرة الوراثية للكون ومخطط الخلق الأساسي. هذا التصميم الفريد ينبعث منه تردد اهتزازي طبيعي يعمل على تنظيم الطاقات المبعثرة وإعادة التوازن الفوري للمكان."
+          },
+          {
+            "term": "تنظيف وتطهير طاقة المكان",
+            "text": "تعمل القطعة كفلاتر طاقية ذكية؛ بمجرد وضعها في الغرفة، تبدأ في امتصاص الطاقات السلبية، طاقات الركود، والتوتر، وتستبدلها بطاقة حيوية متجددة تبث النشاط والراحة النفسية."
+          },
+          {
+            "term": "شحن طاقي مُكثف ومبرمج",
+            "text": "خضعت كل قطعة لشحن و برمجة تساعدان على الوفرة المالية و ضبط ذبذبات عقلك الباطن للتناغم مع التدفق الكوني للفرص الإيجابية."
+          },
+          {
+            "term": "مغناطيس للتركيز والتجلي",
+            "text": "تُعد زهرة الحياة الأداة الأقوى عالمياً لممارسي التأمل واليوغا؛ فالتركيز البصري في تفاصيلها يساعد على تهدئة العقل، ورفع الوعي، وتسريع تجلي الأهداف والنوايا المكتوبة."
+          },
+          {
+            "term": "فخامة اللون الذهبي الملكي",
+            "text": "صُنعت بجودة استثنائية وطلاء ذهبي براق عاكس للضوء. اللون الذهبي لا يضفي لمسة ديكور كلاسيكية فاخرة فحسب، بل يعزز طاقياً مشاعر الثراء، الثقة بالنفس، والرفاهية."
+          }
+        ]
+      },
+      {
+        "title": "أين تضع زهرة الحياة الذهبية لتحقيق أقصى استفادة؟",
+        "steps": true,
+        "items": [
+          {
+            "term": "في غرفة المعيشة أو صالة الاستقبال",
+            "text": "لخلق أجواء من التناغم، الألفة، والسلام بين أفراد العائلة أو الضيوف، وتقليل مشاحنات اليوم."
+          },
+          {
+            "term": "على مكتب العمل أو ركن الدراسة",
+            "text": "لزيادة التركيز، الإبداع، وتنظيم الأفكار، وفتح آفاق الحلول المبتكرة."
+          },
+          {
+            "term": "في ركن التأمل أو بجانب السرير",
+            "text": "للمساعدة على الاسترخاء العميق، النوم الهادئ، وشحن الهالة (Aura) بالطاقة الإيجابية أثناء الليل."
+          }
+        ]
+      }
+    ]
+  }
+};
+const pendentifVoitureFleur = {
+  fr: {
+    "title": "Le pendentif voiture à la Fleur de Vie",
+    "intro": [
+      "Cette pièce, d’une couleur or pur qui reflète l’abondance et le bien-être, a été harmonisée spirituellement et énergétiquement par une charge de Reiki de l’argent, et purifiée par la baraka du Saint Coran."
+    ],
+    "sections": [
+      {
+        "title": "Les vrais atouts et caractéristiques de ce pendentif unique",
+        "items": [
+          {
+            "term": "Harmonie et calme pendant la conduite",
+            "text": "Le pendentif reprend l’ancien symbole de la « Fleur de Vie », un motif géométrique précis qui aide, visuellement et psychologiquement, à réduire la tension et à diffuser équilibre et calme, pour une conduite plus confortable et plus concentrée, même aux heures de pointe."
+          },
+          {
+            "term": "La baraka du Saint Coran pour la protection",
+            "text": "La pièce a été activée spirituellement par le Saint Coran, ce qui apporte à votre voiture une profonde sérénité et contribue à en faire un espace béni et protégé à chaque trajet."
+          },
+          {
+            "term": "Une charge de Reiki pour l’abondance et la réussite",
+            "text": "Chaque pendentif a reçu une charge d’énergie vitale de Reiki de l’argent, orientée vers la facilité dans vos démarches et l’attraction de la réussite financière, comme un rappel permanent des vibrations du succès et de l’abondance lorsque vous vous rendez au travail ou à vos projets."
+          },
+          {
+            "term": "Un design doré, solide et moderne",
+            "text": "Fabriqué avec une grande qualité, il résiste à la chaleur du soleil et dure longtemps, dans une taille idéale qui apporte à votre voiture une élégance évidente, sans gêner la visibilité ni distraire pendant la conduite."
+          }
+        ]
+      },
+      {
+        "title": "En quoi cette pièce enrichit vos trajets quotidiens ?",
+        "steps": true,
+        "items": [
+          {
+            "term": "Un ancrage visuel positif",
+            "text": "Sa présence constante devant vous vous rappelle de rester concentré sur la paix intérieure et sur vos objectifs financiers et professionnels, avec confiance et sérénité."
+          },
+          {
+            "term": "Une purification continue de l’énergie du véhicule",
+            "text": "Il aide à dissiper les énergies d’inquiétude et de fatigue du quotidien, et les remplace par une atmosphère de sérénité et de baraka."
+          },
+          {
+            "term": "Un cadeau raffiné pour ceux que vous aimez",
+            "text": "Un choix idéal et très original à offrir comme cadeau béni à vos amis ou à votre famille, pour l’achat d’une nouvelle voiture, ou pour remplacer un ancien pendentif par un nouveau, porteur des vibrations de la nouvelle version unique de la personne."
+          }
+        ]
+      }
+    ]
+  },
+  ar: {
+    "title": "تعليقة السيارة بزهرة الحياة",
+    "intro": [
+      "هذه القطعة باللون الذهبي النقي الذي يعكس الوفرة والرفاهية، وتمت مواءمتها روحيّاً وطاقيّاً من خلال شحن الريكي المالي وتطهيرها ببركة القرآن الكريم."
+    ],
+    "sections": [
+      {
+        "title": "المزايا والخصائص الحقيقية لهذه التعليقة الفريدة",
+        "items": [
+          {
+            "term": "تناغم وهدوء أثناء القيادة",
+            "text": "يعتمد التصميم على رمز «زهرة الحياة» العريق، وهو نمط هندسي دقيق يساعد بصرياً ونفسياً على تقليل التوتر وبث التوازن والهدوء، مما يمنحك تجربة قيادة أكثر راحة وتركيزاً حتى في أوقات الازدحام."
+          },
+          {
+            "term": "بركة القرآن الكريم للتحصين",
+            "text": "تم تفعيل القطعة روحياً بالقران الكريم، مما يضفي على سيارتك طمأنينة عميقة ويساهم في جعلها مساحة مباركة ومحمية في كل رحلة."
+          },
+          {
+            "term": "شحن الريكي للوفرة والتوفيق",
+            "text": "خضعت كل تعليقة لشحن بطاقة ريكي المال الحيوية الموجهة لتيسير السعي وجذب التوفيق المالي، لتكون بمثابة تذكير دائم بذبذبات النجاح والوفرة أثناء ذهابك لعملك أو مشاريعك."
+          },
+          {
+            "term": "تصميم ذهبي متين وعصري",
+            "text": "صُنعت بجودة عالية تقاوم حرارة الشمس وتدوم طويلاً، بحجم مثالي يمنح سيارتك فخامة واضحة دون أن يحجب الرؤية أو يشتت الانتباه أثناء القيادة."
+          }
+        ]
+      },
+      {
+        "title": "كيف تضفي هذه القطعة قيمة على رحلتك اليومية؟",
+        "steps": true,
+        "items": [
+          {
+            "term": "مرساة بصرية إيجابية",
+            "text": "وجودها أمامك بشكل دائم يذكرك بالتركيز على السلام الداخلي وأهدافك الاستثمارية والمهنية بيقين وهدوء."
+          },
+          {
+            "term": "تنقية مستمرة لطاقة المركبة",
+            "text": "تساعد على تبديد طاقات القلق والإنهاك اليومي، مستبدلة إياها بأجواء سكينة وبركة."
+          },
+          {
+            "term": "هدية راقية لمن تحب",
+            "text": "خيار مثالي ومميز جداً لتقديمه كهدية مباركة للأصدقاء أو العائلة بمناسبة اقتناء سيارة جديدة أو لتغيير تعليقة قديمة بأخرى جديدة تحمل ذبذبات نسخة الشخص الفريدة الجديدة."
+          }
+        ]
+      }
+    ]
+  }
+};
+const pendentifVoitureAnkh = {
+  fr: {
+    "title": "Le pendentif voiture à la Clé de Vie",
+    "intro": [
+      "Cette pièce, d’une couleur or pur qui reflète l’abondance et le bien-être, a été harmonisée spirituellement et énergétiquement par une charge de Reiki de l’argent, et purifiée par la baraka du Saint Coran."
+    ],
+    "sections": [
+      {
+        "title": "Les vrais atouts et caractéristiques de ce pendentif unique",
+        "items": [
+          {
+            "term": "Harmonie et calme pendant la conduite",
+            "text": "Le pendentif reprend l’ancien symbole de la « Clé de Vie », une forme géométrique unique qui aide, visuellement et psychologiquement, à réduire la tension et à diffuser équilibre et calme, pour une conduite plus confortable et plus concentrée, même aux heures de pointe."
+          },
+          {
+            "term": "La baraka du Saint Coran pour la protection",
+            "text": "La pièce a été activée spirituellement par le Saint Coran, ce qui apporte à votre voiture une profonde sérénité et contribue à en faire un espace béni et protégé à chaque trajet."
+          },
+          {
+            "term": "Une charge de Reiki pour l’abondance et la réussite",
+            "text": "Chaque pendentif a reçu une charge d’énergie vitale de Reiki de l’argent, orientée vers la facilité dans vos démarches et l’attraction de la réussite financière, comme un rappel permanent des vibrations du succès et de l’abondance lorsque vous vous rendez au travail ou à vos projets."
+          },
+          {
+            "term": "Un design doré, solide et moderne",
+            "text": "Fabriqué avec une grande qualité, il résiste à la chaleur du soleil et dure longtemps, dans une taille idéale qui apporte à votre voiture une élégance évidente, sans gêner la visibilité ni distraire pendant la conduite."
+          }
+        ]
+      },
+      {
+        "title": "En quoi cette pièce enrichit vos trajets quotidiens ?",
+        "steps": true,
+        "items": [
+          {
+            "term": "Un ancrage visuel positif",
+            "text": "Sa présence constante devant vous vous rappelle de rester concentré sur la paix intérieure et sur vos objectifs financiers et professionnels, avec confiance et sérénité."
+          },
+          {
+            "term": "Une purification continue de l’énergie du véhicule",
+            "text": "Il aide à dissiper les énergies d’inquiétude et de fatigue du quotidien, et les remplace par une atmosphère de sérénité et de baraka."
+          },
+          {
+            "term": "Un cadeau raffiné pour ceux que vous aimez",
+            "text": "Un choix idéal et très original à offrir comme cadeau béni à vos amis ou à votre famille, pour l’achat d’une nouvelle voiture, ou pour remplacer un ancien pendentif par un nouveau, porteur des vibrations de la nouvelle version unique de la personne."
+          }
+        ]
+      }
+    ]
+  },
+  ar: {
+    "title": "تعليقة السيارة بمفتاح الحياة",
+    "intro": [
+      "هذه القطعة باللون الذهبي النقي الذي يعكس الوفرة والرفاهية، وتمت مواءمتها روحيّاً وطاقيّاً من خلال شحن الريكي المالي وتطهيرها ببركة القرآن الكريم."
+    ],
+    "sections": [
+      {
+        "title": "المزايا والخصائص الحقيقية لهذه التعليقة الفريدة",
+        "items": [
+          {
+            "term": "تناغم وهدوء أثناء القيادة",
+            "text": "يعتمد التصميم على رمز «مفتاح الحياة» العريق، وهو تصميم هندسي فريد يساعد بصرياً ونفسياً على تقليل التوتر وبث التوازن والهدوء، مما يمنحك تجربة قيادة أكثر راحة وتركيزاً حتى في أوقات الازدحام."
+          },
+          {
+            "term": "بركة القرآن الكريم للتحصين",
+            "text": "تم تفعيل القطعة روحياً بالقران الكريم، مما يضفي على سيارتك طمأنينة عميقة ويساهم في جعلها مساحة مباركة ومحمية في كل رحلة."
+          },
+          {
+            "term": "شحن الريكي للوفرة والتوفيق",
+            "text": "خضعت كل تعليقة لشحن بطاقة ريكي المال الحيوية الموجهة لتيسير السعي وجذب التوفيق المالي، لتكون بمثابة تذكير دائم بذبذبات النجاح والوفرة أثناء ذهابك لعملك أو مشاريعك."
+          },
+          {
+            "term": "تصميم ذهبي متين وعصري",
+            "text": "صُنعت بجودة عالية تقاوم حرارة الشمس وتدوم طويلاً، بحجم مثالي يمنح سيارتك فخامة واضحة دون أن يحجب الرؤية أو يشتت الانتباه أثناء القيادة."
+          }
+        ]
+      },
+      {
+        "title": "كيف تضفي هذه القطعة قيمة على رحلتك اليومية؟",
+        "steps": true,
+        "items": [
+          {
+            "term": "مرساة بصرية إيجابية",
+            "text": "وجودها أمامك بشكل دائم يذكرك بالتركيز على السلام الداخلي وأهدافك الاستثمارية والمهنية بيقين وهدوء."
+          },
+          {
+            "term": "تنقية مستمرة لطاقة المركبة",
+            "text": "تساعد على تبديد طاقات القلق والإنهاك اليومي، مستبدلة إياها بأجواء سكينة وبركة."
+          },
+          {
+            "term": "هدية راقية لمن تحب",
+            "text": "خيار مثالي ومميز جداً لتقديمه كهدية مباركة للأصدقاء أو العائلة بمناسبة اقتناء سيارة جديدة أو لتغيير تعليقة قديمة بأخرى جديدة تحمل ذبذبات نسخة الشخص الفريدة الجديدة."
+          }
+        ]
+      }
+    ]
+  }
+};
+
+export const productTexts = {
+  'bracelet-bazi': bazi,
+  'collier-bazi': bazi,
+  'portefeuille-hafidha': portefeuilleHafidha,
+  'carte-million-dollar': carteMillionDollar,
+  'decor-abondance': decorAbondance,
+  'cle-de-vie': cleDeVie,
+  'fleur-de-vie': fleurDeVie,
+  'pendentif-voiture-fleur': pendentifVoitureFleur,
+  'pendentif-voiture-ankh': pendentifVoitureAnkh
+};

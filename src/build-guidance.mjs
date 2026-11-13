@@ -1,6 +1,7 @@
-import { cp, mkdir, rm, readFile, writeFile } from 'node:fs/promises';
+import { access, cp, mkdir, rm, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import vm from 'node:vm';
+import { thumbSrc } from './commerce-core.js';
 import { guidanceRoutes, renderGuidancePage } from './guidance-pages.mjs';
 import { collectionPage, productPage, checkoutPage } from './shop-pages.mjs';
 import { arGuidanceRoutes, renderGuidancePageAr } from './guidance-pages-ar.mjs';
@@ -8,18 +9,30 @@ import { productPageAr, checkoutPageAr, collectionPageAr } from './shop-pages-ar
 import { collectionsAr, productsAr } from './catalog-ar.mjs';
 import { adminLoginPage, adminDashboardPage, adminProductsPage, adminPromoCodesPage, adminOrdersPage, adminSettingsPage } from './admin-pages.mjs';
 
+// French typography: a non-breaking space keeps ?, !, :, ; and » with the word before them (and « with
+// the word after it), so they never start a line on their own. Only text between tags is touched.
+const frenchSpacing = html => html.replace(/>([^<]+)</g, (match, text) => '>' + text.replace(/ ([?!:;»])/g, ' $1').replace(/« /g, '« ') + '<');
+
 export async function buildGuidance(project, output, config) {
   // output is resolved by build.mjs to this project's dist directory.
   if (path.resolve(output) !== path.join(path.resolve(project), 'dist')) throw new Error('Unexpected build directory');
+  // Cards, gallery thumbnails and the cart use the 480px photo copies; stop before touching dist if one is missing.
+  const catalogCheck = { window: {} };
+  vm.runInNewContext(await readFile(path.join(project, 'src', 'catalog.js'), 'utf8'), catalogCheck);
+  const missingCopies = [];
+  for (const product of catalogCheck.window.STORE_CATALOG.products) for (const image of product.images) {
+    try { await access(path.join(project, thumbSrc(image.src).replace(/^\//, ''))); } catch { missingCopies.push(image.src); }
+  }
+  if (missingCopies.length) throw new Error('Missing 480px photo copies for ' + missingCopies.join(', ') + '. Run scripts/make-product-thumbnails.ps1, then build again.');
   await rm(output, { recursive: true, force: true });
   await mkdir(path.join(output, 'src'), { recursive: true });
   await mkdir(path.join(output, 'assets', 'brand'), { recursive: true });
   for (const asset of ['rayda.jpg', 'reflection-journal.png', 'leaf-mark.svg']) {
     await cp(path.join(project, 'assets', 'brand', asset), path.join(output, 'assets', 'brand', asset));
   }
-  for (const file of ['guidance.css', 'commerce.css']) await cp(path.join(project, file), path.join(output, file));
+  for (const file of ['guidance.css', 'commerce.css', 'polish.css']) await cp(path.join(project, file), path.join(output, file));
   await cp(path.join(project, 'src', 'admin.css'), path.join(output, 'admin.css'));
-  for (const file of ['guidance.js', 'social-menu.js', 'contact-ar.js', 'commerce.js', 'commerce-core.js', 'site-config.js', 'catalog.js', 'admin.js']) {
+  for (const file of ['guidance.js', 'social-menu.js', 'ux.js', 'contact-ar.js', 'commerce.js', 'commerce-core.js', 'site-config.js', 'catalog.js', 'admin.js']) {
     await cp(path.join(project, 'src', file), path.join(output, 'src', file));
   }
   await mkdir(path.join(output, 'assets', 'products'), { recursive: true });
@@ -31,21 +44,21 @@ export async function buildGuidance(project, output, config) {
   const context = { window: {} };
   vm.runInNewContext(await readFile(path.join(project, 'src', 'catalog.js'), 'utf8'), context);
   const catalog = context.window.STORE_CATALOG;
-  const home = renderGuidancePage('', config, catalog);
+  const home = frenchSpacing(renderGuidancePage('', config, catalog));
   await writeFile(path.join(output, 'index.html'), home);
   // Keep the source entry usable for simple static servers too.
   await writeFile(path.join(project, 'index.html'), home);
   for (const route of guidanceRoutes) {
     const dir = path.join(output, route);
     await mkdir(dir, { recursive: true });
-    await writeFile(path.join(dir, 'index.html'), renderGuidancePage(route, config, catalog));
+    await writeFile(path.join(dir, 'index.html'), frenchSpacing(renderGuidancePage(route, config, catalog)));
   }
   const shopRoutes = catalog.collections.map(collection => ({ route: 'collections/' + collection.slug, title: collection.name, content: collectionPage(collection, catalog) }))
     .concat(catalog.products.map(product => ({ route: 'products/' + product.slug, title: product.name, content: productPage(product, catalog) })), [{ route: 'checkout', title: 'Votre sélection, avec Rayda', content: checkoutPage }]);
   for (const entry of shopRoutes) {
     const dir = path.join(output, entry.route);
     await mkdir(dir, { recursive: true });
-    await writeFile(path.join(dir, 'index.html'), renderGuidancePage(entry.route, config, catalog, entry));
+    await writeFile(path.join(dir, 'index.html'), frenchSpacing(renderGuidancePage(entry.route, config, catalog, entry)));
   }
   const arNamesScript = 'window.STORE_PRODUCT_NAMES_AR = ' + JSON.stringify(Object.fromEntries(catalog.products.map(p => [p.id, productsAr[p.id]?.name || p.name]))) + ';';
   await writeFile(path.join(output, 'src', 'catalog-ar-names.js'), arNamesScript);

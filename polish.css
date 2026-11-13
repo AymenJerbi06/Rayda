@@ -1,0 +1,169 @@
+/* Polish pass, November 2026. Refinements layered over guidance.css and commerce.css, loaded after them.
+   Same forest/cream palette, DM Serif Display + Montserrat (Markazi Text + Tajawal in Arabic), botanical
+   motif and page structure. The opening hero is deliberately left exactly as it was. */
+
+/* ---------- Typography: calmer line breaks (the hero keeps its hand-set breaks) ---------- */
+:is(h1,h2,h3):not(.g-hero *){text-wrap:balance}
+:is(p,li,figcaption,blockquote):not(.g-hero *){text-wrap:pretty}
+
+/* Tiny labels were 8–10px on phones; these stay small and quiet, but readable. */
+.s-category p{font-size:11px}
+.s-category-caption{font-size:12px}
+.s-card-copy .g-eyebrow{font-size:10px;letter-spacing:.06em}
+.s-breadcrumbs{font-size:12px}
+.s-trust-row li{font-size:12px}
+.s-line p{font-size:12px}
+.g-footer-bottom{font-size:12px}
+@media(max-width:700px){
+  .s-category-caption{font-size:11px}
+  .s-card-copy .g-eyebrow{min-height:30px}
+  .s-badge{font-size:9.5px}
+  .s-breadcrumbs{font-size:11px}
+}
+
+/* Focus rings stay visible on the light cream and paper sections, not only on the dark green. */
+:is(.g-intro,.g-support,.g-testimonials-teaser,.g-reviews-grid,.g-closing,.g-story,.g-work-detail,.g-contact-section,.g-questions,.s-home-categories,.s-shop-categories,.s-catalog,.s-product,.s-related,.s-checkout,.s-selection,.s-lightbox) :is(a,button,summary):focus-visible{outline-color:var(--green)}
+
+/* ---------- Header: unchanged at the top; a compact copy slides back in when scrolling up ---------- */
+.g-header{transition:transform .38s cubic-bezier(.2,.7,.2,1),box-shadow .38s ease}
+.g-header.is-instant{transition:none!important}
+.g-header.is-floating{position:fixed;top:0;left:0;right:0;z-index:70;max-width:none;min-height:0;margin:0;padding-block:10px;padding-inline:max(var(--gutter),calc((100vw - 1600px)/2 + var(--gutter)));transform:translateY(calc(-100% - 14px));box-shadow:0 12px 32px #0000}
+.g-header.is-floating.is-shown{transform:none;box-shadow:0 12px 32px #0000003d}
+.g-header.is-floating .g-brand>span{font-size:40px}
+.g-header.is-floating .g-brand>small{display:none}
+body.has-floating-header{padding-top:var(--header-space,100px)}
+
+/* Phone header: every control the same 36px height, a readable Boutique button, 44px tap areas. */
+@media(max-width:700px){
+  .g-header{gap:6px;padding:14px 12px}
+  .g-header .g-brand>span{font-size:36px}
+  .g-header .g-lang-switch{min-height:36px;padding:0 10px;gap:4px}
+  .g-header .g-lang-switch svg{width:13px;height:13px}
+  .g-header .g-lang-switch span{font-size:10px}
+  .g-header .g-header-cta{min-height:36px;padding:0 11px;font-size:10px;letter-spacing:.05em}
+  .g-header .s-selection-toggle{min-width:36px;min-height:36px;gap:2px}
+  .g-header .s-selection-toggle span{font-size:10px}
+  .g-header .g-menu-toggle{width:36px;height:36px}
+  .g-header :is(.g-lang-switch,.g-header-cta,.s-selection-toggle,.g-menu-toggle){position:relative}
+  .g-header :is(.g-lang-switch,.g-header-cta,.s-selection-toggle,.g-menu-toggle)::after{content:"";position:absolute;inset:-5px -3px}
+  .g-header.is-floating{padding:8px 12px}
+  .g-header.is-floating .g-brand>span{font-size:31px}
+}
+@media(max-width:374px){
+  .g-header{gap:4px;padding-inline:10px}
+  .g-header .g-brand>span{font-size:31px}
+  .g-header .g-lang-switch{padding:0 8px}
+  .g-header .g-header-cta{padding:0 8px;font-size:9.5px;letter-spacing:.03em}
+}
+@media(max-width:339px){
+  .g-header .g-brand>span,.g-header.is-floating .g-brand>span{font-size:27px}
+  .g-header .g-lang-switch svg{display:none}
+}
+
+/* Phone menu: the language switch was squeezed into a narrow pill by the menu's link padding. */
+.g-menu nav a.g-lang-switch{min-height:44px;min-width:0;padding:0 16px;gap:8px;margin-top:22px;border:1px solid #ffffff28;font-size:12px}
+.g-menu nav a.g-lang-switch svg{width:16px;height:16px}
+.g-menu nav a.g-lang-switch span{font-size:12px}
+.g-social-icon{width:44px;height:44px}
+
+/* ---------- Footer: the phone number no longer runs into "Écrire à Rayda"; links are easier to tap ---------- */
+.g-footer-contact>a:not(.g-text-link){display:block;width:fit-content;padding-block:8px;margin-top:6px}
+.g-footer-contact .g-text-link{margin-top:12px}
+.g-footer-navigation nav{gap:0 22px}
+.g-footer-navigation nav a{display:block;padding-block:11px}
+.g-social{min-height:44px}
+.g-footer-bottom a{display:inline-block;padding-block:10px;margin-block:-10px}
+
+/* ---------- Home: pillars and benefits read comfortably on phones ---------- */
+@media(max-width:700px){
+  .g-principles article{grid-template-columns:1fr;gap:16px}
+  .g-principles svg{width:46px;height:46px}
+  .g-principles h3{font-size:27px;margin-bottom:14px}
+}
+@media(max-width:520px){
+  .g-values ul{grid-template-columns:1fr}
+  .g-values-content ul li:nth-child(n){min-height:0;padding:15px 2px;font-size:15px;border-left:0;border-right:0;border-bottom:1px solid var(--line)}
+  [dir="rtl"] .g-values-content ul li:nth-child(n){border-left:0;border-right:0}
+  .g-values-content ul li:last-child{border-bottom:0}
+  .g-values li span{font-size:22px;min-width:36px}
+}
+
+/* ---------- Arabic: the remaining one-sided pieces now mirror ---------- */
+[dir="rtl"] .g-values li:nth-child(odd){border-right:0;border-left:1px solid var(--line)}
+[dir="rtl"] .g-menu{inset:0 auto 0 0;transform:translateX(-100%);box-shadow:18px 0 50px #0002}
+[dir="rtl"] .g-menu[open].is-open{transform:none}
+[dir="rtl"] .g-menu-close{right:auto;left:25px}
+[dir="rtl"] .g-menu nav a:hover{padding-left:0;padding-right:5px}
+[dir="rtl"] .g-top{right:auto;left:25px}
+[dir="rtl"] .s-selection{inset:0 auto 0 0}
+@media(max-width:700px){[dir="rtl"] .g-top{left:17px}}
+.g-menu nav a.g-lang-switch:hover{padding:0 16px;color:var(--forest)}
+
+/* ---------- Shop ---------- */
+/* The whole product card is one tap target, not just the photo, the name and a small arrow. */
+.s-card-image picture{display:contents}
+.s-card{position:relative}
+.s-card h3 a::after{content:"";position:absolute;inset:0;z-index:1}
+.s-card:hover h3 a{color:var(--green)}
+.s-card:hover .s-card-bottom>a{color:var(--paper);background:var(--forest);border-color:var(--forest)}
+@supports selector(:has(*)){
+  .s-card:has(h3 a:focus-visible){outline:2px solid var(--green);outline-offset:8px;border-radius:8px 8px 8px 30px}
+  .s-card h3 a:focus-visible{outline:none}
+}
+/* Checkout steps sit on the dark green heading, where green icons and badges disappeared. */
+.s-heading .s-steps-row li{color:var(--paper)}
+.s-heading .s-steps-row svg{color:var(--sage)}
+.s-heading .s-step-number{background:var(--sage);color:var(--forest)}
+/* After an order, the confirmation replaces the filled-in form, and the emptied selection drops its "0 TND" total. */
+.s-checkout-form.is-complete>:not(.g-form-result){display:none}
+.s-checkout-form.is-complete .g-form-result{margin-top:0}
+.g-form-result:focus{outline:none}
+.g-form-result:focus-visible{outline:2px solid var(--green);outline-offset:4px}
+.s-checkout>div:has(>[data-checkout-lines]>.s-empty)>:is(.s-total,.s-small){display:none}
+
+@media(max-width:700px){
+  /* Collections become one swipeable row instead of three lines of small links. */
+  .s-collections{flex-wrap:nowrap;gap:0 20px;overflow-x:auto;overscroll-behavior-x:contain;margin-inline:-22px;padding:0 22px 4px;scroll-padding-inline:22px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent);mask-image:linear-gradient(90deg,transparent,#000 24px,#000 calc(100% - 24px),transparent)}
+  .s-collections::-webkit-scrollbar{display:none}
+  .s-collections a{flex:0 0 auto;white-space:nowrap;padding:13px 0;font-size:12px}
+  /* Related pieces swipe sideways instead of leaving one card alone in a two-column grid. */
+  .s-related .s-product-grid{display:flex;gap:16px;overflow-x:auto;overscroll-behavior-x:contain;scroll-snap-type:x mandatory;margin-inline:-22px;padding:4px 22px 14px;scroll-padding-inline:22px;scrollbar-width:none}
+  .s-related .s-product-grid::-webkit-scrollbar{display:none}
+  .s-related .s-card,.s-related .s-card:last-child{display:block;flex:0 0 min(64%,250px);scroll-snap-align:start}
+}
+
+/* ---------- Product page ---------- */
+.s-main-image,.s-lightbox img{touch-action:pan-y pinch-zoom}
+.s-main-image>img.is-fresh,.s-lightbox img.is-fresh{animation:g-fade .35s ease}
+@media(max-width:700px){
+  /* The buy bar steps aside while the main buy buttons are on screen, so the same button never shows twice. */
+  .s-mobile-buybar{transition:transform .32s cubic-bezier(.2,.7,.2,1),visibility 0s linear 0s}
+  .s-mobile-buybar.is-tucked{transform:translateY(110%);visibility:hidden;transition:transform .32s ease,visibility 0s linear .32s}
+  .s-mobile-buybar strong{white-space:nowrap;font-size:clamp(14px,4.1vw,17px)}
+  .g-top{width:44px;height:44px;transition:bottom .32s ease,background-color .25s,color .25s}
+  body:has(.s-mobile-buybar:not(.is-tucked)) .g-top{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+}
+
+/* ---------- Motion: small, quick, and off for anyone who prefers reduced motion ---------- */
+:is(.g-button,.s-add-secondary,.s-feature-filters button,.g-lang-switch,.g-social-toggle,.s-quantity button,.s-gallery-controls button,.s-lightbox-controls button):active{transform:scale(.97)}
+.g-social-popover:not([hidden]){animation:s-pop .22s ease}
+.g-top:not([hidden]){animation:g-fade .3s ease}
+.s-selection-toggle.is-bumped svg{animation:s-bump .55s cubic-bezier(.3,1.6,.5,1)}
+@keyframes s-pop{from{opacity:0;transform:translate(-50%,-6px)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes s-bump{0%{transform:scale(1)}35%{transform:scale(1.28)}100%{transform:scale(1)}}
+@keyframes s-drawer-in{from{transform:translateX(100%)}to{transform:none}}
+@keyframes s-drawer-in-rtl{from{transform:translateX(-100%)}to{transform:none}}
+@media(prefers-reduced-motion:no-preference){
+  /* The selection drawer slides in from its side instead of only fading. */
+  .s-selection[open]{animation:s-drawer-in .42s cubic-bezier(.2,.7,.2,1)}
+  [dir="rtl"] .s-selection[open]{animation-name:s-drawer-in-rtl}
+  .s-selection[open]::backdrop,.s-lightbox[open]::backdrop{animation:g-fade .3s ease}
+  /* Questions open and close smoothly where the browser supports animating to an automatic height. */
+  @supports (interpolate-size:allow-keywords){
+    .g-faq-list{interpolate-size:allow-keywords}
+    .g-faq-list details::details-content{block-size:0;overflow-y:clip;transition:block-size .38s cubic-bezier(.2,.7,.2,1),content-visibility .38s allow-discrete}
+    .g-faq-list details[open]::details-content{block-size:auto}
+  }
+  /* A soft cross-fade between pages in browsers that support it; others simply load the next page. */
+  @view-transition{navigation:auto}
+}

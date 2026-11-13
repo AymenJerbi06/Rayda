@@ -1,7 +1,9 @@
-import { escapeHtml as esc, priceLabel, priceLabelAr, priceBounds, selectionTotal, selectionTotalAr, normalizeSelection, filterProducts } from './commerce-core.js';
+import { escapeHtml as esc, priceLabel, priceLabelAr, priceBounds, selectionTotal, selectionTotalAr, selectionTotalWithDelivery, selectionTotalWithDeliveryAr, DELIVERY_FEE, normalizeSelection, filterProducts, thumbSrc } from './commerce-core.js';
 const isAr = document.documentElement.lang === 'ar';
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 const priceLabelAuto = isAr ? priceLabelAr : priceLabel;
 const selectionTotalAuto = isAr ? selectionTotalAr : selectionTotal;
+const totalWithDeliveryAuto = isAr ? selectionTotalWithDeliveryAr : selectionTotalWithDelivery;
 
 const products = window.STORE_CATALOG.products;
 const key = 'atelier-cart'; // Keep selections made in the previous storefront.
@@ -29,20 +31,30 @@ function lineMarkup(item, index) {
   const image = p.images[p.variantImageIndex?.[item.variant] ?? p.coverImageIndex ?? 0];
   const displayName = isAr ? (window.STORE_PRODUCT_NAMES_AR?.[p.id] || p.name) : p.name;
   const href = (isAr ? '/ar' : '') + '/products/' + p.slug + '/';
-  return `<article class="s-line"><a href="${href}" tabindex="-1" aria-hidden="true"><img src="${image.src}" alt="" width="100" height="120" /></a><div><h3><a href="${href}">${esc(displayName)}</a></h3><p>${esc([item.variant,item.palette].filter(Boolean).join(' · '))}</p><strong>${priceLabelAuto(p, item.variant)}</strong><div class="s-line-quantity"><button type="button" data-line-step="-1" data-index="${index}" aria-label="${isAr ? 'إنقاص كمية ' : 'Diminuer la quantité de '}${esc(displayName)}" ${item.quantity === 1 ? 'disabled' : ''}>−</button><span aria-label="${isAr ? 'الكمية' : 'Quantité'}">${item.quantity}</span><button type="button" data-line-step="1" data-index="${index}" aria-label="${isAr ? 'زيادة كمية ' : 'Augmenter la quantité de '}${esc(displayName)}" ${item.quantity === 20 ? 'disabled' : ''}>+</button><button type="button" data-remove="${index}" aria-label="${isAr ? 'إزالة ' : 'Retirer '}${esc(displayName)}">${isAr ? 'إزالة' : 'Retirer'}</button></div></div></article>`;
+  return `<article class="s-line"><a href="${href}" tabindex="-1" aria-hidden="true"><img src="${thumbSrc(image.src)}" alt="" width="100" height="120" decoding="async" /></a><div><h3><a href="${href}">${esc(displayName)}</a></h3><p>${esc([item.variant,item.palette].filter(Boolean).join(' · '))}</p><strong>${priceLabelAuto(p, item.variant)}</strong><div class="s-line-quantity"><button type="button" data-line-step="-1" data-index="${index}" aria-label="${isAr ? 'إنقاص كمية ' : 'Diminuer la quantité de '}${esc(displayName)}" ${item.quantity === 1 ? 'disabled' : ''}>−</button><span aria-label="${isAr ? 'الكمية' : 'Quantité'}">${item.quantity}</span><button type="button" data-line-step="1" data-index="${index}" aria-label="${isAr ? 'زيادة كمية ' : 'Augmenter la quantité de '}${esc(displayName)}" ${item.quantity === 20 ? 'disabled' : ''}>+</button><button type="button" data-remove="${index}" aria-label="${isAr ? 'إزالة ' : 'Retirer '}${esc(displayName)}">${isAr ? 'إزالة' : 'Retirer'}</button></div></div></article>`;
 }
+let shownCount = null;
 function renderSelection() {
   const count = items.reduce((sum,item) => sum + item.quantity, 0);
   document.querySelectorAll('[data-selection-count]').forEach(badge => { badge.textContent = count; });
+  // A small pulse on the bag icon confirms that something was added, even when the drawer stays closed.
+  if (shownCount !== null && count > shownCount) document.querySelectorAll('.s-selection-toggle').forEach(toggle => {
+    toggle.classList.remove('is-bumped'); void toggle.offsetWidth; toggle.classList.add('is-bumped');
+  });
+  shownCount = count;
   const markup = items.length ? items.map(lineMarkup).join('') : (isAr
     ? '<div class="s-empty"><h3>تبدأ رغباتكم هنا.</h3><p>أعجبتكم قطعة؟ أضيفوها إلى اختياركم للحديث عنها مع رايدة.</p><a class="g-button" href="/ar/boutique/">اكتشفوا الإبداعات ↗</a></div>'
     : '<div class="s-empty"><h3>Vos envies commencent ici.</h3><p>Une pièce vous plaît ? Ajoutez-la à votre sélection pour en parler avec Rayda.</p><a class="g-button" href="/collections/all/">Découvrir les créations ↗</a></div>');
   document.querySelectorAll('[data-selection-lines],[data-checkout-lines]').forEach(el => { el.innerHTML = markup; });
   document.querySelector('[data-selection-footer]').hidden = !items.length;
   document.querySelectorAll('[data-selection-total],[data-checkout-total]').forEach(el => { el.textContent = selectionTotalAuto(items,products); });
+  document.querySelectorAll('[data-checkout-grand-total]').forEach(el => { el.textContent = totalWithDeliveryAuto(items,products); });
+  // Custom pieces (BaZi bracelets and necklaces, the Hafidha El Mel wallet) need birth details, asked by phone.
+  document.querySelectorAll('[data-custom-note]').forEach(note => { note.hidden = !items.some(item => products.find(p => p.id === item.productId)?.custom); });
   const form = document.querySelector('[data-selection-form]');
   if (form) {
     form.hidden = !items.length;
+    if (items.length) form.classList.remove('is-complete');
     form.querySelector('.g-form-result').hidden = true;
     form.querySelector('[type="submit"]').disabled = false;
   }
@@ -105,17 +117,64 @@ if (productRoot) {
   const form = productRoot.querySelector('[data-product-form]');
   const quantity = form.elements.quantity;
   let imageIndex = p.coverImageIndex || 0;
+  const strip = productRoot.querySelector('.s-thumbnails');
+  const isRtl = document.documentElement.dir === 'rtl';
+  const preloaded = new Set();
+  // Fetch the neighbouring photos once someone starts browsing, so the next one appears without a wait.
+  function preload(index) {
+    const src = p.images[(index + p.images.length) % p.images.length].src;
+    if (preloaded.has(src)) return;
+    preloaded.add(src);
+    const next = new Image(); next.decoding = 'async'; next.src = src;
+  }
   function showImage(index) {
     imageIndex = (index + p.images.length) % p.images.length;
     const image = p.images[imageIndex];
-    document.querySelectorAll('[data-main-image],[data-zoom-image]').forEach(img => { img.src=image.src;img.alt=image.alt; });
+    document.querySelectorAll('[data-main-image],[data-zoom-image]').forEach(img => {
+      if (img.getAttribute('src') !== image.src) { img.classList.remove('is-fresh'); void img.offsetWidth; img.classList.add('is-fresh'); }
+      img.src=image.src;img.alt=image.alt;
+    });
     document.querySelectorAll('[data-image-count]').forEach(el => { el.textContent = (imageIndex+1) + ' / ' + p.images.length; });
     productRoot.querySelectorAll('[data-image]').forEach(button => button.setAttribute('aria-pressed',String(Number(button.dataset.image) === imageIndex)));
+    // Keep the active thumbnail in view when the arrows or a swipe move past the visible strip.
+    const thumb = strip?.querySelector(`[data-image="${imageIndex}"]`);
+    if (thumb && strip.scrollWidth > strip.clientWidth) {
+      const stripBox = strip.getBoundingClientRect(), thumbBox = thumb.getBoundingClientRect();
+      strip.scrollBy({ left: (thumbBox.left + thumbBox.width / 2) - (stripBox.left + stripBox.width / 2), behavior: reducedMotion.matches ? 'auto' : 'smooth' });
+    }
+    preload(imageIndex + 1); preload(imageIndex - 1);
   }
   productRoot.querySelectorAll('[data-image]').forEach(button => button.addEventListener('click',()=>showImage(Number(button.dataset.image))));
   document.querySelectorAll('[data-gallery-step]').forEach(button => button.addEventListener('click',()=>showImage(imageIndex+Number(button.dataset.galleryStep))));
   const zoom = document.getElementById('s-lightbox');
-  productRoot.querySelector('[data-zoom]').addEventListener('click', event => openDialog(zoom,event.currentTarget));
+  // Swipe between photos on touch screens, both on the page and in the zoom view. In Arabic the
+  // gallery reads right to left, so the direction of a swipe is mirrored too.
+  let swipedAt = 0;
+  function enableSwipe(surface) {
+    if (!surface) return;
+    let start = null;
+    surface.addEventListener('pointerdown', event => { start = event.pointerType === 'mouse' ? null : { x: event.clientX, y: event.clientY }; });
+    surface.addEventListener('pointercancel', () => { start = null; });
+    surface.addEventListener('pointerup', event => {
+      if (!start) return;
+      const dx = event.clientX - start.x, dy = event.clientY - start.y;
+      start = null;
+      if (Math.abs(dx) < 40 || Math.abs(dx) < Math.abs(dy) * 1.4) return;
+      swipedAt = Date.now();
+      const forward = dx < 0 ? 1 : -1;
+      showImage(imageIndex + (isRtl ? -forward : forward));
+    });
+  }
+  const zoomButton = productRoot.querySelector('[data-zoom]');
+  enableSwipe(zoomButton);
+  enableSwipe(zoom?.querySelector('[data-zoom-image]'));
+  zoomButton.addEventListener('click', event => { if (Date.now() - swipedAt > 400) openDialog(zoom,event.currentTarget); });
+  // The pinned mobile buy bar only appears once the main buy buttons have scrolled out of view.
+  const buybar = productRoot.querySelector('.s-mobile-buybar');
+  const mainBuy = productRoot.querySelector('.s-buy-row') || productRoot.querySelector('.s-add');
+  if (buybar && mainBuy && 'IntersectionObserver' in window) {
+    new IntersectionObserver(([entry]) => buybar.classList.toggle('is-tucked', entry.isIntersecting)).observe(mainBuy);
+  }
   zoom.addEventListener('keydown', event => {
     if (event.key==='ArrowLeft'||event.key==='ArrowRight') { event.preventDefault();showImage(imageIndex+(event.key==='ArrowLeft'?-1:1)); }
   });
@@ -157,7 +216,8 @@ function submitOrder({ name, phone, address, city, postalCode }) {
     const p = products.find(product => product.id === item.productId);
     return { productId: item.productId, qty: item.quantity, price: priceBounds(p, item.variant)?.min ?? 0 };
   });
-  const deliveryFee = Number(readAdminStore('admin_settings', {}).deliveryFee ?? 10);
+  // The same 7 TND the customer saw on the checkout page.
+  const deliveryFee = DELIVERY_FEE;
   const total = orderItems.reduce((sum, item) => sum + item.qty * item.price, 0) + deliveryFee;
   const stock = readAdminStore('admin_stock', {});
   orderItems.forEach(item => {
@@ -177,8 +237,17 @@ const selectionForm = document.querySelector('[data-selection-form]');
 if (selectionForm) {
   const result = selectionForm.querySelector('.g-form-result');
   selectionForm.addEventListener('input',event=>{ result.hidden=true;event.target.setCustomValidity?.(''); });
+  // Rayda confirms every order by phone, so the number is typed twice and both must match.
+  const digits = value => String(value).replace(/\D/g, '');
+  const checkPhones = () => {
+    const { phone, phoneConfirm } = selectionForm.elements;
+    if (!phone || !phoneConfirm) return;
+    phone.setCustomValidity(!phone.value || digits(phone.value).length >= 8 ? '' : isAr ? 'أدخلوا رقم هاتف كاملًا.' : 'Entrez un numéro de téléphone complet.');
+    phoneConfirm.setCustomValidity(!phoneConfirm.value || digits(phoneConfirm.value).slice(-8) === digits(phone.value).slice(-8) ? '' : isAr ? 'الرقمان غير متطابقين.' : 'Les deux numéros ne correspondent pas.');
+  };
   selectionForm.addEventListener('submit',event=>{
     event.preventDefault();
+    checkPhones();
     if (!items.length || !selectionForm.reportValidity()) return;
     const name = selectionForm.elements.name.value.trim();
     const phone = selectionForm.elements.phone.value.trim();
@@ -191,9 +260,16 @@ if (selectionForm) {
     items = [];
     persist();
     // persist() just hid the form (empty selection) and the result panel — show the confirmation instead.
+    // The filled-in fields are cleared and folded away so the confirmation is the one thing left to read,
+    // and it is brought into view, since on a phone it would otherwise sit below the fold.
+    selectionForm.reset();
+    selectionForm.classList.add('is-complete');
     selectionForm.hidden = false;
     result.hidden = false;
     selectionForm.querySelector('[type="submit"]').disabled = true;
+    result.tabIndex = -1;
+    result.focus({ preventScroll: true });
+    result.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'center' });
   });
 }
 
