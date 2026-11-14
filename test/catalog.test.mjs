@@ -364,3 +364,21 @@ test("emphasis.css is on every page, never sets a typeface, and personalised pie
   }
   assert.doesNotMatch(await readFile(path.join(root, 'dist/products/decor-abondance/index.html'), 'utf8'), /s-tailored/);
 });
+test("motion.css and motion.js load last on every page, respect reduced motion and never set a typeface", async () => {
+  const css = (await readFile(path.join(root, 'motion.css'), 'utf8')).replace(/\/\*[\s\S]*?\*\//g, '');
+  assert.doesNotMatch(css, /font-family|font\s*:/);
+  assert.doesNotMatch(css, /#[0-9a-f]{3,8}\b/i, 'colours come from the site tokens');
+  assert.match(css, /prefers-reduced-motion:reduce/);
+  const js = await readFile(path.join(root, 'src/motion.js'), 'utf8');
+  assert.match(js, /prefers-reduced-motion: reduce/);
+  if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
+  for (const file of ['dist/index.html', 'dist/ar/index.html', 'dist/products/cle-de-vie/index.html', 'dist/ar/checkout/index.html']) {
+    const html = await readFile(path.join(root, file), 'utf8');
+    assert.ok(html.indexOf('/motion.css') > html.indexOf('/emphasis.css'), file);
+    assert.match(html, /<script defer src="\/src\/motion\.js"><\/script>/, file);
+  }
+  // Miller's law: the checkout form is cut into three numbered groups.
+  for (const file of ['dist/checkout/index.html', 'dist/ar/checkout/index.html']) {
+    assert.equal(((await readFile(path.join(root, file), 'utf8')).match(/class="s-form-step"/g) || []).length, 3, file);
+  }
+});

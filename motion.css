@@ -1,0 +1,137 @@
+/* Motion and ease of use — loaded last, after emphasis.css.
+   Animation principles: squash and stretch, anticipation, staging, pose to pose, follow through,
+   slow in and slow out, arcs, secondary action, timing, exaggeration, solid (3D) drawing, appeal.
+   Usability laws: Fitts (bigger targets), Hick (one main choice), Miller (small groups),
+   Doherty (answer within 0.4 s), Postel (accept what people type), Jakob (familiar patterns),
+   frequency of use (the most used things closest to hand).
+   It uses the site's colour tokens and never sets a typeface. Everything here stops for
+   visitors who ask for reduced motion. */
+
+:root{
+  --ease-out:cubic-bezier(.22,.8,.26,1);          /* slow out: arrives gently */
+  --ease-in-out:cubic-bezier(.65,.05,.35,1);      /* slow in, slow out */
+  --ease-spring:cubic-bezier(.3,1.5,.5,1);        /* overshoots, then settles: follow through */
+  --snap:140ms; --quick:220ms; --calm:520ms;      /* snappy feedback, calm entrances */
+}
+
+/* ---------- Timing, slow in and slow out, follow through: entrances ---------- */
+/* Entrances were 1.25 to 2 s; they now arrive in about half a second and settle past their mark. */
+@keyframes m-rise{0%{opacity:0;transform:translateY(26px)}70%{opacity:1;transform:translateY(-3px)}100%{opacity:1;transform:none}}
+@keyframes m-fade{from{opacity:0}to{opacity:1}}
+[data-reveal].is-revealed{animation:m-fade var(--calm) var(--ease-out) var(--delay,0ms) both}
+[data-reveal="up"].is-revealed{animation:m-rise 620ms var(--ease-out) var(--delay,0ms) both}
+
+/* ---------- Squash and stretch, exaggerated feedback: pressing ---------- */
+.g-button,.g-text-link,.s-add-secondary,.s-choice span,.s-gallery-controls button,.s-lightbox-controls button,.s-thumbnails button,.s-collections a,.s-feature-filters button,.s-card-bottom>a,.s-selection-toggle,.g-menu-toggle,.g-social-toggle{transition:transform var(--snap) var(--ease-out),background var(--quick),color var(--quick),border-color var(--quick),box-shadow var(--quick)}
+.g-button:active,.g-text-link:active,.s-add-secondary:active{transform:scale(.97,.93);box-shadow:none;transition-duration:60ms}
+.s-choice input:active+span,.s-collections a:active,.s-feature-filters button:active{transform:scale(.95,.9);transition-duration:60ms}
+.s-gallery-controls button:active,.s-lightbox-controls button:active,.s-card-bottom>a:active,.s-selection-toggle:active,.g-menu-toggle:active,.g-social-toggle:active,.s-thumbnails button:active{transform:scale(.88);transition-duration:60ms}
+/* After a press the button springs back past its size, then settles. */
+@keyframes m-release{0%{transform:scale(.97,.93)}55%{transform:scale(1.03,1.05)}100%{transform:none}}
+.m-released{animation:m-release 320ms var(--ease-spring)}
+
+/* ---------- Anticipation: the arrow pulls back before it goes ---------- */
+@keyframes m-arrow{0%{transform:none}30%{transform:translate(-3px,3px)}100%{transform:translate(4px,-4px)}}
+@keyframes m-arrow-down{0%{transform:none}30%{transform:translateY(-3px)}100%{transform:translateY(4px)}}
+.g-button>span[aria-hidden],.g-text-link>span[aria-hidden],.s-card-bottom>a>span,.s-category-arrow{display:inline-block;transition:transform var(--quick) var(--ease-out)}
+.g-button:hover>span[aria-hidden],.g-text-link:hover>span[aria-hidden],.s-card:hover .s-card-bottom>a>span,.s-category:hover .s-category-arrow{animation:m-arrow 420ms var(--ease-in-out) forwards}
+[dir="rtl"] .g-button:hover>span[aria-hidden],[dir="rtl"] .g-text-link:hover>span[aria-hidden]{animation-name:m-arrow}
+.s-pdp-links .g-text-link:first-child:hover>span[aria-hidden]{animation-name:m-arrow-down}
+
+/* ---------- Staging: one thing has the stage ---------- */
+/* When the selection, the menu or a photo is open, the page behind steps back. */
+.s-selection::backdrop,.s-lightbox::backdrop,.g-menu::backdrop{backdrop-filter:blur(5px) saturate(.9);-webkit-backdrop-filter:blur(5px) saturate(.9)}
+@keyframes m-stage{0%{opacity:0;transform:translateY(14px) scale(.98)}70%{opacity:1;transform:translateY(-2px) scale(1.004)}100%{opacity:1;transform:none}}
+.s-selection[open],.s-lightbox[open]{animation:m-stage 340ms var(--ease-out)}
+/* The order button is the one filled, full-width shape in the buy box; it breathes once when the page settles. */
+@keyframes m-invite{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--green) 0%,transparent)}45%{box-shadow:0 0 0 9px color-mix(in srgb,var(--green) 22%,transparent)}}
+.s-buy-row .s-add:not(:disabled){animation:m-invite 1.5s var(--ease-in-out) 900ms 1}
+
+/* ---------- Pose to pose: photos change in clear steps ---------- */
+@keyframes m-pose{0%{opacity:.25;transform:scale(.975)}60%{opacity:1;transform:scale(1.006)}100%{opacity:1;transform:none}}
+.s-main-image>img.m-pose{animation:m-pose 300ms var(--ease-out)}
+.s-thumbnails button[aria-pressed="true"]{transform:translateY(-3px)}
+
+/* ---------- Follow through and overlapping action: lists arrive one after another ---------- */
+@keyframes m-item{0%{opacity:0;transform:translateY(12px)}70%{opacity:1;transform:translateY(-2px)}100%{opacity:1;transform:none}}
+.m-seq>*{opacity:0}
+.m-seq.m-in>*{animation:m-item 460ms var(--ease-out) both}
+.m-seq.m-in>*:nth-child(2){animation-delay:90ms}.m-seq.m-in>*:nth-child(3){animation-delay:180ms}.m-seq.m-in>*:nth-child(4){animation-delay:270ms}.m-seq.m-in>*:nth-child(5){animation-delay:360ms}.m-seq.m-in>*:nth-child(n+6){animation-delay:430ms}
+/* Step numbers land a beat after their line: the secondary action. */
+@keyframes m-pop{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.25);opacity:1}100%{transform:none;opacity:1}}
+.m-seq.m-in>li>span[aria-hidden]:first-child{display:inline-block;animation:m-pop 420ms var(--ease-spring) both;animation-delay:inherit}
+
+/* ---------- Arcs and exaggerated feedback: adding to the selection ---------- */
+.m-fly{position:fixed;z-index:2147483646;left:0;top:0;width:54px;height:54px;border-radius:50%;object-fit:cover;pointer-events:none;border:2px solid var(--sage);box-shadow:0 8px 22px color-mix(in srgb,var(--forest) 35%,transparent);background:var(--sage)}
+@keyframes m-count{0%{transform:none}30%{transform:scale(1.9)}55%{transform:scale(.85)}100%{transform:none}}
+@keyframes m-bag{0%,100%{transform:none}25%{transform:rotate(-14deg) scale(1.12)}55%{transform:rotate(9deg)}80%{transform:rotate(-4deg)}}
+.s-selection-toggle.m-bump svg{animation:m-bag 560ms var(--ease-out);transform-origin:50% 20%}
+.s-selection-toggle.m-bump [data-selection-count]{display:inline-block;animation:m-count 520ms var(--ease-spring);font-weight:700}
+/* A confirmed order: the tick is drawn, then the message follows. */
+@keyframes m-done{0%{opacity:0;transform:scale(.9)}60%{opacity:1;transform:scale(1.03)}100%{opacity:1;transform:none}}
+.g-form-result:not([hidden]){animation:m-done 460ms var(--ease-spring)}
+/* A wrong field shakes its head once. */
+@keyframes m-no{0%,100%{transform:none}20%{transform:translateX(-7px)}45%{transform:translateX(6px)}70%{transform:translateX(-3px)}}
+.m-invalid{animation:m-no 360ms var(--ease-out)}
+
+/* ---------- Solid drawing in 3D: cards have weight ---------- */
+.s-card-image,.s-category-photo{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform 260ms var(--ease-out),box-shadow 260ms var(--ease-out);will-change:transform}
+.s-card:hover .s-card-image,.s-category:hover .s-category-photo{box-shadow:0 18px 34px -16px color-mix(in srgb,var(--forest) 45%,transparent)}
+.g-button{box-shadow:0 3px 0 color-mix(in srgb,var(--forest) 18%,transparent)}
+.g-header .g-button,.s-mobile-buybar .g-button{box-shadow:none}
+
+/* ---------- Secondary action: small things answer the main one ---------- */
+.s-card .s-badge{transition:transform var(--quick) var(--ease-spring)}
+.s-card:hover .s-badge{transform:translateY(-3px)}
+@keyframes m-sway{0%,100%{transform:rotate(0)}50%{transform:rotate(2.2deg)}}
+.g-hero-text:has(.g-actions a:hover) .g-botanical svg{animation:m-sway 1.6s var(--ease-in-out) infinite;transform-origin:50% 100%}
+
+/* ---------- Fitts's law: bigger targets, and the whole card is one ---------- */
+.s-card{position:relative}
+.s-card h3 a::after{content:"";position:absolute;inset:0;z-index:1}
+.s-card-bottom>a{position:relative;z-index:2}
+.s-gallery-controls button,.s-lightbox-controls button{width:52px;height:52px;font-size:19px}
+.s-thumbnails button{flex-basis:74px;width:74px;height:82px}
+.s-dialog-close,.g-menu-close{min-width:48px;min-height:48px}
+.s-selection-toggle,.g-menu-toggle,.g-social-toggle,.g-lang-switch{position:relative}
+.s-selection-toggle::after,.g-menu-toggle::after,.g-social-toggle::after,.g-lang-switch::after{content:"";position:absolute;inset:-8px -4px}
+.s-breadcrumbs a{display:inline-block;padding-block:8px}
+.s-choice span{min-height:46px}
+details>summary{cursor:pointer}
+.g-translation-show,.g-translation-hide{display:inline-block;padding-block:8px}
+.g-contact-form input,.g-contact-form select{min-height:52px}
+
+/* ---------- Miller's law: the checkout in three small groups ---------- */
+.s-form-step{display:flex;align-items:center;gap:10px;margin:22px 0 2px;color:var(--forest);font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.s-form-step:first-of-type{margin-top:6px}
+.s-form-step b{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--green);color:var(--paper);font-size:13px;letter-spacing:0}
+.s-personal{border-top:0;padding-top:0;margin-top:0}
+.s-personal h3{display:none}
+
+/* ---------- Doherty threshold: something answers at once ---------- */
+.m-busy{pointer-events:none;opacity:.85}
+@keyframes m-dots{0%{content:""}33%{content:"."}66%{content:".."}100%{content:"..."}}
+.m-busy::after{content:"";display:inline-block;width:1.2em;text-align:start;animation:m-dots 700ms steps(1) infinite}
+
+/* ---------- Frequency of use: on a phone, the shop comes first in the menu ---------- */
+@media(max-width:1024px){
+  .g-menu[open]{display:flex;flex-direction:column}
+  .g-menu[open]>.g-button{order:-1;align-self:stretch;width:auto;margin:58px 0 10px;min-height:56px}
+  .g-menu[open]>nav{order:0}
+}
+@media(max-width:700px){
+  .s-thumbnails button{flex-basis:66px;width:66px;height:72px}
+  .s-gallery-controls button{width:50px;height:50px}
+}
+@media(hover:none){.s-card-image,.s-category-photo{transform:none}}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .m-seq>*{opacity:1}
+  .s-card-image,.s-category-photo{transform:none!important}
+  .m-fly{display:none}
+}
+
+/* Fitts again: the quantity and remove buttons in the selection are easy to hit. */
+.s-line button{min-width:42px;min-height:42px}
+.s-line button+button,.s-line a{padding-block:8px}
