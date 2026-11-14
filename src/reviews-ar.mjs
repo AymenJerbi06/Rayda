@@ -3,8 +3,8 @@
 import { reviews } from './reviews.mjs';
 
 const labels = {
-  calme: { theme: 'شعور بالهدوء', context: 'رسالة وصلت لرايدة · القطعة غير محددة' },
-  lien: { theme: 'العلاقة مع رايدة', context: 'ردًّا على ستوري فيها سوار' },
+  calme: { theme: 'شعور بالهدوء', context: 'رسالة وصلت لرايدا · القطعة غير محددة' },
+  lien: { theme: 'العلاقة مع رايدا', context: 'ردًّا على ستوري فيها سوار' },
   fille: { theme: 'من أجل ابنتها', context: 'بعد قلادة طلبتها لابنتها' },
   confiance: { theme: 'الثقة بالنفس', context: 'حول سوار صُمّم حسب خريطة البازي الخاصة بها' },
   'trois-ans': { theme: 'بعد ثلاث سنوات', context: 'رسالة بعد ثلاث سنوات من شراء سوارين' }

@@ -43,14 +43,26 @@ function renderSelection() {
   });
   shownCount = count;
   const markup = items.length ? items.map(lineMarkup).join('') : (isAr
-    ? '<div class="s-empty"><h3>تبدأ رغباتكم هنا.</h3><p>أعجبتكم قطعة؟ أضيفوها إلى اختياركم للحديث عنها مع رايدة.</p><a class="g-button" href="/ar/boutique/">اكتشفوا الإبداعات ↗</a></div>'
+    ? '<div class="s-empty"><h3>تبدأ رغباتكم هنا.</h3><p>أعجبتكم قطعة؟ أضيفوها إلى اختياركم للحديث عنها مع رايدا.</p><a class="g-button" href="/ar/boutique/">اكتشفوا الإبداعات ↗</a></div>'
     : '<div class="s-empty"><h3>Vos envies commencent ici.</h3><p>Une pièce vous plaît ? Ajoutez-la à votre sélection pour en parler avec Rayda.</p><a class="g-button" href="/collections/all/">Découvrir les créations ↗</a></div>');
   document.querySelectorAll('[data-selection-lines],[data-checkout-lines]').forEach(el => { el.innerHTML = markup; });
   document.querySelector('[data-selection-footer]').hidden = !items.length;
   document.querySelectorAll('[data-selection-total],[data-checkout-total]').forEach(el => { el.textContent = selectionTotalAuto(items,products); });
   document.querySelectorAll('[data-checkout-grand-total]').forEach(el => { el.textContent = totalWithDeliveryAuto(items,products); });
-  // Custom pieces (BaZi bracelets and necklaces, the Hafidha El Mel wallet) need birth details, asked by phone.
-  document.querySelectorAll('[data-custom-note]').forEach(note => { note.hidden = !items.some(item => products.find(p => p.id === item.productId)?.custom); });
+  // Custom pieces (BaZi bracelets and necklaces, the Hafidha El Mel wallet) cannot be made without the birth date,
+  // and the wallet also needs the client's goals: the checkout asks for them, and only then.
+  const needsBirth = items.some(item => products.find(p => p.id === item.productId)?.custom);
+  const hasWallet = items.some(item => item.productId === 'portefeuille-hafidha');
+  const hasBazi = items.some(item => item.productId !== 'portefeuille-hafidha' && products.find(p => p.id === item.productId)?.custom);
+  document.querySelectorAll('[data-personal-fields]').forEach(box => {
+    box.hidden = !needsBirth;
+    box.querySelector('[name="birthDate"]').disabled = !needsBirth;
+    box.querySelector('[name="birthDate"]').max = new Date().toISOString().slice(0, 10);
+    box.querySelector('[data-goals-field]').hidden = !hasWallet;
+    box.querySelector('[name="goals"]').disabled = !hasWallet;
+    box.querySelector('[data-personal-bazi]').hidden = !hasBazi;
+    box.querySelector('[data-personal-wallet]').hidden = !hasWallet;
+  });
   const form = document.querySelector('[data-selection-form]');
   if (form) {
     form.hidden = !items.length;
@@ -213,7 +225,7 @@ const STOCK_SEED = {
   'portefeuille-hafidha': 6, 'carte-million-dollar': 20, 'decor-abondance': 8,
   'cle-de-vie': 10, 'fleur-de-vie': 0, 'pendentif-voiture-fleur': 15, 'pendentif-voiture-ankh': 15
 };
-function submitOrder({ name, phone, address, city, postalCode }) {
+function submitOrder({ name, phone, address, city, postalCode, birthDate, goals }) {
   const orderItems = items.map(item => {
     const p = products.find(product => product.id === item.productId);
     return { productId: item.productId, qty: item.quantity, price: priceBounds(p, item.variant)?.min ?? 0 };
@@ -231,7 +243,7 @@ function submitOrder({ name, phone, address, city, postalCode }) {
   });
   writeAdminStore('admin_stock', stock);
   const orders = readAdminStore('admin_orders', []);
-  orders.push({ id: 'order-' + Math.random().toString(36).slice(2,9), name, phone, address, city, postalCode, items: orderItems, status: 'Nouvelle', date: new Date().toISOString(), total });
+  orders.push({ id: 'order-' + Math.random().toString(36).slice(2,9), name, phone, address, city, postalCode, birthDate, goals, items: orderItems, status: 'Nouvelle', date: new Date().toISOString(), total });
   writeAdminStore('admin_orders', orders);
 }
 
@@ -257,7 +269,10 @@ if (selectionForm) {
       name, phone,
       address: selectionForm.elements.address.value.trim(),
       city: selectionForm.elements.city.value.trim(),
-      postalCode: selectionForm.elements.postalCode.value.trim()
+      postalCode: selectionForm.elements.postalCode.value.trim(),
+      // Empty unless the selection holds a custom piece (the fields are disabled otherwise).
+      birthDate: selectionForm.elements.birthDate?.disabled ? '' : selectionForm.elements.birthDate?.value || '',
+      goals: selectionForm.elements.goals?.disabled ? '' : selectionForm.elements.goals?.value.trim() || ''
     });
     items = [];
     persist();

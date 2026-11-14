@@ -19,7 +19,7 @@
         return;
       }
       var phoneLink = document.querySelector(".g-contact-phone").href;
-      var text = "السلام عليكم رايدة، اسمي " + name + ".\n" + data.get("subject") + "\n\n" + message;
+      var text = "السلام عليكم رايدا، اسمي " + name + ".\n" + data.get("subject") + "\n\n" + message;
       result.querySelector("a").href = phoneLink + "?text=" + encodeURIComponent(text);
       result.hidden = false;
     });

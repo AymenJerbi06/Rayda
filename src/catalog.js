@@ -108,7 +108,7 @@
     }),
     make({
       id: "portefeuille-hafidha", name: "Portefeuille Hafidha El Mel", eyebrow: "Portefeuille · quatre coloris", type: "accessory", collections: ["creations-bazi", "portefeuilles"],
-      price: null, availability: "quote", custom: true, lifestyle: "Portefeuille Hafidha El Mel vert, fermé, tenu en main au-dessus d’une table de café",
+      price: amount(120), availability: "quote", custom: true, lifestyle: "Portefeuille Hafidha El Mel vert, fermé, tenu en main au-dessus d’une table de café",
       aiPhotos: [["couleurs", "Le portefeuille Hafidha El Mel dans ses quatre coloris : vert, jaune, rose et rouge"],
         ["vert-flatlay", "Portefeuille Hafidha El Mel vert, fermé, posé à plat"], ["jaune-flatlay", "Portefeuille Hafidha El Mel jaune, fermé, posé à plat"], ["rose-flatlay", "Portefeuille Hafidha El Mel rose fuchsia, fermé, posé à plat"], ["rouge-flatlay", "Portefeuille Hafidha El Mel rouge, fermé, posé à plat"],
         ["vert-hand", "Portefeuille Hafidha El Mel vert tenu en main"], ["jaune-hand", "Portefeuille Hafidha El Mel jaune tenu en main"], ["rose-hand", "Portefeuille Hafidha El Mel rose fuchsia tenu en main"], ["rouge-hand", "Portefeuille Hafidha El Mel rouge tenu en main"],
@@ -117,13 +117,9 @@
       benefits: [
         { icon: "abundance", label: "Pensé pour accompagner une relation plus sereine à l'argent" },
         { icon: "protection", label: "Préparation associant Reiki et lecture BaZi, selon la démarche de Rayda" },
-        { icon: "personalization", label: "Disponible en quatre coloris" }
+        { icon: "personalization", label: "Couleur choisie selon votre date de naissance" }
       ],
-      details: ["Dimensions communiquées : 19,5 × 11 cm", "Cuir naturel de très bonne qualité", "Livré avec des cartes chargées et un exercice pour développer la réception financière", "Aucune promesse de résultat financier"],
-      options: { variant: ["Vert", "Jaune", "Rose / fuchsia", "Rouge"] },
-      variantImageIndex: { "Vert": 1, "Jaune": 2, "Rose / fuchsia": 3, "Rouge": 4 },
-      priceNote: "Prix non communiqué dans les éléments reçus. Tarif et contenu exact à confirmer avec la créatrice.",
-      missing: ["Prix", "Disponibilité"]
+      details: ["Dimensions communiquées : 19,5 × 11 cm", "Cuir naturel de très bonne qualité", "Livré avec des cartes chargées et un exercice pour développer la réception financière", "Il accompagne votre intention et vos efforts : ce n’est pas une garantie de recevoir de l’argent"]
     }),
     make({
       id: "carte-million-dollar", name: "Carte Million Dollar dorée", eyebrow: "Objet doré · deux tailles", type: "decor", collections: ["objets-dores"],
@@ -142,7 +138,7 @@
     make({
       id: "decor-abondance", name: "Décor Abondance doré", eyebrow: "Décoration · doré", type: "decor", collections: ["objets-dores"],
       price: amount(60), availability: "quote", custom: false, lifestyle: "Décor Abondance doré posé sur un bureau, à côté d’un ordinateur portable",
-      aiPhotos: [["hand", "Décor Abondance doré tenu en main"], ["desk", "Décor Abondance doré posé sur un bureau"], ["shelf", "Décor Abondance doré posé sur une étagère"], ["crown", "Gros plan sur la couronne et le signe infini du décor Abondance"]],
+      aiPhotos: [["main", "Décor Abondance doré, fin et plat, tenu en main"], ["bureau", "Décor Abondance doré posé sur un bureau"], ["etagere", "Décor Abondance doré posé sur une étagère"], ["couronne", "Gros plan sur la couronne et le signe infini du décor Abondance"]],
       description: "Faites de votre espace une source d’énergie positive et de prospérité financière ! Nous vous présentons l’exclusif décor doré de la richesse, une œuvre unique conçue spécialement pour être un aimant visuel et énergétique qui attire l’argent et le succès dans votre vie.",
       benefits: [
         { icon: "abundance", label: "Motifs dollar, couronne et infini pour une intention d'abondance" },

@@ -24,8 +24,9 @@ test("prices remain evidence-based and unquoted products request confirmation", 
   const wallet = catalog.products.find((x) => x.id === "portefeuille-hafidha");
   assert.deepEqual(JSON.parse(JSON.stringify(bracelet.price)), { min: 140, max: 180, currency: "TND", confirmationRequired: true });
   assert.equal(necklace.price.min, 320);
-  assert.equal(wallet.price, null);
-  assert.match(wallet.priceNote, /Prix non communiqué/);
+  // Rayda set the wallet at 120 TND (her notes of 13 November); the stone keyring is still unpriced.
+  assert.equal(wallet.price.min, 120);
+  assert.equal(catalog.products.find((x) => x.id === "porte-cles-pierre").price, null);
   const card = catalog.products.find((x) => x.id === "carte-million-dollar");
   assert.equal(card.variantPrices["Petite · 16 × 5,5 cm"], 45);
   assert.equal(card.variantPrices["Grande · 19 × 6 cm"], 50);
@@ -128,7 +129,7 @@ test("price variants, unknown prices and selection totals", async () => {
   assert.equal(priceLabel(p('bracelet-amour'),'Composition avec cœur · tarif à confirmer'),'Tarif à confirmer');
   assert.equal(priceLabel(p('carte-million-dollar'),'Grande · 19 × 6 cm'),'50 TND');
   assert.equal(selectionTotal([{productId:'bracelet-bazi',quantity:2}],catalog.products),'280 TND – 360 TND');
-  assert.equal(selectionTotal([{productId:'carte-million-dollar',variant:'Grande · 19 × 6 cm',quantity:2},{productId:'portefeuille-hafidha',quantity:1}],catalog.products),'100 TND + tarifs à confirmer');
+  assert.equal(selectionTotal([{productId:'carte-million-dollar',variant:'Grande · 19 × 6 cm',quantity:2},{productId:'portefeuille-hafidha',quantity:1},{productId:'porte-cles-pierre',quantity:1}],catalog.products),'220 TND + tarifs à confirmer');
 });
 
 test("search and filters distinguish custom from non-custom pieces", async () => {
@@ -187,7 +188,7 @@ test("delivery is 7 TND on every order and the phone number is asked twice at ch
   const { DELIVERY_FEE, selectionTotalWithDelivery } = await import('../src/commerce-core.js');
   assert.equal(DELIVERY_FEE, 7);
   assert.equal(selectionTotalWithDelivery([{productId:'bracelet-bazi',quantity:2}],catalog.products),'287 TND – 367 TND');
-  assert.equal(selectionTotalWithDelivery([{productId:'portefeuille-hafidha',quantity:1}],catalog.products),'7 TND + tarifs à confirmer');
+  assert.equal(selectionTotalWithDelivery([{productId:'porte-cles-pierre',quantity:1}],catalog.products),'7 TND + tarifs à confirmer');
   for (const page of ['checkout', 'ar/checkout']) {
     const html = await readFile(path.join(root, 'dist', page, 'index.html'), 'utf8');
     assert.match(html, /name="phone"[^>]*required/);
@@ -306,10 +307,10 @@ test("AI photos follow each lifestyle scene instead of Rayda's photos, colours s
     }
   }
   assert.equal(ai.reduce((n, p) => n + p.images.length - 1, 0), 50);
+  // The wallet's colour is chosen from the client's birth date, so it has no colour buttons.
   const wallet = catalog.products.find((p) => p.id === 'portefeuille-hafidha');
-  for (const [colour, file] of [['Vert', 'vert'], ['Jaune', 'jaune'], ['Rose / fuchsia', 'rose'], ['Rouge', 'rouge']]) {
-    assert.match(wallet.images[wallet.variantImageIndex[colour]].src, new RegExp('-ai-' + file + '-flatlay\\.jpg$'));
-  }
+  assert.equal(wallet.options?.variant, undefined);
+  assert.equal(wallet.variantImageIndex, undefined);
   const amour = catalog.products.find((p) => p.id === 'bracelet-amour');
   assert.match(amour.images[amour.variantImageIndex['Quartz rose uni · 100 TND']].src, /-ai-uni-wrist\.jpg$/);
   assert.match(amour.images[amour.variantImageIndex['Composition avec cœur · tarif à confirmer']].src, /-ai-coeur-wrist\.jpg$/);
@@ -317,7 +318,31 @@ test("AI photos follow each lifestyle scene instead of Rayda's photos, colours s
   const fr = await readFile(path.join(root, 'dist/products/bracelet-bazi/index.html'), 'utf8');
   assert.match(fr, /Les photos sont des mises en scène créées à partir des photos de Rayda\. Votre pièce est composée pour vous/);
   const ar = await readFile(path.join(root, 'dist/ar/products/bracelet-bazi/index.html'), 'utf8');
-  assert.match(ar, /الصور مشاهد مُعَدّة انطلاقًا من صور رايدة\./);
+  assert.match(ar, /الصور مشاهد مُعَدّة انطلاقًا من صور رايدا\./);
   const keyring = await readFile(path.join(root, 'dist/products/porte-cles-arbre-vie/index.html'), 'utf8');
   assert.doesNotMatch(keyring, /mises en scène/);
+});
+test("Rayda's notes: wallet name and price, her name in Arabic, no promised call or money, and the checkout questions", async () => {
+  const wallet = catalog.products.find((p) => p.id === 'portefeuille-hafidha');
+  assert.equal(wallet.price.min, 120);
+  assert.ok(!wallet.details.some((line) => /promesse|garantit /.test(line)));
+  if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
+  const walletAr = await readFile(path.join(root, 'dist/ar/products/portefeuille-hafidha/index.html'), 'utf8');
+  assert.match(walletAr, /<h1[^>]*>حافظة المال<\/h1>/);
+  assert.doesNotMatch(walletAr, /محفظة حافظة المال|لا وعد بنتيجة مالية|name="variant" value="Vert"/);
+  assert.match(walletAr, /120/);
+  const reviews = await readFile(path.join(root, 'src/reviews.mjs'), 'utf8');
+  for (const file of ['dist/ar/index.html', 'dist/ar/checkout/index.html', 'dist/ar/products/bracelet-bazi/index.html', 'dist/products/bracelet-bazi/index.html', 'dist/checkout/index.html']) {
+    const html = await readFile(path.join(root, file), 'utf8');
+    // Her name ends in alif; the only "رايدة" left is inside a client's own message, quoted word for word.
+    const stray = (html.match(/[^<>]*رايدة[^<>]*/g) || []).filter((text) => !reviews.includes(text.trim().slice(0, 30)));
+    assert.deepEqual(stray, [], file);
+    assert.doesNotMatch(html, /Rayda vous appelle|Rayda vous recontacte|تتصل بكم رايد|تتواصل رايد/, file);
+  }
+  for (const file of ['dist/checkout/index.html', 'dist/ar/checkout/index.html']) {
+    const html = await readFile(path.join(root, file), 'utf8');
+    assert.match(html, /name="birthDate" type="date"[^>]*required/);
+    assert.match(html, /<textarea name="goals"[^>]*required/);
+    assert.match(html, /confidentielles et anonymes|الخصوصية وعدم الكشف عن الهوية/);
+  }
 });

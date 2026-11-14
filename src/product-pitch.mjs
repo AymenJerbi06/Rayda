@@ -7,11 +7,11 @@ import { reviewsAr } from './reviews-ar.mjs';
 export const productPitch = {
   'bracelet-bazi': {
     fr: 'Un bracelet en pierres, composé par Rayda selon votre carte BaZi.',
-    ar: 'سوار من الأحجار تركّبه رايدة حسب خريطة البازي الخاصة بكم.'
+    ar: 'سوار من الأحجار تركّبه رايدا حسب خريطة البازي الخاصة بكم.'
   },
   'collier-bazi': {
     fr: 'Un collier complet, composé par Rayda selon votre carte BaZi.',
-    ar: 'قلادة كاملة تركّبها رايدة حسب خريطة البازي الخاصة بكم.'
+    ar: 'قلادة كاملة تركّبها رايدا حسب خريطة البازي الخاصة بكم.'
   },
   'bracelet-amour': {
     // Rayda's own sentence for this bracelet (its catalogue description), short enough to lead the page.
@@ -61,26 +61,26 @@ export const orderSteps = {
   fr: {
     title: 'Comment ça se passe',
     custom: [
-      ['Vous commandez', 'Sans rien payer en ligne.'],
-      ['Rayda vous appelle', 'Elle vous demande vos informations de naissance et vous propose la composition.'],
+      ['Vous commandez', 'Vous indiquez votre date de naissance, sans rien payer en ligne.'],
+      ['Nous vous contactons', 'Pour confirmer votre pièce, le prix et votre adresse.'],
       ['Vous recevez votre pièce', 'Livraison en Tunisie, paiement à la livraison.']
     ],
     ready: [
       ['Vous commandez', 'Sans rien payer en ligne.'],
-      ['Rayda vous appelle', 'Pour confirmer la pièce, le prix et votre adresse.'],
+      ['Nous vous contactons', 'Pour confirmer la pièce, le prix et votre adresse.'],
       ['Vous recevez votre pièce', 'Livraison en Tunisie, paiement à la livraison.']
     ]
   },
   ar: {
     title: 'كيف تتم العملية',
     custom: [
-      ['تطلبون القطعة', 'دون أي دفع عبر الإنترنت.'],
-      ['تتصل بكم رايدة', 'تطلب منكم معلومات الميلاد وتقترح عليكم التركيبة.'],
+      ['تطلبون القطعة', 'تُدخلون تاريخ ميلادكم، دون أي دفع عبر الإنترنت.'],
+      ['يقع الاتصال بكم', 'لتأكيد قطعتكم والسعر وعنوانكم.'],
       ['تستلمون قطعتكم', 'التوصيل في تونس والدفع عند الاستلام.']
     ],
     ready: [
       ['تطلبون القطعة', 'دون أي دفع عبر الإنترنت.'],
-      ['تتصل بكم رايدة', 'لتأكيد القطعة والسعر وعنوانكم.'],
+      ['يقع الاتصال بكم', 'لتأكيد القطعة والسعر وعنوانكم.'],
       ['تستلمون قطعتكم', 'التوصيل في تونس والدفع عند الاستلام.']
     ]
   }
