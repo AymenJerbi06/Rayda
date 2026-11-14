@@ -46,7 +46,7 @@
         { icon: "confidence", label: "Associé à la confiance en soi, selon la démarche de Rayda" }
       ],
       details: ["Bracelet élastique, taille standard indiquée dans le catalogue", "Composition personnalisée à discuter avec la créatrice", "Rayda décrit une préparation associant Reiki et récitations coraniques, sans promesse de résultat"],
-      options: { variant: ["Composition sur mesure"], palettes: ["À discuter", "Tons doux", "Tons vifs", "Tons naturels"] },
+      options: { variant: ["Composition sur mesure"] },
       priceNote: "Fourchette communiquée : 140 à 180 TND. Le tarif final est confirmé avant préparation.",
       missing: ["Composition exacte de la commande", "Tour de poignet précis", "Délai de fabrication", "Disponibilité"]
     }),
@@ -61,7 +61,7 @@
         { icon: "love", label: "Souvent offert comme symbole de lien et d'attention" }
       ],
       details: ["Longueur standard indiquée dans le catalogue ; mesure précise à confirmer", "Composition à discuter avec la créatrice", "Exemple vendu annoncé à 320 TND"],
-      options: { variant: ["Composition sur mesure"], palettes: ["À discuter", "Tons naturels", "Tons colorés"] },
+      options: { variant: ["Composition sur mesure"] },
       priceNote: "Tarif communiqué pour le collier BaZi complet : 320 TND. Composition à confirmer avant préparation.",
       missing: ["Longueur exacte", "Composition de la commande", "Délai de fabrication", "Disponibilité"]
     }),
@@ -107,11 +107,11 @@
       missing: ["Prix", "Dimensions précises", "Matières exactes", "Disponibilité"]
     }),
     make({
-      id: "portefeuille-hafidha", name: "Portefeuille Hafidha El Mel", eyebrow: "Portefeuille · quatre coloris", type: "accessory", collections: ["creations-bazi", "portefeuilles"],
+      id: "portefeuille-hafidha", name: "Portefeuille Hafidha El Mel", eyebrow: "Portefeuille · trois coloris", type: "accessory", collections: ["creations-bazi", "portefeuilles"],
       price: amount(120), availability: "quote", custom: true, lifestyle: "Portefeuille Hafidha El Mel vert, fermé, tenu en main au-dessus d’une table de café",
-      aiPhotos: [["couleurs", "Le portefeuille Hafidha El Mel dans ses quatre coloris : vert, jaune, rose et rouge"],
-        ["vert-flatlay", "Portefeuille Hafidha El Mel vert, fermé, posé à plat"], ["jaune-flatlay", "Portefeuille Hafidha El Mel jaune, fermé, posé à plat"], ["rose-flatlay", "Portefeuille Hafidha El Mel rose fuchsia, fermé, posé à plat"], ["rouge-flatlay", "Portefeuille Hafidha El Mel rouge, fermé, posé à plat"],
-        ["vert-hand", "Portefeuille Hafidha El Mel vert tenu en main"], ["jaune-hand", "Portefeuille Hafidha El Mel jaune tenu en main"], ["rose-hand", "Portefeuille Hafidha El Mel rose fuchsia tenu en main"], ["rouge-hand", "Portefeuille Hafidha El Mel rouge tenu en main"],
+      aiPhotos: [["trois-couleurs", "Le portefeuille Hafidha El Mel dans ses trois coloris : vert, jaune et rouge"],
+        ["vert-flatlay", "Portefeuille Hafidha El Mel vert, fermé, posé à plat"], ["jaune-flatlay", "Portefeuille Hafidha El Mel jaune, fermé, posé à plat"], ["rouge-flatlay", "Portefeuille Hafidha El Mel rouge, fermé, posé à plat"],
+        ["vert-hand", "Portefeuille Hafidha El Mel vert tenu en main"], ["jaune-hand", "Portefeuille Hafidha El Mel jaune tenu en main"], ["rouge-hand", "Portefeuille Hafidha El Mel rouge tenu en main"],
         ["vert-mark", "Gros plan sur le marquage embossé du portefeuille vert"]],
       description: "Depuis plus de 9 ans, j’étudie la relation entre l’être humain et l’argent, et les différentes pratiques qui peuvent aider à créer un lien plus conscient avec l’énergie de l’argent… la réception et l’abondance.",
       benefits: [

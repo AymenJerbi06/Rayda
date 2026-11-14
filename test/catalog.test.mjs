@@ -41,7 +41,7 @@ test("the active storefront uses Issolatej and the organized catalog", () => {
   assert.equal(configContext.window.STORE_CONFIG.brand.name, "Issolatej");
   // 11 lifestyle scenes (one leading each of 11 products), 50 ChatGPT photos made from Rayda's photos for 10 of them,
   // and Rayda's own 3 photos of the two pieces without AI photos (the Arbre de Vie keyring and the Fleur de Vie pendant).
-  assert.equal(catalog.products.reduce((count, product) => count + product.images.length, 0), 64);
+  assert.equal(catalog.products.reduce((count, product) => count + product.images.length, 0), 62);
 });
 test("the build respects the selected presentation mode and excludes review screenshots", async () => {
   const dist = path.join(root, "dist");
@@ -306,7 +306,9 @@ test("AI photos follow each lifestyle scene instead of Rayda's photos, colours s
       assert.ok(image.alt.length > 10);
     }
   }
-  assert.equal(ai.reduce((n, p) => n + p.images.length - 1, 0), 50);
+  assert.equal(ai.reduce((n, p) => n + p.images.length - 1, 0), 48);
+  // Rayda sells the wallet in green, yellow and red only: no pink photo, and the group photo shows three.
+  assert.ok(!catalog.products.find((p) => p.id === 'portefeuille-hafidha').images.some((image) => /rose|ai-couleurs/.test(image.src)));
   // The wallet's colour is chosen from the client's birth date, so it has no colour buttons.
   const wallet = catalog.products.find((p) => p.id === 'portefeuille-hafidha');
   assert.equal(wallet.options?.variant, undefined);
@@ -345,4 +347,20 @@ test("Rayda's notes: wallet name and price, her name in Arabic, no promised call
     assert.match(html, /<textarea name="goals"[^>]*required/);
     assert.match(html, /confidentielles et anonymes|الخصوصية وعدم الكشف عن الهوية/);
   }
+});
+test("emphasis.css is on every page, never sets a typeface, and personalised pieces say they are chosen for the buyer", async () => {
+  const css = (await readFile(path.join(root, 'emphasis.css'), 'utf8')).replace(/\/\*[\s\S]*?\*\//g, '');
+  assert.doesNotMatch(css, /font-family|font\s*:/);
+  assert.doesNotMatch(css, /#[0-9a-f]{3,8}\b/i, 'colours come from the site tokens');
+  for (const p of catalog.products) assert.equal(p.options?.palettes, undefined, p.id + ' has no colour preference picker');
+  if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
+  for (const file of ['dist/index.html', 'dist/ar/index.html', 'dist/products/bracelet-bazi/index.html', 'dist/ar/checkout/index.html']) {
+    const html = await readFile(path.join(root, file), 'utf8');
+    assert.ok(html.indexOf('/emphasis.css') > html.indexOf('/layers.css'), file);
+  }
+  for (const id of ['bracelet-bazi', 'collier-bazi', 'portefeuille-hafidha']) {
+    assert.match(await readFile(path.join(root, 'dist/products/' + id + '/index.html'), 'utf8'), /class="s-tailored"><b>Composé pour vous, pas choisi sur catalogue\.<\/b> Vous ne choisissez/);
+    assert.match(await readFile(path.join(root, 'dist/ar/products/' + id + '/index.html'), 'utf8'), /class="s-tailored"><b>تُصنع لكم أنتم، لا حسب الاختيار\.<\/b> لا تختارون/);
+  }
+  assert.doesNotMatch(await readFile(path.join(root, 'dist/products/decor-abondance/index.html'), 'utf8'), /s-tailored/);
 });
