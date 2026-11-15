@@ -22,7 +22,8 @@
     "bracelet-bazi": null, "collier-bazi": null,
     "bracelet-amour": 14, "porte-cles-pierre": 9, "porte-cles-arbre-vie": 11,
     "portefeuille-hafidha": 6, "carte-million-dollar": 20, "decor-abondance": 8,
-    "cle-de-vie": 10, "fleur-de-vie": 0, "pendentif-voiture-fleur": 15, "pendentif-voiture-ankh": 15
+    "cle-de-vie": 10, "fleur-de-vie": 0, "pendentif-voiture-fleur": 15, "pendentif-voiture-ankh": 15,
+    "livre-excellence": null, "accessoires-apprentissage": null
   };
 
   function daysAgo(n) { var d = new Date(Date.now() - n * 86400000); return d; }

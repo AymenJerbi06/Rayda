@@ -3,10 +3,10 @@ import path from 'node:path';
 import vm from 'node:vm';
 import { thumbSrc } from './commerce-core.js';
 import { guidanceRoutes, renderGuidancePage } from './guidance-pages.mjs';
-import { collectionPage, productPage, checkoutPage } from './shop-pages.mjs';
+import { collectionPage, productPage, checkoutPage, pathPage } from './shop-pages.mjs';
 import { arGuidanceRoutes, renderGuidancePageAr } from './guidance-pages-ar.mjs';
-import { productPageAr, checkoutPageAr, collectionPageAr } from './shop-pages-ar.mjs';
-import { collectionsAr, productsAr } from './catalog-ar.mjs';
+import { productPageAr, checkoutPageAr, collectionPageAr, pathPageAr } from './shop-pages-ar.mjs';
+import { collectionsAr, productsAr, pathsAr } from './catalog-ar.mjs';
 import { adminLoginPage, adminDashboardPage, adminProductsPage, adminPromoCodesPage, adminOrdersPage, adminSettingsPage } from './admin-pages.mjs';
 
 // French typography: a non-breaking space keeps ?, !, :, ; and » with the word before them (and « with
@@ -38,7 +38,7 @@ export async function buildGuidance(project, output, config) {
   await mkdir(path.join(output, 'assets', 'products'), { recursive: true });
   await cp(path.join(project, 'assets', 'products', 'organized'), path.join(output, 'assets', 'products', 'organized'), { recursive: true });
   await mkdir(path.join(output, 'assets', 'categories'), { recursive: true });
-  for (const category of ['bracelets', 'colliers', 'porte-cles', 'portefeuilles', 'objets-dores', 'voiture']) {
+  for (const category of ['bracelets', 'colliers', 'porte-cles', 'portefeuilles', 'objets-dores', 'voiture', 'livres', 'apprentissage']) {
     await cp(path.join(project, 'assets', 'categories', category + '.webp'), path.join(output, 'assets', 'categories', category + '.webp'));
   }
   const context = { window: {} };
@@ -54,7 +54,8 @@ export async function buildGuidance(project, output, config) {
     await writeFile(path.join(dir, 'index.html'), frenchSpacing(renderGuidancePage(route, config, catalog)));
   }
   const shopRoutes = catalog.collections.map(collection => ({ route: 'collections/' + collection.slug, title: collection.name, content: collectionPage(collection, catalog) }))
-    .concat(catalog.products.map(product => ({ route: 'products/' + product.slug, title: product.name, content: productPage(product, catalog) })), [{ route: 'checkout', title: 'Votre sélection, avec Rayda', content: checkoutPage }]);
+    .concat(catalog.products.map(product => ({ route: 'products/' + product.slug, title: product.name, content: productPage(product, catalog) })), [{ route: 'checkout', title: 'Votre sélection, avec Rayda', content: checkoutPage }])
+    .concat((catalog.paths || []).map(path => ({ route: 'parcours/' + path.slug, title: path.name, content: pathPage(path, catalog) })));
   for (const entry of shopRoutes) {
     const dir = path.join(output, entry.route);
     await mkdir(dir, { recursive: true });
@@ -71,7 +72,8 @@ export async function buildGuidance(project, output, config) {
     await writeFile(path.join(dir, 'index.html'), renderGuidancePageAr(route, config, catalog));
   }
   const arShopRoutes = catalog.collections.filter(c => c.slug !== 'all').map(collection => ({ route: 'collections/' + collection.slug, title: collectionsAr[collection.slug]?.name || collection.name, content: null, kind: 'collection', data: collection }))
-    .concat(catalog.products.map(product => ({ route: 'products/' + product.slug, title: productsAr[product.id]?.name || product.name, content: productPageAr(product, catalog) })), [{ route: 'checkout', title: 'اختياركم، مع رايدا', content: checkoutPageAr }]);
+    .concat(catalog.products.map(product => ({ route: 'products/' + product.slug, title: productsAr[product.id]?.name || product.name, content: productPageAr(product, catalog) })), [{ route: 'checkout', title: 'اختياركم، مع رايدا', content: checkoutPageAr }])
+    .concat((catalog.paths || []).map(path => ({ route: 'parcours/' + path.slug, title: pathsAr[path.slug]?.name || path.name, content: pathPageAr(path, catalog) })));
   for (const entry of arShopRoutes) {
     const dir = path.join(output, 'ar', entry.route);
     await mkdir(dir, { recursive: true });
@@ -84,5 +86,5 @@ export async function buildGuidance(project, output, config) {
     await mkdir(dir, { recursive: true });
     await writeFile(path.join(dir, 'index.html'), render());
   }
-  console.log('Built ' + (1 + guidanceRoutes.length + shopRoutes.length) + ' Issolatej pages (' + (1 + arGuidanceRoutes.length + arShopRoutes.length) + ' in Arabic) and a ' + adminRoutes.length + '-page admin demo: Rayda, vos mots, 12 products, 8 collections and a buy-now checkout flow.');
+  console.log('Built ' + (1 + guidanceRoutes.length + shopRoutes.length) + ' Issolatej pages (' + (1 + arGuidanceRoutes.length + arShopRoutes.length) + ' in Arabic) and a ' + adminRoutes.length + '-page admin demo: Rayda, vos mots, ' + catalog.products.length + ' products, ' + catalog.collections.length + ' collections and a buy-now checkout flow.');
 }

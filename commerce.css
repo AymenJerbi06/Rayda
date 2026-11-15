@@ -207,3 +207,52 @@ body.s-dialog-open{overflow:hidden}.s-selection,.s-lightbox{color:var(--ink);bac
 .s-story-more>p+p{margin-top:18px}
 @media(min-width:1025px){.s-pdp .s-gallery{position:sticky;top:96px;align-self:start}}
 @media(max-width:700px){.s-pitch{font-size:15px;margin-bottom:18px}.s-pdp .s-price{font-size:26px}.s-pdp .s-options{margin-top:22px}}
+/* Eight product types since Rayda's book and her learning accessories each have their own: four across, two full rows
+   (two across on phones, four rows). On the home page the heading sits above the grid so the cards keep their size. */
+.s-category-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+.s-home-categories .s-category-layout{grid-template-columns:1fr;gap:42px}
+.s-home-categories .s-category-heading{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px);column-gap:8%;align-items:end;padding:0;max-width:none}
+.s-home-categories .s-category-heading>.g-eyebrow,.s-home-categories .s-category-heading>.g-display{grid-column:1}
+.s-home-categories .s-category-heading>.s-category-intro{grid-column:2;grid-row:1/3;align-self:end;margin:0 0 6px;max-width:none}
+.s-home-categories .s-category-heading>.g-text-link{grid-column:2;grid-row:3;margin-top:4px}
+@media(min-width:1025px){.s-home-categories .s-category-heading .g-botanical{left:auto;right:-60px;top:-110px;height:360px;opacity:.1}[dir="rtl"] .s-home-categories .s-category-heading .g-botanical{right:auto;left:-60px}}
+.s-home-categories .g-display br{display:none}
+@media(max-width:1024px){.s-home-categories .s-category-heading{display:block}.s-home-categories .s-category-heading>.s-category-intro{margin:20px 0 16px;max-width:440px}}
+/* On tablets the four-across cards are narrower, so their names are set smaller ("Portefeuilles" must fit on one line). */
+@media(min-width:701px) and (max-width:1024px){.s-category{padding:12px 11px 20px}.s-category h3{font-size:20px}.s-category-label{padding:7px 18px 0 3px}.s-category-arrow{font-size:16px;top:9px}}
+@media(min-width:361px) and (max-width:400px){.s-category h3{font-size:20px}}
+@media(max-width:700px){.s-category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.s-home-categories .s-category-layout{gap:28px}.s-home-categories .s-category-heading>.s-category-intro{margin:22px 0 15px}}
+/* Paths ("chemins"): for visitors who don't know where to start, right after the welcome and atop the Boutique,
+   one door per wish (studies, love, money). Each door opens a page with only the pieces for that wish. The band is
+   cream, so the welcome photo still fades into it, and it flows into the product types below. */
+.g-paths{position:relative;background:var(--cream);color:var(--ink);padding:95px max(var(--gutter),calc((100vw - 1440px)/2)) 30px}
+.g-paths-head{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,440px);column-gap:8%;align-items:end}
+.g-paths-head>.g-eyebrow,.g-paths-head>.g-display{grid-column:1}
+.g-paths-head>p:not(.g-eyebrow){grid-column:2;grid-row:1/3;align-self:end;margin:0 0 6px;font-size:19px;line-height:1.6;font-weight:500}
+.g-paths-head .g-eyebrow{font-size:11px;margin-bottom:24px}
+.g-paths-head .g-display{font-size:clamp(42px,4.8vw,68px);line-height:1.1}
+.g-path-list{list-style:none;margin:48px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.g-path-list li{display:flex;min-width:0}
+.g-path{display:flex;flex-direction:column;align-items:center;width:100%;text-align:center;padding:74px 30px 36px;border:1px solid var(--line);border-radius:999px 999px 28px 28px;background:var(--paper);color:var(--ink);transition:background-color .35s ease,color .35s ease,border-color .35s ease}
+.g-path svg{flex:none;width:70px;height:70px;color:var(--green);margin-bottom:26px;transition:color .35s ease}
+.g-path h3{font-size:30px;line-height:1.18;max-width:270px}
+.g-path p{font-size:15px;line-height:1.6;margin:14px 0 30px;max-width:280px;color:#55625a;transition:color .35s ease}
+.g-path-more{margin-top:auto;display:inline-flex;align-items:center;gap:10px;padding:8px 0 6px;border-bottom:1px solid currentColor;font-size:12px;font-weight:600;line-height:1.5;letter-spacing:.04em;text-transform:uppercase;color:var(--green);transition:color .35s ease}
+.g-path:hover,.g-path:focus-visible{background:var(--forest);border-color:var(--forest);color:var(--paper)}
+.g-path:hover svg,.g-path:focus-visible svg,.g-path:hover .g-path-more,.g-path:focus-visible .g-path-more{color:var(--sage)}
+.g-path:hover p,.g-path:focus-visible p{color:#d3dbd0}
+.g-path:focus-visible{outline:2px solid var(--green);outline-offset:4px}
+.g-paths+.s-home-categories,.g-paths+.s-shop-categories{padding-top:95px}
+/* In the Boutique the heading is centred, like "Par type de création" below it. */
+.s-heading+.g-paths .g-paths-head{display:block;max-width:640px;margin:0 auto;text-align:center}
+.s-heading+.g-paths .g-paths-head>p:not(.g-eyebrow){margin:18px auto 0;max-width:520px}
+@media(max-width:1024px){.g-paths{padding-top:75px}.g-paths-head{display:block}.g-paths-head>p:not(.g-eyebrow){margin:20px 0 0;max-width:440px}.g-path-list{gap:14px;margin-top:40px}.g-path{padding:58px 16px 28px}.g-path svg{width:58px;height:58px;margin-bottom:20px}.g-path h3{font-size:23px}.g-path p{font-size:13px;margin:12px 0 22px}.g-path-more{font-size:11px}.g-paths+.s-home-categories,.g-paths+.s-shop-categories{padding-top:75px}}
+@media(max-width:700px){.g-paths{padding:50px 22px 10px}.g-paths-head .g-eyebrow{font-size:10px;margin-bottom:18px}.g-paths-head .g-display{font-size:40px}.g-paths-head>p:not(.g-eyebrow){font-size:17px;margin-top:18px}.g-path-list{grid-template-columns:1fr;gap:12px;margin-top:28px}.g-path{display:grid;grid-template-columns:60px minmax(0,1fr);column-gap:16px;align-items:center;text-align:start;padding:16px 18px 16px 14px;border-radius:26px}.g-path svg{grid-column:1;grid-row:1/4;width:60px;height:74px;margin:0;padding:15px 9px 9px;border-radius:999px 999px 10px 10px;background:var(--cream);transition:color .35s ease,background-color .35s ease}.g-path h3,.g-path p,.g-path-more{grid-column:2}.g-path h3{font-size:21px;max-width:none}.g-path p{font-size:13px;line-height:1.5;margin:5px 0 8px;max-width:none}.g-path-more{margin:0;justify-self:start;font-size:10px;padding:3px 0 2px}.g-path:hover svg,.g-path:focus-visible svg{background:#ffffff14}.g-paths+.s-home-categories,.g-paths+.s-shop-categories{padding-top:50px}}
+/* A path's page: its pieces, then the other paths. */
+.s-path-others{margin-top:70px;padding-top:26px;border-top:1px solid var(--line)}
+.s-path-others .g-eyebrow{margin:0;color:var(--green)}
+.s-path-others ul{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:0 36px}
+.s-path-others .g-text-link{color:var(--green);margin-top:10px}
+@media(max-width:700px){.s-path-others{margin-top:44px}.s-path-others ul{flex-direction:column}}
+/* A product with a text for one choice only (the book's baccalaureate edition) shows the text for the picked choice. */
+.s-story[hidden]{display:none}

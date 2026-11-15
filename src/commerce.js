@@ -192,12 +192,30 @@ if (productRoot) {
   });
   form.querySelectorAll('[data-quantity]').forEach(button => button.addEventListener('click',()=>{ quantity.value=Math.max(1,Math.min(20,Number(quantity.value || 1)+Number(button.dataset.quantity))); }));
   // Models, sizes and colours are radio buttons now (a select or a hidden field also works): listen on the form.
+  // Rayda wrote her own text for some choices (the baccalaureate edition of her book): show the text for the
+  // picked choice and point the "read her description" link at it.
+  function showVariantText(variant) {
+    let shown = null;
+    productRoot.querySelectorAll('[data-for-variants]').forEach(block => {
+      block.hidden = !block.dataset.forVariants.split('|').includes(variant);
+      if (!block.hidden) shown = block;
+    });
+    if (shown) productRoot.querySelectorAll('a[href^="#description"]').forEach(link => link.setAttribute('href', '#' + shown.id));
+  }
   form.addEventListener('change', event => {
     if (event.target.name !== 'variant') return;
     const variant = form.elements.variant.value;
     productRoot.querySelectorAll('[data-price]').forEach(el => { el.textContent = priceLabelAuto(p,variant); });
+    productRoot.querySelectorAll('[data-price-unknown]').forEach(el => { el.hidden = !!priceBounds(p, variant); });
+    showVariantText(variant);
     if (p.variantImageIndex?.[variant] !== undefined) showImage(p.variantImageIndex[variant]);
   });
+  // A browser that restores the last choice on reload gets the matching price and text, not the first choice's.
+  if (form.elements.variant?.value && form.elements.variant.value !== p.options?.variant?.[0]) {
+    productRoot.querySelectorAll('[data-price]').forEach(el => { el.textContent = priceLabelAuto(p, form.elements.variant.value); });
+    productRoot.querySelectorAll('[data-price-unknown]').forEach(el => { el.hidden = !!priceBounds(p, form.elements.variant.value); });
+    showVariantText(form.elements.variant.value);
+  }
   if (p.availability==='sold-out') form.querySelectorAll('[type="submit"]').forEach(button => { button.disabled = true; });
   form.addEventListener('submit',event=>{
     event.preventDefault();
@@ -223,7 +241,8 @@ const STOCK_SEED = {
   'bracelet-bazi': null, 'collier-bazi': null,
   'bracelet-amour': 14, 'porte-cles-pierre': 9, 'porte-cles-arbre-vie': 11,
   'portefeuille-hafidha': 6, 'carte-million-dollar': 20, 'decor-abondance': 8,
-  'cle-de-vie': 10, 'fleur-de-vie': 0, 'pendentif-voiture-fleur': 15, 'pendentif-voiture-ankh': 15
+  'cle-de-vie': 10, 'fleur-de-vie': 0, 'pendentif-voiture-fleur': 15, 'pendentif-voiture-ankh': 15,
+  'livre-excellence': null, 'accessoires-apprentissage': null
 };
 function submitOrder({ name, phone, address, city, postalCode, birthDate, goals }) {
   const orderItems = items.map(item => {

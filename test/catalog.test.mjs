@@ -10,10 +10,10 @@ vm.runInNewContext(await readFile(path.join(root, "src/catalog.js"), "utf8"), co
 const catalog = context.window.STORE_CATALOG;
 const configContext = { window: {} };
 vm.runInNewContext(await readFile(path.join(root, "src/site-config.js"), "utf8"), configContext);
-test("catalog has twelve unique products in eight browseable collections", () => {
-  assert.equal(catalog.products.length, 12);
-  assert.equal(new Set(catalog.products.map((x) => x.slug)).size, 12);
-  assert.equal(catalog.collections.length, 8);
+test("catalog has fourteen unique products in ten browseable collections", () => {
+  assert.equal(catalog.products.length, 14);
+  assert.equal(new Set(catalog.products.map((x) => x.slug)).size, 14);
+  assert.equal(catalog.collections.length, 10);
   for (const collection of catalog.collections) {
     for (const id of collection.productIds) assert.ok(catalog.products.some((x) => x.id === id));
   }
@@ -39,9 +39,9 @@ test("every product photo is a local imported asset", async () => {
 test("the active storefront uses Issolatej and the organized catalog", () => {
   assert.equal(configContext.window.STORE_CONFIG.previewStage, false);
   assert.equal(configContext.window.STORE_CONFIG.brand.name, "Issolatej");
-  // 11 lifestyle scenes (one leading each of 11 products), 50 ChatGPT photos made from Rayda's photos for 10 of them,
+  // 13 lifestyle scenes (one leading each of 13 products), 54 ChatGPT photos made from Rayda's photos for 12 of them,
   // and Rayda's own 3 photos of the two pieces without AI photos (the Arbre de Vie keyring and the Fleur de Vie pendant).
-  assert.equal(catalog.products.reduce((count, product) => count + product.images.length, 0), 62);
+  assert.equal(catalog.products.reduce((count, product) => count + product.images.length, 0), 70);
 });
 test("the build respects the selected presentation mode and excludes review screenshots", async () => {
   const dist = path.join(root, "dist");
@@ -71,7 +71,8 @@ test("guidance pages use Issolatej, local assets, and valid internal destination
   const dist = path.join(root, 'dist');
   const pages = ['', 'a-propos', 'accompagnement', 'contact', 'vos-mots', 'checkout', ...catalog.collections.map(c=>'collections/'+c.slug), ...catalog.products.map(p=>'products/'+p.slug),
     'ar', 'ar/a-propos', 'ar/accompagnement', 'ar/contact', 'ar/vos-mots', 'ar/boutique', 'ar/checkout',
-    ...catalog.collections.filter(c=>c.slug!=='all').map(c=>'ar/collections/'+c.slug), ...catalog.products.map(p=>'ar/products/'+p.slug)];
+    ...catalog.collections.filter(c=>c.slug!=='all').map(c=>'ar/collections/'+c.slug), ...catalog.products.map(p=>'ar/products/'+p.slug),
+    ...catalog.paths.map(p=>'parcours/'+p.slug), ...catalog.paths.map(p=>'ar/parcours/'+p.slug)];
   for (const page of pages) {
     const html = await readFile(path.join(dist, page, 'index.html'), 'utf8');
     assert.match(html, /<title>[^<]+ — Issolatej<\/title>/);
@@ -89,11 +90,16 @@ test("guidance pages use Issolatej, local assets, and valid internal destination
 });
 
 
-test("the opening hero and its animation hooks are preserved exactly", async () => {
+test("the opening hero and its animation hooks are preserved; only the welcome paragraph is Rayda's own text", async () => {
   const previous = await readFile(path.join(root,'backups/issolatej-before-products-2026-10-08/guidance-pages.mjs'),'utf8');
   const current = await readFile(path.join(root,'src/guidance-pages.mjs'),'utf8');
   const hero = text => text.match(/const home = `(<section class="g-hero">[\s\S]*?<\/section>)/)[1];
-  assert.equal(hero(current),hero(previous));
+  // Rayda sent her welcome text on 15 November: the paragraph under the title is hers, everything else is unchanged.
+  const welcome = /(<p data-reveal style="--delay:600ms">)[^<]*(?:<br \/>[^<]*)*(<\/p>)/;
+  assert.equal(hero(current).replace(welcome, '$1$2'), hero(previous).replace(welcome, '$1$2'));
+  assert.ok(hero(current).includes('<p data-reveal style="--delay:600ms">Bienvenue dans l’espace dédié à votre évolution.<br />'));
+  const currentAr = await readFile(path.join(root,'src/guidance-pages-ar.mjs'),'utf8');
+  assert.ok(currentAr.includes('<p data-reveal style="--delay:600ms">هذا الفضاء هو رفيقك في رحلة التطور و التغيير'));
   assert.equal(current.match(/const leaf = ([^;]+);/)[1], previous.match(/const leaf = ([^;]+);/)[1]);
   // CSS may grow with new sections, but every original rule must stay byte-identical and only be appended to, never edited in place.
   const previousCss = await readFile(path.join(root,'backups/issolatej-before-products-2026-10-08/guidance.css'),'utf8');
@@ -105,11 +111,11 @@ test("the opening hero and its animation hooks are preserved exactly", async () 
 test("homepage carries the full brand narrative with illustrated categories and real product photos in the shop", async () => {
   const home = await readFile(path.join(root,'dist/index.html'),'utf8');
   const main = home.match(/<main[^>]*>([\s\S]*?)<\/main>/)[1];
-  // Hero, products, approach intro, pillars, Rayda's bio, shifts/benefits, testimonial teaser.
-  assert.equal((main.match(/<section /g)||[]).length,7);
-  assert.equal((main.match(/class="s-category"/g)||[]).length,6);
+  // Hero, paths, products, approach intro, pillars, Rayda's bio, shifts/benefits, testimonial teaser.
+  assert.equal((main.match(/<section /g)||[]).length,8);
+  assert.equal((main.match(/class="s-category[" ]/g)||[]).length,8);
   assert.doesNotMatch(main,/assets\/products\//);
-  for (const name of ['bracelets','colliers','porte-cles','portefeuilles','objets-dores','voiture']) {
+  for (const name of ['bracelets','colliers','porte-cles','portefeuilles','objets-dores','voiture','livres','apprentissage']) {
     assert.ok(home.includes('/assets/categories/'+name+'.webp'));
     await access(path.join(root,'dist/assets/categories',name+'.webp'));
   }
@@ -119,7 +125,7 @@ test("homepage carries the full brand narrative with illustrated categories and 
   assert.match(shop,/À choisir/);
   assert.match(shop,/assets\/products\/organized/);
   // The Boutique page leads with the same type-first category grid as the homepage, by design.
-  assert.equal((shop.match(/class="s-category"/g)||[]).length,6);
+  assert.equal((shop.match(/class="s-category[" ]/g)||[]).length,8);
   assert.match(shop,/assets\/categories/);
 });
 
@@ -134,8 +140,8 @@ test("price variants, unknown prices and selection totals", async () => {
 
 test("search and filters distinguish custom from non-custom pieces", async () => {
   const {filterProducts}=await import('../src/commerce-core.js');
-  assert.equal(filterProducts(catalog.products,{mode:'custom'}).length,3);
-  assert.equal(filterProducts(catalog.products,{mode:'ready'}).length,9);
+  assert.equal(filterProducts(catalog.products,{mode:'custom'}).length,4);
+  assert.equal(filterProducts(catalog.products,{mode:'ready'}).length,10);
   assert.equal(filterProducts(catalog.products,{search:'energie amour'}).length,1);
   assert.equal(filterProducts(catalog.products,{search:'no-such-piece'}).length,0);
   const sorted=filterProducts(catalog.products,{sort:'price-asc'});
@@ -202,7 +208,7 @@ test("product pages carry Rayda's own description: her Arabic on /ar/, its Frenc
   for (const product of catalog.products.filter(p => productTexts[p.id])) {
     for (const page of ['products/', 'ar/products/']) {
       const html = await readFile(path.join(root, 'dist', page + product.slug, 'index.html'), 'utf8');
-      assert.match(html, /<div class="s-story" id="description">/);
+      assert.match(html, /<div class="s-story" id="description"[ >]/);
       assert.match(html, /href="#description"/);
     }
   }
@@ -297,7 +303,7 @@ test("product photos keep their size and crop: the main photo is shown whole and
 });
 test("AI photos follow each lifestyle scene instead of Rayda's photos, colours show their own photo, and the gallery says so", async () => {
   const ai = catalog.products.filter((p) => p.images.some((image) => image.src.includes('-ai-')));
-  assert.equal(ai.length, 10);
+  assert.equal(ai.length, 12);
   for (const p of ai) {
     assert.ok(p.images[0].src.endsWith('-ugc.jpg'), p.id + ' keeps its lifestyle photo first');
     assert.equal(p.coverImageIndex, 0);
@@ -306,7 +312,7 @@ test("AI photos follow each lifestyle scene instead of Rayda's photos, colours s
       assert.ok(image.alt.length > 10);
     }
   }
-  assert.equal(ai.reduce((n, p) => n + p.images.length - 1, 0), 48);
+  assert.equal(ai.reduce((n, p) => n + p.images.length - 1, 0), 54);
   // Rayda sells the wallet in green, yellow and red only: no pink photo, and the group photo shows three.
   assert.ok(!catalog.products.find((p) => p.id === 'portefeuille-hafidha').images.some((image) => /rose|ai-couleurs/.test(image.src)));
   // The wallet's colour is chosen from the client's birth date, so it has no colour buttons.
@@ -381,4 +387,101 @@ test("motion.css and motion.js load last on every page, respect reduced motion a
   for (const file of ['dist/checkout/index.html', 'dist/ar/checkout/index.html']) {
     assert.equal(((await readFile(path.join(root, file), 'utf8')).match(/class="s-form-step"/g) || []).length, 3, file);
   }
+});
+test("Rayda's welcome and who-is texts lead the home pages, in French and in Arabic", async () => {
+  if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
+  const fr = await readFile(path.join(root, 'dist/index.html'), 'utf8');
+  for (const text of ['Votre voyage vers la meilleure version de vous-même commence ici.', '<h2>Qui est Rayda\u00a0?</h2>', '<blockquote>Je suis Raida Ghrab, chercheuse en sciences énergétiques, en programmation du subconscient et Grand Maître en Reiki de l’Argent.</blockquote>', 'fondatrice de la marque I$$OLATEJ depuis 2017']) assert.ok(fr.includes(text), text);
+  const ar = await readFile(path.join(root, 'dist/ar/index.html'), 'utf8');
+  for (const text of ['ودع رحلة التحول الإيجابي تبدأ من هنا.', '<h2>من هي رايدا؟</h2>', '<blockquote>رايدا الغراب باحثة في علوم الطاقة و برمجة اللاوعي و جراند ماستر في ريكي المال</blockquote>', 'من بين رسائلي في الحياة مساعدتك على تطوير نسختك.']) assert.ok(ar.includes(text), text);
+  // The old bio paragraphs are gone, replaced by her own words.
+  assert.doesNotMatch(fr, /quatre mots qu’elle porte comme une signature/);
+});
+test("Rayda's book: three editions, the baccalaureate price, and her baccalaureate text only for that edition", async () => {
+  const { priceLabel, priceLabelAr } = await import('../src/commerce-core.js');
+  const book = catalog.products.find((p) => p.id === 'livre-excellence');
+  assert.deepEqual([...book.options.variant], ['Primaire', 'Collège et lycée', 'Baccalauréat']);
+  assert.equal(book.custom, false);
+  assert.equal(priceLabel(book, 'Baccalauréat'), '45 TND');
+  assert.equal(priceLabel(book, 'Primaire'), 'Tarif à confirmer');
+  assert.equal(priceLabelAr(book, 'Collège et lycée'), 'السعر يُؤكَّد لاحقًا');
+  for (const [value, shot] of [['Primaire', 'primaire'], ['Collège et lycée', 'college'], ['Baccalauréat', 'bac']]) assert.match(book.images[book.variantImageIndex[value]].src, new RegExp('-ai-' + shot + '-'));
+  if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
+  for (const [page, bac, general] of [['products/', 'En année de Baccalauréat, le vrai problème', 'La vraie réussite scolaire prend sa source à l’intérieur'], ['ar/products/', 'في سنة الباكالوريا، المشكلة ليست في صعوبة الدروس', 'تبدأ رحلة التميز الدراسي الحقيقي من الداخل']]) {
+    const html = await readFile(path.join(root, 'dist', page + 'livre-excellence', 'index.html'), 'utf8');
+    // The main text stands for the first two editions and shows first; the baccalaureate text waits, hidden, for its edition.
+    const main = html.match(/<div class="s-story" id="description" data-for-variants="Primaire\|Collège et lycée">([\s\S]*?)<\/section>/)[1];
+    const bacBlock = html.match(/<div class="s-story" id="description-baccalaureat" data-for-variants="Baccalauréat" hidden>([\s\S]*?)<\/section>/)[1];
+    assert.ok(main.indexOf(general) > -1 && main.indexOf(general) < main.indexOf('id="description-baccalaureat"'), page);
+    assert.ok(bacBlock.includes(bac), page);
+    assert.ok(!main.slice(0, main.indexOf('id="description-baccalaureat"')).includes(bac), page);
+  }
+  const css = await readFile(path.join(root, 'commerce.css'), 'utf8');
+  assert.match(css, /\.s-story\[hidden\]\{display:none\}/);
+  const js = await readFile(path.join(root, 'src/commerce.js'), 'utf8');
+  assert.match(js, /data-for-variants/);
+  // "The price is given when we call you" shows only while an edition without a price is picked.
+  const fr = await readFile(path.join(root, 'dist/products/livre-excellence/index.html'), 'utf8');
+  assert.match(fr, /<p class="s-small s-price-hint" data-price-unknown>Le prix vous est donné/);
+  assert.match(js, /\[data-price-unknown\]/);
+});
+test("the learning accessories are prepared from the birth date, at 100 TND for the bracelet and the cord necklace", async () => {
+  const { priceLabel } = await import('../src/commerce-core.js');
+  const piece = catalog.products.find((p) => p.id === 'accessoires-apprentissage');
+  assert.equal(piece.custom, true);
+  assert.equal(priceLabel(piece, 'Bracelet'), '100 TND');
+  assert.equal(priceLabel(piece, 'Collier sur cordon'), '100 TND');
+  assert.equal(priceLabel(piece, 'Collier sur chaîne dorée'), 'Tarif à confirmer');
+  for (const slug of ['apprentissage', 'bracelets', 'colliers']) assert.ok(catalog.collections.find((c) => c.slug === slug).productIds.includes(piece.id), slug);
+  // The book and the accessories each have their own type (and card), not one shared study collection.
+  assert.deepEqual([...catalog.collections.find((c) => c.slug === 'livres').productIds], ['livre-excellence']);
+  assert.deepEqual([...catalog.collections.find((c) => c.slug === 'apprentissage').productIds], ['accessoires-apprentissage']);
+  assert.equal(catalog.collections.find((c) => c.slug === 'excellence-scolaire'), undefined);
+  if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
+  const ar = await readFile(path.join(root, 'dist/ar/products/accessoires-apprentissage/index.html'), 'utf8');
+  for (const text of ['<h1>أكسسوارات تفعيل طاقة التعلم</h1>', 'تعتمد هذه المجموعة على ترددات الأحجار الكريمة', 'يتم إعداد القطعة بناءا على تاريخ الولادة', 'الأحجار يمكن أن تختلف من حيث العدد و النوع و الشكل و الحجم.']) assert.ok(ar.includes(text), text);
+  const fr = await readFile(path.join(root, 'dist/products/accessoires-apprentissage/index.html'), 'utf8');
+  assert.match(fr, /class="s-tailored"><b>Préparé pour vous\.<\/b> Vous choisissez la pièce/);
+  assert.match(fr, /<p class="s-small s-price-hint" data-price-unknown hidden>Le prix vous est donné/);
+  // The home page and the Boutique end their category grid with "Livres" and "Accessoires d’étude", two ordinary cards.
+  for (const file of ['dist/index.html', 'dist/collections/all/index.html', 'dist/ar/index.html', 'dist/ar/boutique/index.html']) {
+    const html = await readFile(path.join(root, file), 'utf8');
+    assert.doesNotMatch(html, /s-category-wide|excellence-scolaire/, file);
+    const cards = [...html.matchAll(/<a class="s-category" href="([^"]+)"/g)].map((m) => m[1]);
+    assert.equal(cards.length, 8, file);
+    assert.match(cards[6], /\/(collections\/livres|products\/livre-excellence)\/$/, file);
+    assert.match(cards[7], /\/(collections\/apprentissage|products\/accessoires-apprentissage)\/$/, file);
+  }
+});
+test("paths: the home page and the Boutique open with one door per wish, each leading to a page with only its pieces", async () => {
+  const { pathsAr } = await import('../src/catalog-ar.mjs');
+  assert.deepEqual([...catalog.paths.map((p) => p.slug)], ['etudes', 'amour', 'abondance']);
+  for (const p of catalog.paths) {
+    assert.match(p.slug, /^[a-z-]+$/);
+    assert.ok(p.name && p.summary && p.description && p.productIds.length, p.slug);
+    for (const id of p.productIds) assert.ok(catalog.products.some((x) => x.id === id), p.slug + ' ' + id);
+    assert.ok(pathsAr[p.slug]?.name && pathsAr[p.slug].summary && pathsAr[p.slug].description, p.slug);
+  }
+  if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
+  // Before the product types: right after the welcome on the home pages, at the top of the Boutique.
+  for (const [file, prefix] of [['dist/index.html', ''], ['dist/collections/all/index.html', ''], ['dist/ar/index.html', '/ar'], ['dist/ar/boutique/index.html', '/ar']]) {
+    const main = (await readFile(path.join(root, file), 'utf8')).match(/<main[^>]*>([\s\S]*?)<\/main>/)[1];
+    const at = main.indexOf('<section class="g-paths" id="chemins"');
+    assert.ok(at > -1 && at < main.indexOf('class="s-category-grid"'), file);
+    const doors = [...main.matchAll(/<a class="g-path" href="([^"]+)">/g)].map((m) => m[1]);
+    assert.deepEqual(doors, [...catalog.paths.map((p) => prefix + '/parcours/' + p.slug + '/')], file);
+  }
+  const home = await readFile(path.join(root, 'dist/index.html'), 'utf8');
+  // "/#chemins" (and "/ar/#chemins") opens the home page at the paths, for links Rayda shares.
+  assert.ok(home.indexOf('<section class="g-paths" id="chemins"') > home.indexOf('<section class="g-hero">'));
+  // Each path's page holds exactly its pieces, in French and in Arabic, and links to the other paths.
+  for (const p of catalog.paths) {
+    for (const prefix of ['', 'ar/']) {
+      const html = await readFile(path.join(root, 'dist', prefix + 'parcours', p.slug, 'index.html'), 'utf8');
+      assert.deepEqual([...html.matchAll(/data-product-card="([^"]+)"/g)].map((m) => m[1]), [...p.productIds], prefix + p.slug);
+      for (const other of catalog.paths.filter((o) => o.slug !== p.slug)) assert.ok(html.includes('href="/' + prefix + 'parcours/' + other.slug + '/"'), prefix + p.slug + ' → ' + other.slug);
+    }
+  }
+  assert.ok((await readFile(path.join(root, 'dist/parcours/etudes/index.html'), 'utf8')).includes('<h1>Je suis élève ou étudiant(e)</h1>'));
+  assert.ok((await readFile(path.join(root, 'dist/ar/parcours/etudes/index.html'), 'utf8')).includes('<h1>للتلاميذ والطلبة</h1>'));
 });

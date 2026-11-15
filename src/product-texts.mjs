@@ -4,6 +4,8 @@
 // (Arabic), shown beside the price; everything after them appears under the photos and buy box.
 // The car pendant with the Key of Life uses the Flower of Life pendant's text with the symbol changed:
 // Rayda only said it is the same pendant (same size, same price) with the Ankh, so she should confirm it.
+// Her book and learning accessories (15 November): her Arabic word for word, and her own French for the book;
+// the book's opening question and closing line, and all of the accessories text, are translated into French here.
 const bazi = {
   fr: {
     "title": "Une pièce qui porte votre empreinte",
@@ -567,6 +569,77 @@ const pendentifVoitureAnkh = {
   }
 };
 
+const livreExcellence = {
+  fr: {
+    "title": "Vous cherchez le vrai secret de la réussite scolaire de vos enfants, sans pression ni épuisement ?",
+    "intro": [
+      "Et parce que l’environnement joue un rôle décisif dans la concentration, cet ouvrage allie la puissance de l’esprit à l’harmonie de l’espace grâce aux conseils d’or du Feng Shui. Il vous offre ainsi une véritable feuille de route pour révéler la singularité de votre enfant et transformer ses performances scolaires de façon spectaculaire."
+    ],
+    "sections": [
+      {
+        "title": "Découvrez tout cela et bien plus encore dans le livre : « Votre excellence est votre choix » (تألقك هو اختيارك)",
+        "paragraphs": [
+          "Un guide pratique conçu sur mesure pour permettre à l’élève d’atteindre les sommets avec moins d’effort et une concentration maximale. Ce livre regorge d’exercices concrets qui révèlent une version plus confiante et autonome de votre enfant, le tout soutenu par un avantage exceptionnel : un accompagnement continu tout au long de l’année pour garantir l’application des méthodes et l’atteinte des résultats espérés."
+        ]
+      }
+    ],
+    "closing": "Procurez-vous votre exemplaire dès maintenant, et commencez un vrai changement dans l’avenir scolaire de votre enfant !"
+  },
+  ar: {
+    "title": "هل تبحث عن السر الحقيقي وراء تفوق الأبناء دراسياً دون ضغط أو إرهاق؟",
+    "intro": [
+      "ولأن البيئة المحيطة تلعب دوراً حاسماً في التركيز، يجمع هذا الكتاب بين قوة العقل وحسن استغلال طاقة المكان عبر نصائح \"الفنج شوي\" الذهبية، ليضع بين يديك خارطة طريق متكاملة نحو الفرادة وتطوير الأداء التعليمي بشكل مذهل."
+    ],
+    "sections": [
+      {
+        "title": "اكتشف كل ذلك وأكثر في كتاب: \"تألقك هو اختيارك\"",
+        "paragraphs": [
+          "الدليل العملي الذي صُمم خصيصاً لمساعدة المتعلم على تحقيق أعلى درجات التفوق بمجهود أقل وتركيز أعمق. يضم الكتاب تطبيقات عملية تنقل ابنك إلى نسخة أكثر تمكيناً وثقة، مدعومة بميزة استثنائية وهي المتابعة المتواصلة لمدة سنة كاملة لضمان تطبيق الخطوات وتحقيق النتائج المرجوة."
+        ]
+      }
+    ],
+    "closing": "احصل على نسختك الآن، وابدأ رحلة التغيير الحقيقي في مستقبل ابنك الدراسي!"
+  }
+};
+// "هذا خليه فقط لتلامذة الباكالوريا": Rayda's text for the baccalaureate edition, shown instead of the text above
+// when that edition is picked. The titles are added here (her text starts straight in).
+const livreExcellenceBac = {
+  fr: {
+    "title": "« Votre excellence est votre choix » pour les élèves du Baccalauréat",
+    "intro": [
+      "En année de Baccalauréat, le vrai problème n’est pas la difficulté des cours, mais la dispersion mentale et l’épuisement causés par des méthodes de mémorisation classiques qui consomment votre temps sans résultats. Le livre « Votre excellence est votre choix » (تألقك هو اختيارك) met entre vos mains le véritable raccourci : il ne vous demande pas d’étudier plus longtemps, mais vous apprend à étudier intelligemment.",
+      "Grâce à une combinaison unique entre la programmation subconsciente, qui transforme votre cerveau en un véritable aimant à informations, et l’aménagement de votre espace d’étude selon les secrets d’or du Feng Shui pour chasser la distraction et la fatigue, vous vous épargnerez des mois de souffrance et d’essais infructueux.",
+      "Parce que chaque étape du Baccalauréat comporte ses propres défis, cet ouvrage a été conçu selon un système d’accompagnement intelligent structuré par trimestres. Vous trouverez dans chaque trimestre des exercices précis et ciblés qui vous placent sur la bonne voie et garantissent votre progression étape par étape tout au long de l’année, afin d’arriver le jour de l’examen au sommet de votre préparation et de décrocher la filière de vos rêves."
+    ]
+  },
+  ar: {
+    "title": "«تألقك هو اختيارك» لتلاميذ الباكالوريا",
+    "intro": [
+      "في سنة الباكالوريا، المشكلة ليست في صعوبة الدروس، بل في تشتت الذهن واستنزاف الطاقة في طرق حفظ تقليدية تستهلك وقتك دون نتيجة. كتاب «تألقك هو اختيارك» يضع بين يديك الاختصار الحقيقي؛ فهو لا يطلب منك أن تدرس لساعات أطول، بل يعلمك كيف تدرس بذكاء.",
+      "من خلال الدمج الفريد بين البرمجة اللاواعية التي تحول عقلك إلى مغناطيس للمعلومات، وتهيئة بيئتك الدراسية بأسرار الفنج شوي الذهبية لطرد التشتت والخمول، ستختصر على نفسك أشهرًا من المعاناة والتجارب العشوائية.",
+      "ولأن كل مرحلة في الباكالوريا لها تحدياتها الخاصة، صُمم هذا الكتاب بنظام المرافقة الذكية المقسمة حسب الثلاثيات؛ حيث تجد في كل ثلاثي تمارين دقيقة وموجهة تضعك على المسار الصحيح وتضمن تطور مستواك خطوة بخطوة طيلة العام، لتصل إلى يوم الامتحان وأنت في قمة جاهزيتك وتضمن مقعدك في التخصص الذي تحلم به بإذن الله."
+    ]
+  }
+};
+// Her accessories text. Its first sentence is the product description (catalog.js, catalog-ar.mjs); the price line
+// that ended her message ("ثمن السوار و القلادة بالخيط 100د") went into the prices.
+const accessoiresApprentissage = {
+  fr: {
+    "title": "Accessoires Énergie d’apprentissage",
+    "intro": [
+      "Pour en tirer le meilleur, je prends soin de l’aspect énergétique de chaque pièce, afin qu’elle soit un outil de soutien pour les chakras supérieurs : plus de concentration, une expression plus éloquente et un élan pour tout ce qui rend l’apprentissage plus facile… Toutes les pierres passent par un nettoyage énergétique minutieux et la pièce est préparée à partir de la date de naissance ; elle est ensuite chargée avec l’énergie du Reiki, les plus beaux noms d’Allah et le Saint Coran.",
+      "Les pierres peuvent varier en nombre, en type, en forme et en taille."
+    ]
+  },
+  ar: {
+    "title": "أكسسوارات تفعيل طاقة التعلم",
+    "intro": [
+      "ولضمان أقصى استفادة، أنا أعتني بالجانب الطاقي لكل قطعة لتكون أداة داعمة للشاكرات العلوية لتركيز أكبر و تعبير أكثر بلاغة و تحفيز لما يتصل بعملية تعلم أيسر… تخضع جميع الأحجار لعملية تنظيف طاقي دقيقة و يتم إعداد القطعة بناءا على تاريخ الولادة، تلي ذلك عملية شحن بطاقة الريكي و أسماء الله الحسنى و القرآن الكريم.",
+      "الأحجار يمكن أن تختلف من حيث العدد و النوع و الشكل و الحجم."
+    ]
+  }
+};
+
 export const productTexts = {
   'bracelet-bazi': bazi,
   'collier-bazi': bazi,
@@ -576,5 +649,12 @@ export const productTexts = {
   'cle-de-vie': cleDeVie,
   'fleur-de-vie': fleurDeVie,
   'pendentif-voiture-fleur': pendentifVoitureFleur,
-  'pendentif-voiture-ankh': pendentifVoitureAnkh
+  'pendentif-voiture-ankh': pendentifVoitureAnkh,
+  'livre-excellence': livreExcellence,
+  'accessoires-apprentissage': accessoiresApprentissage
+};
+
+// A text that replaces the one above for one choice only, keyed on the catalogue's French value of that choice.
+export const variantTexts = {
+  'livre-excellence': { 'Baccalauréat': livreExcellenceBac }
 };

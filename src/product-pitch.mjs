@@ -53,6 +53,14 @@ export const productPitch = {
   'pendentif-voiture-ankh': {
     fr: 'Un pendentif doré Clé de Vie, à suspendre au rétroviseur.',
     ar: 'تعليقة ذهبية بمفتاح الحياة لمرآة السيارة.'
+  },
+  'livre-excellence': {
+    fr: 'Un recueil d’exercices et d’applications pour réussir à l’école, du primaire au baccalauréat, avec un accompagnement tout au long de l’année.',
+    ar: 'مجموعة تمارين وتطبيقات للتألق في الدراسة، من الابتدائي إلى الباكالوريا، مع متابعة متواصلة لمدة سنة كاملة.'
+  },
+  'accessoires-apprentissage': {
+    fr: 'Un bracelet ou un collier en pierres pour accompagner les études, préparé par Rayda à partir de votre date de naissance.',
+    ar: 'سوار أو قلادة من الأحجار لمرافقة الدراسة، تحضّرها رايدا انطلاقًا من تاريخ ميلادكم.'
   }
 };
 
