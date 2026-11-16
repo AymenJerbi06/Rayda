@@ -6,11 +6,11 @@
 - **Who is Rayda:** the home section "La personne derrière Issolatej" now reads "Qui est Rayda ?" / "من هي رايدا؟", with her own text. In her French she writes "Raida Ghrab"; that spelling is kept in her sentence while the rest of the site says "Rayda" (to confirm with her).
 - **The book « Votre excellence est votre choix » / «تألقك هو اختيارك»** (`livre-excellence`):
   - Three buttons, Primaire / Collège et lycée / Baccalauréat (Arabic: المرحلة الابتدائية / الإعدادي والثانوي / الباكالوريا). Each one shows its own photo.
-  - Baccalauréat: 45 TND (the "45" she wrote above that text). The other two show "Tarif à confirmer" until she gives their prices.
+  - Baccalauréat: 45 TND (the "45" she wrote above that text). The other two showed "Tarif à confirmer" until she gave their prices: 35 and 42 TND, added the same night (`COLLECTIONS_AND_NEW_PIECES_UPDATE.md`).
   - Her main text shows for the primary and middle-and-high-school editions. Her baccalaureate text ("هذا خليه فقط لتلامذة الباكالوريا") shows only when Baccalauréat is picked, and the "Lire la description de Rayda" link follows it.
   - Her Arabic is word for word; the French is hers, except the opening question and the closing line (translated here) and the baccalaureate text's title (added here, in both languages).
 - **The learning accessories « أكسسوارات تفعيل طاقة التعلم » / Accessoires Énergie d’apprentissage** (`accessoires-apprentissage`):
-  - Three buttons: Bracelet (100 TND), Collier sur cordon (100 TND), Collier sur chaîne dorée (tarif à confirmer). "ثمن السوار و القلادة بالخيط 100د" is read as 100 TND each.
+  - Three buttons: Bracelet (100 TND), Collier sur cordon (100 TND), Collier sur chaîne dorée (tarif à confirmer, then 130 TND in stainless steel once she gave it). "ثمن السوار و القلادة بالخيط 100د" is read as 100 TND each.
   - Each piece is prepared from the birth date, so it works like the BaZi pieces: the checkout asks for the birth date, and the page says the stones can vary in number, type, shape and size.
   - Her Arabic text word for word (the first letter of "تعتمد" was lost in the copy and is put back), translated into French.
 - **Price line:** "Le prix vous est donné quand nous vous contactons…" now shows only while a choice without a price is picked (two of the book's editions, the gold-chain necklace, and the Amour bracelet's heart model), instead of staying under a price.
@@ -48,11 +48,11 @@
 
 ## Still to confirm with Rayda
 
-- Prices of the primary and middle-and-high-school editions, and of the gold-chain necklace.
+- Prices of the primary and middle-and-high-school editions, and of the gold-chain necklace: given the same night (35, 42 and 130 TND).
 - "100د": 100 TND each for the bracelet and the cord necklace?
 - "Raida" or "Rayda" in French.
 - Is the book written in Arabic inside? If so, the French page should say it.
 
 ## How to undo
 
-First undo the paths round (`PATHS_UPDATE.md`). Then copy back the files in `backups/before-book-2026-11-15/` (the `src/` and `test/` folders, `commerce.css`), delete the 16 `livre-excellence-*` and `accessoires-apprentissage-*` photos in `assets/products/organized/` and `assets/products/organized/480/` and `assets/categories/excellence-scolaire.webp`, then run `npm run build`.
+First undo the collections round (`COLLECTIONS_AND_NEW_PIECES_UPDATE.md`), then the paths round (`PATHS_UPDATE.md`). Then copy back the files in `backups/before-book-2026-11-15/` (the `src/` and `test/` folders, `commerce.css`), delete the 16 `livre-excellence-*` and `accessoires-apprentissage-*` photos in `assets/products/organized/` and `assets/products/organized/480/` and `assets/categories/excellence-scolaire.webp`, then run `npm run build`.

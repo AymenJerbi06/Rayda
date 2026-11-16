@@ -2,8 +2,10 @@
   "use strict";
   // Source: organized Products/Catalogue Produits - Issolatej.xlsx.
   // Image files are copied from the numbered source folders without editing them.
-  // Thirteen products also lead with a lifestyle scene, <id>-ugc.jpg, made with CreateUGC from Rayda's own photo of
-  // the piece (originals in "om Adem/UGC photos (CreateUGC)"); the product pages say so under the gallery.
+  // Sixteen products also lead with a lifestyle scene, <id>-ugc.jpg, made with CreateUGC from Rayda's own photo of
+  // the piece (originals in "om Adem/UGC photos (CreateUGC)"); the product pages say so under the gallery. On the
+  // bottle's scene the printed verses are Rayda's real print, laid in from her photo letter for letter, and the Feng
+  // Shui coins in theirs are her real coins and cord, laid in from her photo.
   // Products with aiPhotos show, after that scene, photos made in ChatGPT from Rayda's own photos instead of her
   // photos: <id>-ai-<shot>.jpg (originals in "om Adem/ChatGPT photos (full size)"). Each entry is [shot, alt], and
   // variantImageIndex counts within aiPhotos. The product pages say so under the gallery.
@@ -196,12 +198,12 @@
       priceNote: "Tarif communiqué : 80 TND. Disponibilité à confirmer.",
       missing: ["Matière exacte", "Disponibilité"]
     }),
-    // Rayda's book, sent on 15 November in three editions (primary, middle and high school, baccalaureate). She gave
-    // the baccalaureate price only (45 TND); the other two stay "tarif à confirmer" until she sends theirs. Her own
-    // text for the baccalaureate edition is shown only when that edition is picked (product-texts.mjs, variantTexts).
+    // Rayda's book, sent on 15 November in three editions (primary, middle and high school, baccalaureate), at 35, 42
+    // and 45 TND ("35د الابتدائي", "42 الإعدادي و الثانوي", "45 الباكالوريا"). Her own text for the baccalaureate
+    // edition is shown only when that edition is picked (product-texts.mjs, variantTexts).
     make({
       id: "livre-excellence", name: "Livre « Votre excellence est votre choix »", eyebrow: "Livre · trois éditions", type: "book", collections: ["livres"],
-      price: amount(45), availability: "quote", custom: false, lifestyle: "Les trois éditions du livre « Votre excellence est votre choix » posées debout sur un bureau, près d’une fenêtre",
+      price: amount(35, 45), availability: "quote", custom: false, lifestyle: "Les trois éditions du livre « Votre excellence est votre choix » posées debout sur un bureau, près d’une fenêtre",
       aiPhotos: [["primaire-flatlay", "Édition primaire du livre « Votre excellence est votre choix », posée à plat sur du lin avec un crayon"], ["college-desk", "Édition collège et lycée du livre posée sur un bureau, à côté d’un cahier et d’un thé à la menthe"], ["bac-standing", "Édition baccalauréat du livre posée debout sur un bureau, près d’une plante"]],
       description: "La vraie réussite scolaire prend sa source à l’intérieur : elle naît d’une reprogrammation positive du subconscient, nourrie par l’amour du savoir, la passion d’apprendre et des objectifs clairs qui mobilisent tout le potentiel de l’élève vers l’excellence, avec la grâce de Dieu.",
       benefits: [
@@ -209,30 +211,80 @@
         { icon: "confidence", label: "Des exercices pratiques pour gagner en confiance et en autonomie" },
         { icon: "chat", label: "Un accompagnement continu tout au long de l’année" }
       ],
-      details: ["Trois éditions : primaire, collège et lycée, baccalauréat", "Édition baccalauréat : 45 TND ; tarif des éditions primaire et collège-lycée à confirmer", "Exercices et applications pratiques, avec des conseils de Feng Shui pour l’espace d’étude", "Édition baccalauréat : un accompagnement organisé par trimestre", "Reliure à spirale pour le primaire et le collège-lycée, livre broché pour le baccalauréat"],
-      options: { variant: ["Primaire", "Collège et lycée", "Baccalauréat"] }, variantPrices: { "Primaire": null, "Collège et lycée": null, "Baccalauréat": 45 },
+      details: ["Trois éditions : primaire, collège et lycée, baccalauréat", "Primaire : 35 TND ; collège et lycée : 42 TND ; baccalauréat : 45 TND", "Exercices et applications pratiques, avec des conseils de Feng Shui pour l’espace d’étude", "Édition baccalauréat : un accompagnement organisé par trimestre", "Reliure à spirale pour le primaire et le collège-lycée, livre broché pour le baccalauréat"],
+      options: { variant: ["Primaire", "Collège et lycée", "Baccalauréat"] }, variantPrices: { "Primaire": 35, "Collège et lycée": 42, "Baccalauréat": 45 },
       variantImageIndex: { "Primaire": 0, "Collège et lycée": 1, "Baccalauréat": 2 },
-      priceNote: "Édition baccalauréat : 45 TND. Prix des éditions primaire et collège-lycée à confirmer.",
-      missing: ["Prix des éditions primaire et collège-lycée", "Disponibilité"]
+      priceNote: "Prix selon l’édition : primaire 35 TND, collège et lycée 42 TND, baccalauréat 45 TND. Disponibilité à confirmer.",
+      missing: ["Disponibilité"]
     }),
     // Her learning accessories, sent the same day: a bracelet, a necklace on a cord and a necklace on a gold chain,
     // each prepared from the client's birth date (so custom, like the BaZi pieces). She priced the bracelet and the
-    // cord necklace at 100 TND ("ثمن السوار و القلادة بالخيط 100د", read as each); the gold-chain necklace is unpriced.
+    // cord necklace at 100 TND ("ثمن السوار و القلادة بالخيط 100د", read as each) and the gold-chain necklace, in
+    // stainless steel, at 130 TND ("ثمن القلادة الذهبية من الفولاذ المقاوم للصدإ acier inoxydable 130د").
     make({
       id: "accessoires-apprentissage", name: "Accessoires Énergie d’apprentissage", eyebrow: "Bracelet ou collier · préparé pour vous", type: "jewelry", collections: ["apprentissage", "bracelets", "colliers"],
-      price: amount(100), availability: "made-to-order", custom: true, lifestyle: "Le bracelet et les deux colliers Énergie d’apprentissage posés sur un bureau d’étude, près d’un cahier ouvert",
+      price: amount(100, 130), availability: "made-to-order", custom: true, lifestyle: "Le bracelet et les deux colliers Énergie d’apprentissage posés sur un bureau d’étude, près d’un cahier ouvert",
       aiPhotos: [["bracelet-wrist", "Bracelet Énergie d’apprentissage porté au poignet pendant une séance d’écriture"], ["chaine-neck", "Collier Énergie d’apprentissage sur chaîne dorée, porté"], ["cordon-desk", "Collier Énergie d’apprentissage sur cordon noir, posé sur un bureau près d’un cahier"]],
-      description: "Cette collection repose sur les fréquences de pierres connues pour leur capacité à stimuler la perception et à apaiser les pensées qui s’emballent.",
+      description: "Cette collection s’appuie sur les fréquences des pierres précieuses, reconnues pour leur capacité à stimuler la perception et à apaiser les pensées qui s’emballent.",
       benefits: [
         { icon: "clarity", label: "Pensé pour soutenir la concentration pendant les études" },
         { icon: "calm", label: "Des pierres associées au calme des pensées, selon la démarche de Rayda" },
         { icon: "personalization", label: "Préparé à partir de votre date de naissance" }
       ],
-      details: ["Trois pièces au choix : bracelet, collier sur cordon ou collier sur chaîne dorée", "Bracelet et collier sur cordon : 100 TND chacun ; collier sur chaîne dorée : tarif à confirmer", "Les pierres peuvent varier en nombre, en type, en forme et en taille", "Rayda décrit un nettoyage énergétique des pierres, puis une charge associant Reiki, noms d’Allah et Saint Coran, sans promesse de résultat"],
-      options: { variant: ["Bracelet", "Collier sur cordon", "Collier sur chaîne dorée"] }, variantPrices: { "Bracelet": 100, "Collier sur cordon": 100, "Collier sur chaîne dorée": null },
+      details: ["Trois pièces au choix : bracelet, collier sur cordon ou collier sur chaîne dorée", "Bracelet et collier sur cordon : 100 TND chacun ; collier sur chaîne dorée en acier inoxydable : 130 TND", "Les pierres peuvent varier en nombre, en type, en forme et en taille", "Rayda décrit un nettoyage énergétique des pierres, puis une charge associant Reiki, noms d’Allah et Saint Coran, sans promesse de résultat"],
+      options: { variant: ["Bracelet", "Collier sur cordon", "Collier sur chaîne dorée"] }, variantPrices: { "Bracelet": 100, "Collier sur cordon": 100, "Collier sur chaîne dorée": 130 },
       variantImageIndex: { "Bracelet": 0, "Collier sur cordon": 2, "Collier sur chaîne dorée": 1 },
-      priceNote: "Bracelet et collier sur cordon : 100 TND chacun. Prix du collier sur chaîne dorée à confirmer.",
-      missing: ["Prix du collier sur chaîne dorée", "Délai de préparation", "Disponibilité"]
+      priceNote: "Bracelet et collier sur cordon : 100 TND chacun. Collier sur chaîne dorée en acier inoxydable : 130 TND.",
+      missing: ["Délai de préparation", "Disponibilité"]
+    }),
+    // Her glass water bottle, sent the same night for her study collection: glass, 1 litre, 55 TND ("المادة :البلور /
+    // السعة :لتر / الثمن 55د"), printed with Quran verses, symbols and affirmations. Its gallery opens on a CreateUGC
+    // scene whose printed verses are her real print, laid in from her close-up photo letter for letter (CreateUGC's own
+    // lettering was wrong), then her own photos.
+    make({
+      id: "bouteille-verre", name: "Bouteille d’eau en verre", eyebrow: "Bouteille · verre, 1 litre", type: "accessory", collections: ["apprentissage"],
+      price: amount(55), availability: "quote", custom: false, photoCount: 3, photoAlt: "Bouteille d’eau en verre d’un litre, imprimée de versets du Coran et d’affirmations positives",
+      lifestyle: "Bouteille d’eau en verre posée sur un bureau d’étude, à côté d’un cahier ouvert et d’un crayon",
+      description: "Cette bouteille réunit deux dimensions complémentaires :",
+      benefits: [
+        { icon: "clarity", label: "Un rappel quotidien pour accompagner les études de votre enfant" },
+        { icon: "confidence", label: "Des affirmations autour de la confiance en soi et de l’amour du savoir" },
+        { icon: "protection", label: "Versets du Coran et symboles, selon la démarche de Rayda" }
+      ],
+      details: ["Matière : verre", "Contenance : 1 litre", "Imprimée de versets du Coran, de symboles et d’affirmations positives", "La dimension énergétique et symbolique appartient à la démarche de Rayda, sans promesse de résultat"],
+      priceNote: "Tarif communiqué : 55 TND. Disponibilité à confirmer."
+    }),
+    // Her key necklace, in stainless steel: 45 TND, the long necklace 55 TND ("السعر :45د / القلادة الطويلة :55د"). She
+    // photographed two keys, a large flowered one and a small clover one; which key is the long necklace is still to
+    // confirm with her, so the choice is the length only. The scene shows the flowered key; her photos show both keys.
+    make({
+      id: "collier-cle", name: "Collier Clé", eyebrow: "Collier · acier inoxydable", type: "jewelry", collections: ["colliers"],
+      price: amount(45, 55), availability: "quote", custom: false, photoCount: 5, photoAlt: "Collier Clé doré en acier inoxydable, pendentif clé serti de petites pierres brillantes",
+      lifestyle: "Collier Clé porté sur un haut en lin crème à col rond",
+      description: "Lorsque l’on comprend que tout est énergie, et que les symboles peuvent générer des fréquences subtiles et interagir avec notre inconscient, on réalise que la présence du pendentif en forme de clé à cet emplacement n’a rien d’anodin.",
+      benefits: [
+        { icon: "abundance", label: "Un symbole associé à la chance et à l’ouverture des portes" },
+        { icon: "protection", label: "Chargé par le Reiki de l’Argent, selon la démarche de Rayda" }
+      ],
+      details: ["Matière : acier inoxydable doré", "Collier standard : 45 TND ; collier long : 55 TND", "Deux modèles de clé photographiés : une grande clé fleurie et une petite clé trèfle", "La signification symbolique appartient à la démarche de Rayda, sans promesse de résultat"],
+      options: { variant: ["Collier standard", "Collier long"] }, variantPrices: { "Collier standard": 45, "Collier long": 55 },
+      priceNote: "Collier standard : 45 TND. Collier long : 55 TND. Disponibilité à confirmer.",
+      missing: ["Modèle de clé du collier long", "Longueurs exactes", "Disponibilité"]
+    }),
+    // Her "Feng Shui products for financial abundance" ("منتجات الفنج شوي للوفرة المالية"): three Chinese coins tied with
+    // a red string. She sent photos only, without a price or a text yet. The scene's coins and cord are her real ones,
+    // laid in from her photo (CreateUGC invented the characters).
+    make({
+      id: "pieces-feng-shui", name: "Pièces chinoises Feng Shui", eyebrow: "Feng Shui · fil rouge", type: "decor", collections: ["objets-dores"],
+      price: null, availability: "quote", custom: false, photoCount: 3, photoAlt: "Trois pièces chinoises Feng Shui nouées d’un fil rouge, près de tiges de bambou",
+      lifestyle: "Les trois pièces chinoises nouées d’un fil rouge posées sur une table en bois, près d’un vase de bambous",
+      description: "Trois pièces chinoises nouées d’un fil rouge : un objet Feng Shui que Rayda propose pour l’abondance financière.",
+      benefits: [
+        { icon: "abundance", label: "Un objet Feng Shui pour une intention d’abondance financière" }
+      ],
+      details: ["Trois pièces à trou carré, nouées d’un fil rouge", "La signification symbolique appartient à la démarche de Rayda, sans promesse de résultat"],
+      priceNote: "Prix non communiqué dans les éléments reçus. Demandez le tarif avant commande.",
+      missing: ["Prix", "Texte de Rayda", "Dimensions", "Disponibilité"]
     })
   ];
   window.STORE_CATALOG = {
@@ -240,21 +292,22 @@
       { slug: "all", name: "Toutes les créations", description: "Bijoux, accessoires et objets présentés par Issolatej.", productIds: products.map(function (p) { return p.id; }) },
       { slug: "creations-bazi", name: "Créations BaZi", description: "Pièces conçues après un échange autour de la carte BaZi.", productIds: ["bracelet-bazi", "collier-bazi", "portefeuille-hafidha"] },
       { slug: "bracelets", name: "Bracelets", description: "Bracelet BaZi sur mesure, bracelet Énergie Amour et bracelet Énergie d’apprentissage.", productIds: ["bracelet-bazi", "bracelet-amour", "accessoires-apprentissage"] },
-      { slug: "colliers", name: "Colliers", description: "Collier BaZi composé pour une personne et colliers Énergie d’apprentissage.", productIds: ["collier-bazi", "accessoires-apprentissage"] },
+      { slug: "colliers", name: "Colliers", description: "Collier BaZi composé pour une personne, colliers Énergie d’apprentissage et collier Clé.", productIds: ["collier-bazi", "accessoires-apprentissage", "collier-cle"] },
       { slug: "porte-cles", name: "Porte-clés", description: "Porte-clés de pierre et Arbre de Vie.", productIds: ["porte-cles-pierre", "porte-cles-arbre-vie"] },
       { slug: "portefeuilles", name: "Portefeuilles", description: "Portefeuille Hafidha El Mel dans les coloris photographiés.", productIds: ["portefeuille-hafidha"] },
-      { slug: "objets-dores", name: "Objets dorés", description: "Carte et objets décoratifs dorés.", productIds: ["carte-million-dollar", "decor-abondance", "cle-de-vie", "fleur-de-vie"] },
+      { slug: "objets-dores", name: "Objets dorés", description: "Carte, objets décoratifs dorés et pièces chinoises Feng Shui.", productIds: ["carte-million-dollar", "decor-abondance", "cle-de-vie", "fleur-de-vie", "pieces-feng-shui"] },
       { slug: "voiture", name: "Pendentifs voiture", description: "Pendentifs décoratifs à suspendre dans la voiture.", productIds: ["pendentif-voiture-fleur", "pendentif-voiture-ankh"] },
       { slug: "livres", name: "Livres", description: "Le livre « Votre excellence est votre choix », en trois éditions : primaire, collège et lycée, baccalauréat.", productIds: ["livre-excellence"] },
-      { slug: "apprentissage", name: "Accessoires d’étude", description: "Bracelet et colliers Énergie d’apprentissage, préparés à partir de votre date de naissance.", productIds: ["accessoires-apprentissage"] }
+      { slug: "apprentissage", name: "Accessoires d’étude", description: "Bracelet et colliers Énergie d’apprentissage, préparés à partir de votre date de naissance, et la bouteille d’eau en verre aux versets et affirmations.", productIds: ["accessoires-apprentissage", "bouteille-verre"] }
     ],
-    // Paths ("chemins"): the first choice on the home page and in the Boutique, by what the visitor is looking for;
-    // each opens /parcours/<slug>/ with only its pieces. Rayda is sending her own paths; until then each holds the
-    // pieces her own texts describe for that wish. Arabic words are in catalog-ar.mjs (pathsAr).
+    // Paths ("chemins"): the first choice on the home page and in the Boutique; each opens /parcours/<slug>/ with only
+    // its pieces. The study and money paths are Rayda's own collections as she sent them on 15 November, "مجموعة
+    // التألق العلمي" and "مجموعة الوفرة"; she sent no love collection, so that path keeps the Énergie Amour bracelet.
+    // Arabic words are in catalog-ar.mjs (pathsAr).
     paths: [
-      { slug: "etudes", icon: "study", name: "Je suis élève ou étudiant(e)", summary: "Pour étudier avec plus de concentration et de confiance.", description: "Le livre de Rayda « Votre excellence est votre choix », en trois éditions, et les accessoires Énergie d’apprentissage, préparés à partir de votre date de naissance.", productIds: ["livre-excellence", "accessoires-apprentissage"] },
-      { slug: "amour", icon: "love", name: "Je cherche l’amour", summary: "Pour ouvrir votre cœur à l’énergie de l’amour.", description: "Le bracelet Énergie Amour en quartz rose : un bracelet pour activer l’énergie de l’amour, selon les mots de Rayda.", productIds: ["bracelet-amour"] },
-      { slug: "abondance", icon: "money", name: "Je veux attirer l’argent", summary: "Pour accueillir l’abondance au quotidien.", description: "Le portefeuille Hafidha El Mel, la carte Million Dollar, le décor Abondance et la Clé de Vie : des pièces pensées pour une relation plus sereine à l’argent.", productIds: ["portefeuille-hafidha", "carte-million-dollar", "decor-abondance", "cle-de-vie"] }
+      { slug: "etudes", icon: "study", name: "Excellence scolaire", summary: "Pour les élèves et les étudiants : étudier avec plus de concentration et de confiance.", description: "La collection Excellence scolaire de Rayda : son livre « Votre excellence est votre choix » en trois éditions, les accessoires Énergie d’apprentissage et la bouteille d’eau en verre aux versets et affirmations.", productIds: ["livre-excellence", "accessoires-apprentissage", "bouteille-verre"] },
+      { slug: "abondance", icon: "money", name: "Abondance", summary: "Pour accueillir l’abondance financière au quotidien.", description: "La collection Abondance de Rayda : le portefeuille Hafidha El Mel avec ses cartes et son exercice pour élargir l’énergie de réception de l’argent, la carte Million Dollar, le décor Abondance au dollar, à la couronne et à l’infini, le collier Clé, le bracelet BaZi et les pièces chinoises Feng Shui.", productIds: ["portefeuille-hafidha", "carte-million-dollar", "decor-abondance", "collier-cle", "bracelet-bazi", "pieces-feng-shui"] },
+      { slug: "amour", icon: "love", name: "Énergie Amour", summary: "Pour ouvrir votre cœur à l’énergie de l’amour.", description: "Le bracelet Énergie Amour en quartz rose : un bracelet pour activer l’énergie de l’amour, selon les mots de Rayda.", productIds: ["bracelet-amour"] }
     ],
     products: products
   };

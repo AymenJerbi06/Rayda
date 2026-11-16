@@ -61,6 +61,19 @@ export const productPitch = {
   'accessoires-apprentissage': {
     fr: 'Un bracelet ou un collier en pierres pour accompagner les études, préparé par Rayda à partir de votre date de naissance.',
     ar: 'سوار أو قلادة من الأحجار لمرافقة الدراسة، تحضّرها رايدا انطلاقًا من تاريخ ميلادكم.'
+  },
+  'bouteille-verre': {
+    fr: 'Une bouteille d’eau en verre d’un litre, imprimée de versets du Coran et d’affirmations positives, pour accompagner votre enfant dans ses études.',
+    ar: 'قارورة ماء من البلور بسعة لتر، عليها آيات قرآنية وتوكيدات إيجابية، لمرافقة طفلكم في دراسته.'
+  },
+  'collier-cle': {
+    fr: 'Un collier doré en acier inoxydable, avec un pendentif clé serti de petites pierres brillantes : un symbole de chance et d’ouverture des portes.',
+    ar: 'قلادة ذهبية اللون من الفولاذ المقاوم للصدإ، بمفتاح مرصّع بأحجار صغيرة لامعة: رمز للحظ والتسهيل.'
+  },
+  // Same words as the description: Rayda has not sent a text for the coins yet, so there is nothing else to show.
+  'pieces-feng-shui': {
+    fr: 'Trois pièces chinoises nouées d’un fil rouge : un objet Feng Shui que Rayda propose pour l’abondance financière.',
+    ar: 'ثلاث قطع نقدية صينية مربوطة بخيط أحمر، من منتجات الفنج شوي التي تقترحها رايدا للوفرة المالية.'
   }
 };
 

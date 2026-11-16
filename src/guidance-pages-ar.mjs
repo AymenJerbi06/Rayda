@@ -14,13 +14,13 @@ const clientWords = text => esc(text).replace(/\n/g, '<br />');
 const picture = '/assets/brand/rayda.jpg';
 const categoryNamesAr = {
   bracelets: ['الأساور', 'حسب الطلب أو جاهزة'],
-  colliers: ['القلائد', 'حسب الطلب'],
+  colliers: ['القلائد', 'حسب الطلب أو جاهزة'],
   'porte-cles': ['ميداليات المفاتيح', 'للاختيار'],
   portefeuilles: ['المحافظ', 'شخصية'],
   'objets-dores': ['قطع ذهبية', 'للاختيار'],
   voiture: ['للسيارة', 'للاختيار'],
   livres: ['الكتب', 'للاختيار'],
-  apprentissage: ['أكسسوارات التعلم', 'تُحضَّر لكم']
+  apprentissage: ['أكسسوارات التعلم', 'تُحضَّر لكم أو جاهزة']
 };
 
 export const arGuidanceRoutes = ['a-propos', 'accompagnement', 'contact', 'vos-mots', 'boutique'];

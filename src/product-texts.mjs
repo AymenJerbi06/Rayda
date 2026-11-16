@@ -4,8 +4,10 @@
 // (Arabic), shown beside the price; everything after them appears under the photos and buy box.
 // The car pendant with the Key of Life uses the Flower of Life pendant's text with the symbol changed:
 // Rayda only said it is the same pendant (same size, same price) with the Ankh, so she should confirm it.
-// Her book and learning accessories (15 November): her Arabic word for word, and her own French for the book;
-// the book's opening question and closing line, and all of the accessories text, are translated into French here.
+// Her book and learning accessories (15 November): her Arabic word for word, and her own French for both; the book's
+// opening question and closing line, and the accessories' last line (the stones can vary), are translated into French
+// here. Her water bottle and key necklace (the same night): her texts in both languages; the first words of her French
+// bottle text were lost in her copy (it starts at "complémentaires :"), so they are translated from her Arabic.
 const bazi = {
   fr: {
     "title": "Une pièce qui porte votre empreinte",
@@ -627,7 +629,7 @@ const accessoiresApprentissage = {
   fr: {
     "title": "Accessoires Énergie d’apprentissage",
     "intro": [
-      "Pour en tirer le meilleur, je prends soin de l’aspect énergétique de chaque pièce, afin qu’elle soit un outil de soutien pour les chakras supérieurs : plus de concentration, une expression plus éloquente et un élan pour tout ce qui rend l’apprentissage plus facile… Toutes les pierres passent par un nettoyage énergétique minutieux et la pièce est préparée à partir de la date de naissance ; elle est ensuite chargée avec l’énergie du Reiki, les plus beaux noms d’Allah et le Saint Coran.",
+      "Afin d’en garantir un bénéfice maximal, je veille sur l’aspect énergétique de chaque pièce pour en faire un outil de soutien aux chakras supérieurs, favorisant ainsi une plus grande concentration, une expression plus éloquente et une stimulation de tout ce qui facilite le processus d’apprentissage… Toutes les pierres sont soumises à un processus minutieux de purification énergétique et chaque pièce est préparée en fonction de la date de naissance, suivie d’un rechargement par l’énergie Reiki, les Beaux Noms d’Allah (Al-Asma Al-Husna) et le Saint Coran.",
       "Les pierres peuvent varier en nombre, en type, en forme et en taille."
     ]
   },
@@ -637,6 +639,62 @@ const accessoiresApprentissage = {
       "ولضمان أقصى استفادة، أنا أعتني بالجانب الطاقي لكل قطعة لتكون أداة داعمة للشاكرات العلوية لتركيز أكبر و تعبير أكثر بلاغة و تحفيز لما يتصل بعملية تعلم أيسر… تخضع جميع الأحجار لعملية تنظيف طاقي دقيقة و يتم إعداد القطعة بناءا على تاريخ الولادة، تلي ذلك عملية شحن بطاقة الريكي و أسماء الله الحسنى و القرآن الكريم.",
       "الأحجار يمكن أن تختلف من حيث العدد و النوع و الشكل و الحجم."
     ]
+  }
+};
+// Her water bottle text. Its first line is the product description (catalog.js, catalog-ar.mjs); her two numbered
+// dimensions are the sections, and her last line closes the text.
+const bouteilleVerre = {
+  fr: {
+    "title": "Bien plus qu’une simple bouteille d’eau",
+    "sections": [
+      {
+        "title": "1. La dimension énergétique",
+        "paragraphs": [
+          "Elle intègre des symboles, des affirmations positives ainsi que des versets du Coran. Une partie de son concept s’inspire des recherches menées sur l’influence des mots et des symboles sur les cristaux d’eau. L’eau est ainsi laissée à l’intérieur de la bouteille pendant un certain temps afin de s’inscrire dans cette expérience spirituelle et symbolique."
+        ]
+      },
+      {
+        "title": "2. La dimension de la programmation mentale et de l’inconscient",
+        "paragraphs": [
+          "Grâce à une exposition quotidienne et répétée aux phrases et aux affirmations positives inscrites sur la bouteille, votre fille ou votre fils est invité(e) à développer progressivement de nouveaux schémas de pensée, nourris de messages positifs autour de la confiance en soi, de l’amour du savoir, du plaisir d’apprendre, ainsi que du sentiment de sécurité et de protection face aux influences négatives.",
+          "Bien plus qu’une simple bouteille d’eau… c’est un rappel quotidien de sa valeur et de ses capacités, un compagnon bienveillant qui l’accompagne tout au long de son parcours d’apprentissage, de développement personnel et d’épanouissement scolaire."
+        ]
+      }
+    ],
+    "closing": "Car la réussite de nos enfants ne repose pas uniquement sur les connaissances, mais aussi sur la confiance en soi, l’encouragement et un environnement positif."
+  },
+  ar: {
+    "title": "أكثر من مجرد قارورة ماء",
+    "sections": [
+      {
+        "title": "الأول: البُعد الطاقي",
+        "paragraphs": [
+          "تحتوي القارورة على رموز وتوكيدات وآيات قرآنية، وقد استلهمتُ جزءا من فكرتها من الأبحاث العلمية حول تأثير الكلمات والرموز في بلورات الماء. هذا يعني أن الماء يُترك داخلها لبعض الوقت ليكون جزءاً من هذه التجربة الروحية والرمزية."
+        ]
+      },
+      {
+        "title": "الثاني: بُعد البرمجة الذهنية واللاوعي",
+        "paragraphs": [
+          "من خلال التعرض اليومي والمتكرر للعبارات والتوكيدات الموجودة على القارورة، تتاح لابنتك أو ابنك فرصة لبناء برمجة جديدة مليئة برسائل إيجابية تتعلق بالثقة بالنفس، وحب العلم، والإقبال على التعلم، والشعور بالأمان والحماية من التأثيرات السلبية.",
+          "إنها أكثر من مجرد قارورة ماء… إنها تذكير يومي لطفلك بقيمته وقدراته، ومرافقة لطيفة له في رحلته نحو التعلم والتطور والتألق الدراسي."
+        ]
+      }
+    ],
+    "closing": "لأن نجاح أبنائنا لا يحتاج إلى المعرفة وحدها، بل يحتاج أيضاً إلى الثقة بالنفس، والتحفيز، والبيئة الإيجابية."
+  }
+};
+// Her key necklace text. Her Arabic is a single sentence, so all of it is the product description (catalog-ar.mjs);
+// her French is two paragraphs, the first being the description (catalog.js).
+const collierCle = {
+  fr: {
+    "title": "Un symbole de chance et d’ouverture des portes",
+    "intro": [
+      "La clé est un symbole profondément associé à la chance, à l’ouverture des portes et à la facilitation des choses, avec la permission de Dieu. Cette symbolique est renforcée par une charge énergétique réalisée à travers le Reiki de l’Argent."
+    ]
+  },
+  ar: {
+    "title": "رمز يرتبط بمعاني الحظ و التسهيل",
+    "intro": []
   }
 };
 
@@ -651,7 +709,9 @@ export const productTexts = {
   'pendentif-voiture-fleur': pendentifVoitureFleur,
   'pendentif-voiture-ankh': pendentifVoitureAnkh,
   'livre-excellence': livreExcellence,
-  'accessoires-apprentissage': accessoiresApprentissage
+  'accessoires-apprentissage': accessoiresApprentissage,
+  'bouteille-verre': bouteilleVerre,
+  'collier-cle': collierCle
 };
 
 // A text that replaces the one above for one choice only, keyed on the catalogue's French value of that choice.

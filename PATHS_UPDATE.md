@@ -8,7 +8,7 @@
   - "Je veux attirer l’argent" / "لجذب المال والوفرة": the Hafidha El Mel wallet, the Million Dollar card, the Abondance décor and the Clé de Vie.
 - **A link straight to the paths:** `/#chemins` (and `/ar/#chemins`) opens the home page at "Par où commencer ?", for a link Rayda shares on WhatsApp or Instagram.
 - **Each door opens its own page** with only those pieces: `/parcours/etudes/`, `/parcours/amour/`, `/parcours/abondance/`, and the same under `/ar/parcours/`. Each page ends with links to the other paths and to the whole Boutique.
-- **These three paths are placeholders** until Rayda sends hers. Their wording comes from her own product texts (concentration and confidence for the book and accessories, "activer l’énergie de l’amour" for the bracelet).
+- **These three paths are placeholders** until Rayda sends hers. Their wording comes from her own product texts (concentration and confidence for the book and accessories, "activer l’énergie de l’amour" for the bracelet). She sent hers the same night; they replace the study and money paths (see `COLLECTIONS_AND_NEW_PIECES_UPDATE.md`).
 - **"Excellence scolaire" is split in two.** The book and the learning accessories each have their own category, name and card: "Livres" / "الكتب" and "Accessoires d’étude" / "أكسسوارات التعلم".
   - "Accessoires d’étude" is short on purpose: "d’apprentissage" is too long a word for the cards on phones. The piece keeps its full name, "Accessoires Énergie d’apprentissage".
   - The category grid now has eight cards, four across (two on phones), so every row is full. On tablets the card names are set a little smaller so that "Portefeuilles" still fits.
@@ -48,9 +48,9 @@
 
 ## Still to confirm with Rayda
 
-- Her own paths: the names, the wording and which pieces go in each.
-- From the book round: the prices of the primary and middle-and-high-school editions and of the gold-chain necklace; whether "100د" means 100 TND each; "Raida" or "Rayda" in French; whether the book is written in Arabic inside.
+- Her own paths: done, see `COLLECTIONS_AND_NEW_PIECES_UPDATE.md`.
+- From the book round: the prices of the primary and middle-and-high-school editions and of the gold-chain necklace (since given: 35, 42 and 130 TND); whether "100د" means 100 TND each; "Raida" or "Rayda" in French; whether the book is written in Arabic inside.
 
 ## How to undo
 
-Copy back the files in `backups/before-paths-2026-11-15/` (the `src/` and `test/` folders, `commerce.css`, `BOOK_AND_TEXTS_UPDATE.md`), put `excellence-scolaire.webp` back from its `assets/categories/` folder into the site's `assets/categories/`, delete `assets/categories/livres.webp` and `assets/categories/apprentissage.webp`, then run `npm run build`.
+First undo the collections round (`COLLECTIONS_AND_NEW_PIECES_UPDATE.md`). Then copy back the files in `backups/before-paths-2026-11-15/` (the `src/` and `test/` folders, `commerce.css`, `BOOK_AND_TEXTS_UPDATE.md`), put `excellence-scolaire.webp` back from its `assets/categories/` folder into the site's `assets/categories/`, delete `assets/categories/livres.webp` and `assets/categories/apprentissage.webp`, then run `npm run build`.

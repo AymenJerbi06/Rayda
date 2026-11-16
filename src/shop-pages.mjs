@@ -12,14 +12,14 @@ export function productCard(p) {
 }
 export const shopCategories = [
   ['Bracelets','Sur mesure & à choisir','bracelets','/collections/bracelets/'],
-  ['Colliers','Sur mesure','colliers','/collections/colliers/'],
+  ['Colliers','Sur mesure & à choisir','colliers','/collections/colliers/'],
   ['Porte-clés','À choisir','porte-cles','/collections/porte-cles/'],
   ['Portefeuilles','Personnalisés','portefeuilles','/collections/portefeuilles/'],
   ['Objets dorés','À choisir','objets-dores','/collections/objets-dores/'],
   ['Pour la voiture','À choisir','voiture','/collections/voiture/'],
   // Eight types since the book and the learning accessories got their own (four across on wide screens).
   ['Livres','À choisir','livres','/collections/livres/'],
-  ['Accessoires d’étude','Préparés pour vous','apprentissage','/collections/apprentissage/']
+  ['Accessoires d’étude','Préparés & à choisir','apprentissage','/collections/apprentissage/']
 ];
 // Paths ("chemins"): before the product types, the visitor picks what they are looking for, and each path opens a page
 // with only its pieces (catalog.js `paths`). The section is shared by the home page and the Boutique, in both languages.
@@ -102,7 +102,7 @@ export const variantChoices = (values, labels, legend) => !values?.length ? ''
 // Colour preferences as swatches to tap. The dots only illustrate each family of stones; "À discuter" shows empty dots.
 const paletteSwatches = { 'Tons doux': ['#e7c4c4', '#cdbfe0', '#ece5d8'], 'Tons vifs': ['#c0452c', '#dfa42b', '#7a4c9a'], 'Tons naturels': ['#93652f', '#b97b52', '#6e8e68'], 'Tons colorés': ['#2f4e96', '#c0452c', '#5e9a70'] };
 export const paletteChoices = (values, labels, legend) => !values?.length ? '' : `<fieldset class="s-choices s-palettes"><legend>${legend}</legend><div class="s-choice-list">${values.map((value, i) => { const dots = paletteSwatches[value]; return `<label class="s-choice"><input type="radio" name="palette" value="${esc(value)}"${i === 0 ? ' checked' : ''} /><span><i class="s-swatch${dots ? '' : ' s-swatch-open'}" aria-hidden="true">${(dots || ['', '', '']).map(color => `<b${color ? ` style="background:${color}"` : ''}></b>`).join('')}</i>${esc(labels?.[i] ?? value)}</span></label>`; }).join('')}</div></fieldset>`;
-export const choiceLegend = { 'portefeuille-hafidha': ['Couleur', 'اللون'], 'carte-million-dollar': ['Taille', 'المقاس'], 'livre-excellence': ['Niveau', 'المستوى'], 'accessoires-apprentissage': ['Pièce', 'القطعة'] };
+export const choiceLegend = { 'portefeuille-hafidha': ['Couleur', 'اللون'], 'carte-million-dollar': ['Taille', 'المقاس'], 'livre-excellence': ['Niveau', 'المستوى'], 'accessoires-apprentissage': ['Pièce', 'القطعة'], 'collier-cle': ['Longueur', 'الطول'] };
 export const orderStepsList = steps => `<ol class="s-story-list s-story-steps">${steps.map(([title, text], i) => `<li><span aria-hidden="true">${i + 1}</span><p><b>${esc(title)}</b>${esc(text)}</p></li>`).join('')}</ol>`;
 // The buy box answers what a visitor needs to decide, in order: what the piece is, its price, the one
 // choice to make, one order button, how ordering works and, where there is one, a client's own words.
@@ -114,7 +114,7 @@ export function productPage(p, catalog) {
   const related = catalog.products.filter(other => other.id !== p.id && other.custom === p.custom).slice(0,3);
   const benefits = (p.benefits || []).map(b => `<li>${benefitIcon(b.icon)}<span>${esc(b.label)}</span></li>`).join('');
   const price = priceBounds(p, p.options?.variant?.[0]);
-  // A choice without a price yet (two of the book's editions, the gold-chain necklace) says how the price is given;
+  // A choice without a price yet (the heart model of the Énergie Amour bracelet) says how the price is given;
   // commerce.js shows that line only while such a choice is picked.
   const unknownHint = 'Le prix vous est donné quand nous vous contactons pour confirmer la commande.';
   const someUnknown = !price || Object.values(p.variantPrices || {}).some(value => value == null);

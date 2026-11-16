@@ -10,9 +10,9 @@ vm.runInNewContext(await readFile(path.join(root, "src/catalog.js"), "utf8"), co
 const catalog = context.window.STORE_CATALOG;
 const configContext = { window: {} };
 vm.runInNewContext(await readFile(path.join(root, "src/site-config.js"), "utf8"), configContext);
-test("catalog has fourteen unique products in ten browseable collections", () => {
-  assert.equal(catalog.products.length, 14);
-  assert.equal(new Set(catalog.products.map((x) => x.slug)).size, 14);
+test("catalog has seventeen unique products in ten browseable collections", () => {
+  assert.equal(catalog.products.length, 17);
+  assert.equal(new Set(catalog.products.map((x) => x.slug)).size, 17);
   assert.equal(catalog.collections.length, 10);
   for (const collection of catalog.collections) {
     for (const id of collection.productIds) assert.ok(catalog.products.some((x) => x.id === id));
@@ -39,9 +39,10 @@ test("every product photo is a local imported asset", async () => {
 test("the active storefront uses Issolatej and the organized catalog", () => {
   assert.equal(configContext.window.STORE_CONFIG.previewStage, false);
   assert.equal(configContext.window.STORE_CONFIG.brand.name, "Issolatej");
-  // 13 lifestyle scenes (one leading each of 13 products), 54 ChatGPT photos made from Rayda's photos for 12 of them,
-  // and Rayda's own 3 photos of the two pieces without AI photos (the Arbre de Vie keyring and the Fleur de Vie pendant).
-  assert.equal(catalog.products.reduce((count, product) => count + product.images.length, 0), 70);
+  // 16 lifestyle scenes (one leading each of 16 products), 54 ChatGPT photos made from Rayda's photos for 12 of them,
+  // Rayda's own 3 photos of the two pieces without AI photos (the Arbre de Vie keyring and the Fleur de Vie pendant),
+  // and her own 11 photos of the bottle, the key necklace and the Feng Shui coins (15 November).
+  assert.equal(catalog.products.reduce((count, product) => count + product.images.length, 0), 84);
 });
 test("the build respects the selected presentation mode and excludes review screenshots", async () => {
   const dist = path.join(root, "dist");
@@ -141,11 +142,11 @@ test("price variants, unknown prices and selection totals", async () => {
 test("search and filters distinguish custom from non-custom pieces", async () => {
   const {filterProducts}=await import('../src/commerce-core.js');
   assert.equal(filterProducts(catalog.products,{mode:'custom'}).length,4);
-  assert.equal(filterProducts(catalog.products,{mode:'ready'}).length,10);
+  assert.equal(filterProducts(catalog.products,{mode:'ready'}).length,13);
   assert.equal(filterProducts(catalog.products,{search:'energie amour'}).length,1);
   assert.equal(filterProducts(catalog.products,{search:'no-such-piece'}).length,0);
   const sorted=filterProducts(catalog.products,{sort:'price-asc'});
-  assert.equal(sorted[0].id,'carte-million-dollar');
+  assert.equal(sorted[0].id,'livre-excellence'); // the primary edition, 35 TND
   assert.equal(sorted.at(-1).price,null);
 });
 
@@ -397,14 +398,15 @@ test("Rayda's welcome and who-is texts lead the home pages, in French and in Ara
   // The old bio paragraphs are gone, replaced by her own words.
   assert.doesNotMatch(fr, /quatre mots qu’elle porte comme une signature/);
 });
-test("Rayda's book: three editions, the baccalaureate price, and her baccalaureate text only for that edition", async () => {
+test("Rayda's book: three editions at 35, 42 and 45 TND, and her baccalaureate text only for that edition", async () => {
   const { priceLabel, priceLabelAr } = await import('../src/commerce-core.js');
   const book = catalog.products.find((p) => p.id === 'livre-excellence');
   assert.deepEqual([...book.options.variant], ['Primaire', 'Collège et lycée', 'Baccalauréat']);
   assert.equal(book.custom, false);
   assert.equal(priceLabel(book, 'Baccalauréat'), '45 TND');
-  assert.equal(priceLabel(book, 'Primaire'), 'Tarif à confirmer');
-  assert.equal(priceLabelAr(book, 'Collège et lycée'), 'السعر يُؤكَّد لاحقًا');
+  assert.equal(priceLabel(book, 'Primaire'), '35 TND');
+  assert.equal(priceLabel(book, 'Collège et lycée'), '42 TND');
+  assert.equal(priceLabelAr(book, 'Collège et lycée'), '42 د.ت');
   for (const [value, shot] of [['Primaire', 'primaire'], ['Collège et lycée', 'college'], ['Baccalauréat', 'bac']]) assert.match(book.images[book.variantImageIndex[value]].src, new RegExp('-ai-' + shot + '-'));
   if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
   for (const [page, bac, general] of [['products/', 'En année de Baccalauréat, le vrai problème', 'La vraie réussite scolaire prend sa source à l’intérieur'], ['ar/products/', 'في سنة الباكالوريا، المشكلة ليست في صعوبة الدروس', 'تبدأ رحلة التميز الدراسي الحقيقي من الداخل']]) {
@@ -420,29 +422,34 @@ test("Rayda's book: three editions, the baccalaureate price, and her baccalaurea
   assert.match(css, /\.s-story\[hidden\]\{display:none\}/);
   const js = await readFile(path.join(root, 'src/commerce.js'), 'utf8');
   assert.match(js, /data-for-variants/);
-  // "The price is given when we call you" shows only while an edition without a price is picked.
+  // Every edition has its price now, so "the price is given when we call you" is gone from the book's page; it still
+  // shows while a choice without a price is picked (the heart model of the Énergie Amour bracelet).
   const fr = await readFile(path.join(root, 'dist/products/livre-excellence/index.html'), 'utf8');
-  assert.match(fr, /<p class="s-small s-price-hint" data-price-unknown>Le prix vous est donné/);
+  assert.doesNotMatch(fr, /Le prix vous est donné/);
+  const amour = await readFile(path.join(root, 'dist/products/bracelet-amour/index.html'), 'utf8');
+  assert.match(amour, /<p class="s-small s-price-hint" data-price-unknown hidden>Le prix vous est donné/);
   assert.match(js, /\[data-price-unknown\]/);
 });
-test("the learning accessories are prepared from the birth date, at 100 TND for the bracelet and the cord necklace", async () => {
+test("the learning accessories are prepared from the birth date: 100 TND for the bracelet and the cord necklace, 130 TND for the gold chain", async () => {
   const { priceLabel } = await import('../src/commerce-core.js');
   const piece = catalog.products.find((p) => p.id === 'accessoires-apprentissage');
   assert.equal(piece.custom, true);
   assert.equal(priceLabel(piece, 'Bracelet'), '100 TND');
   assert.equal(priceLabel(piece, 'Collier sur cordon'), '100 TND');
-  assert.equal(priceLabel(piece, 'Collier sur chaîne dorée'), 'Tarif à confirmer');
+  assert.equal(priceLabel(piece, 'Collier sur chaîne dorée'), '130 TND');
   for (const slug of ['apprentissage', 'bracelets', 'colliers']) assert.ok(catalog.collections.find((c) => c.slug === slug).productIds.includes(piece.id), slug);
   // The book and the accessories each have their own type (and card), not one shared study collection.
   assert.deepEqual([...catalog.collections.find((c) => c.slug === 'livres').productIds], ['livre-excellence']);
-  assert.deepEqual([...catalog.collections.find((c) => c.slug === 'apprentissage').productIds], ['accessoires-apprentissage']);
+  assert.deepEqual([...catalog.collections.find((c) => c.slug === 'apprentissage').productIds], ['accessoires-apprentissage', 'bouteille-verre']);
   assert.equal(catalog.collections.find((c) => c.slug === 'excellence-scolaire'), undefined);
   if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
   const ar = await readFile(path.join(root, 'dist/ar/products/accessoires-apprentissage/index.html'), 'utf8');
   for (const text of ['<h1>أكسسوارات تفعيل طاقة التعلم</h1>', 'تعتمد هذه المجموعة على ترددات الأحجار الكريمة', 'يتم إعداد القطعة بناءا على تاريخ الولادة', 'الأحجار يمكن أن تختلف من حيث العدد و النوع و الشكل و الحجم.']) assert.ok(ar.includes(text), text);
   const fr = await readFile(path.join(root, 'dist/products/accessoires-apprentissage/index.html'), 'utf8');
   assert.match(fr, /class="s-tailored"><b>Préparé pour vous\.<\/b> Vous choisissez la pièce/);
-  assert.match(fr, /<p class="s-small s-price-hint" data-price-unknown hidden>Le prix vous est donné/);
+  assert.doesNotMatch(fr, /Le prix vous est donné/);
+  // Her own French text (15 November), in place of the translation the page had before.
+  for (const text of ['Cette collection s’appuie sur les fréquences des pierres précieuses', 'je veille sur l’aspect énergétique de chaque pièce', 'les Beaux Noms d’Allah (Al-Asma Al-Husna) et le Saint Coran.']) assert.ok(fr.includes(text), text);
   // The home page and the Boutique end their category grid with "Livres" and "Accessoires d’étude", two ordinary cards.
   for (const file of ['dist/index.html', 'dist/collections/all/index.html', 'dist/ar/index.html', 'dist/ar/boutique/index.html']) {
     const html = await readFile(path.join(root, file), 'utf8');
@@ -453,9 +460,9 @@ test("the learning accessories are prepared from the birth date, at 100 TND for 
     assert.match(cards[7], /\/(collections\/apprentissage|products\/accessoires-apprentissage)\/$/, file);
   }
 });
-test("paths: the home page and the Boutique open with one door per wish, each leading to a page with only its pieces", async () => {
+test("paths: the home page and the Boutique open with Rayda's collections, each door leading to a page with only its pieces", async () => {
   const { pathsAr } = await import('../src/catalog-ar.mjs');
-  assert.deepEqual([...catalog.paths.map((p) => p.slug)], ['etudes', 'amour', 'abondance']);
+  assert.deepEqual([...catalog.paths.map((p) => p.slug)], ['etudes', 'abondance', 'amour']);
   for (const p of catalog.paths) {
     assert.match(p.slug, /^[a-z-]+$/);
     assert.ok(p.name && p.summary && p.description && p.productIds.length, p.slug);
@@ -482,6 +489,55 @@ test("paths: the home page and the Boutique open with one door per wish, each le
       for (const other of catalog.paths.filter((o) => o.slug !== p.slug)) assert.ok(html.includes('href="/' + prefix + 'parcours/' + other.slug + '/"'), prefix + p.slug + ' → ' + other.slug);
     }
   }
-  assert.ok((await readFile(path.join(root, 'dist/parcours/etudes/index.html'), 'utf8')).includes('<h1>Je suis élève ou étudiant(e)</h1>'));
-  assert.ok((await readFile(path.join(root, 'dist/ar/parcours/etudes/index.html'), 'utf8')).includes('<h1>للتلاميذ والطلبة</h1>'));
+  // Her two collections by her own names ("مجموعة التألق العلمي", "مجموعة الوفرة"), the love path after them.
+  for (const [slug, fr, ar] of [['etudes', 'Excellence scolaire', 'التألق العلمي'], ['abondance', 'Abondance', 'الوفرة'], ['amour', 'Énergie Amour', 'طاقة الحب']]) {
+    assert.ok((await readFile(path.join(root, 'dist/parcours', slug, 'index.html'), 'utf8')).includes('<h1>' + fr + '</h1>'), slug);
+    assert.ok((await readFile(path.join(root, 'dist/ar/parcours', slug, 'index.html'), 'utf8')).includes('<h1>' + ar + '</h1>'), 'ar ' + slug);
+  }
+  assert.ok(pathsAr.etudes.description.startsWith('مجموعة التألق العلمي'));
+  assert.ok(pathsAr.abondance.description.startsWith('مجموعة الوفرة'));
+});
+test("the bottle, the key necklace and the Feng Shui coins: her prices, her own texts, a scene, then her own photos", async () => {
+  const { priceLabel, priceLabelAr } = await import('../src/commerce-core.js');
+  const byId = (id) => catalog.products.find((p) => p.id === id);
+  const bottle = byId('bouteille-verre'), key = byId('collier-cle'), coins = byId('pieces-feng-shui');
+  assert.equal(priceLabel(bottle), '55 TND');
+  assert.equal(priceLabel(key, 'Collier standard'), '45 TND');
+  assert.equal(priceLabel(key, 'Collier long'), '55 TND');
+  assert.equal(priceLabelAr(key, 'Collier long'), '55 د.ت');
+  assert.equal(coins.price, null);
+  assert.equal(priceLabel(coins), 'Tarif à confirmer');
+  for (const p of [bottle, key, coins]) {
+    assert.equal(p.custom, false, p.id);
+    // A lifestyle scene first (the cover), then Rayda's own photos, as she sent them: <id>-01.jpg and on.
+    assert.match(p.images[0].src, new RegExp('/organized/' + p.id + '-ugc\\.jpg$'), p.id);
+    assert.equal(p.coverImageIndex, 0);
+    assert.ok(p.images.slice(1).every((image) => new RegExp('/organized/' + p.id + '-0\\d\\.jpg$').test(image.src)), p.id);
+  }
+  assert.deepEqual([bottle.images.length, key.images.length, coins.images.length], [4, 6, 4]);
+  assert.ok(catalog.collections.find((c) => c.slug === 'apprentissage').productIds.includes('bouteille-verre'));
+  assert.ok(catalog.collections.find((c) => c.slug === 'colliers').productIds.includes('collier-cle'));
+  assert.ok(catalog.collections.find((c) => c.slug === 'objets-dores').productIds.includes('pieces-feng-shui'));
+  // Her collections: the bottle with the book and the accessories; the key necklace, the BaZi bracelet and the coins
+  // with the wallet, the card and the dollar-crown-infinity décor. The Clé de Vie is not in her list.
+  const pieces = (slug) => [...catalog.paths.find((p) => p.slug === slug).productIds];
+  assert.deepEqual(pieces('etudes'), ['livre-excellence', 'accessoires-apprentissage', 'bouteille-verre']);
+  assert.deepEqual(pieces('abondance'), ['portefeuille-hafidha', 'carte-million-dollar', 'decor-abondance', 'collier-cle', 'bracelet-bazi', 'pieces-feng-shui']);
+  if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
+  const page = (p) => readFile(path.join(root, 'dist', p, 'index.html'), 'utf8');
+  const checks = [
+    // The build sets a no-break space before French colons.
+    ['products/bouteille-verre', ['Cette bouteille réunit deux dimensions complémentaires\u00a0:', '1. La dimension énergétique', 'Elle intègre des symboles, des affirmations positives ainsi que des versets du Coran.', 'votre fille ou votre fils est invité(e) à développer progressivement de nouveaux schémas de pensée', 'Car la réussite de nos enfants ne repose pas uniquement sur les connaissances, mais aussi sur la confiance en soi, l’encouragement et un environnement positif.']],
+    ['ar/products/bouteille-verre', ['تجمع هذه القارورة بين بُعدين متكاملين:', 'الأول: البُعد الطاقي', 'وقد استلهمتُ جزءا من فكرتها من الأبحاث العلمية حول تأثير الكلمات والرموز في بلورات الماء.', 'الثاني: بُعد البرمجة الذهنية واللاوعي', 'لأن نجاح أبنائنا لا يحتاج إلى المعرفة وحدها، بل يحتاج أيضاً إلى الثقة بالنفس، والتحفيز، والبيئة الإيجابية.']],
+    ['products/collier-cle', ['Lorsque l’on comprend que tout est énergie, et que les symboles peuvent générer des fréquences subtiles et interagir avec notre inconscient', 'La clé est un symbole profondément associé à la chance, à l’ouverture des portes et à la facilitation des choses, avec la permission de Dieu.', '<legend>Longueur</legend>', 'Collier standard', 'Collier long']],
+    ['ar/products/collier-cle', ['عندما نعلم أن كل شيء طاقة و أن الرموز تُحدث ترددات لاواعية و تفاعلا خفيا مع اللاوعي نعرف أن وجود قلادة المفتاح في هذا الموقع ليس اعتباطيا فهي رمز يرتبط بمعاني الحظ و التسهيل بإذن الله و يتم تدعيم ذلك بالشحن الطاقي من خلال ريكي المال.', '<legend>الطول</legend>', 'قلادة عادية', 'قلادة طويلة']],
+    ['products/pieces-feng-shui', ['<h1>Pièces chinoises Feng Shui</h1>', 'Tarif à confirmer']],
+    ['ar/products/pieces-feng-shui', ['<h1>قطع نقدية صينية للفنج شوي</h1>', 'منتجات الفنج شوي']]
+  ];
+  for (const [file, texts] of checks) {
+    const html = await page(file);
+    for (const text of texts) assert.ok(html.includes(text), file + ': ' + text);
+    // The gallery says that only the first photo is a staged scene (her real photos follow).
+    assert.match(html, file.startsWith('ar/') ? /الصورة الأولى مشهد مُعَدّ انطلاقًا من صور رايدا\./ : /La première photo est une mise en scène créée à partir des photos de Rayda\./, file);
+  }
 });
