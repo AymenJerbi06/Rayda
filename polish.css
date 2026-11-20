@@ -172,3 +172,5 @@ body.has-floating-header{padding-top:var(--header-space,100px)}
 .g-lang-switch span[lang="ar"]{font-family:var(--sans);font-size:15px;letter-spacing:0;line-height:1;transform:translateY(-1px)}
 @media(max-width:700px){.g-header .g-lang-switch span[lang="ar"]{font-size:14px}}
 .g-menu nav a.g-lang-switch span[lang="ar"]{font-size:16px}
+/* A piece with a single photo (until its scenes are made): no arrows, counter or thumbnails to step through. */
+.s-gallery-single .s-gallery-controls,.s-gallery-single .s-thumbnails,.s-lightbox.s-gallery-single .s-lightbox-controls{display:none}

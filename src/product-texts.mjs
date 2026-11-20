@@ -8,6 +8,9 @@
 // opening question and closing line, and the accessories' last line (the stones can vary), are translated into French
 // here. Her water bottle and key necklace (the same night): her texts in both languages; the first words of her French
 // bottle text were lost in her copy (it starts at "complémentaires :"), so they are translated from her Arabic.
+// Her money frog and love trophy (19 November): her texts in both languages. Her French trophy text was cut off after
+// its first "why now" point in the screenshots, so its heading, its last two points and its closing line are translated
+// from her Arabic; her Arabic trophy heading drops the name in front of it ("رمز الحب (Trophée d'Amour): ").
 const bazi = {
   fr: {
     "title": "Une pièce qui porte votre empreinte",
@@ -698,6 +701,102 @@ const collierCle = {
   }
 };
 
+const grenouilleFortune = {
+  fr: {
+    "title": "Un symbole de chance et de prospérité",
+    "intro": [
+      "Reconnaissable à son design particulier, elle est représentée assise sur un amas de pièces de monnaie, avec une pièce d’or dans la bouche, symbole de chance et de prospérité, censé favoriser l’entrée et la circulation de l’argent dans la maison ou le lieu de travail.",
+      "À la fois élégante et porteuse de sens, elle constitue un bel élément de décoration pour ceux qui souhaitent cultiver une énergie positive et symboliser l’attraction de la prospérité financière.",
+      "C’est également un cadeau original et symbolique, idéal pour les entrepreneurs, les bureaux ou encore pour embellir l’entrée d’une maison.",
+      "Elle vous est proposée chargée en Reiki de l’Argent."
+    ]
+  },
+  ar: {
+    "title": "رمز الثروة والوفرة",
+    "intro": [
+      "يتميز بتصميمه الفريد وهو يجلس على كومة من العملات المعدنية ويحمل في فمه عملة ذهبية ترمز الحظ السعيد وتدفق المال إلى المنزل أو مكان العمل. يُعد هذا الرمز إضافة جميلة للديكور لمن يسعى لتعزيز الطاقة الإيجابية وجذب الازدهار المالي، كما يمثل هدية مميزة وذات معنى عميق لأصحاب المشاريع والمكاتب أو لتزيين مدخل المنزل.",
+      "يأتيكم مشحونا بريكي المال"
+    ]
+  }
+};
+const tropheeAmour = {
+  fr: {
+    "title": "Votre porte vers une relation où règnent l’amour durable, l’affection et la miséricorde",
+    "intro": [],
+    "sections": [
+      {
+        "title": "Comment agit le « Trophée d’Amour » ?",
+        "items": [
+          {
+            "term": "La programmation positive du subconscient",
+            "text": "La présence de ce symbole dans votre environnement quotidien agit comme un rappel visuel permanent pour votre subconscient. Elle contribue à ancrer les notions d’amour durable, de compréhension mutuelle et d’harmonie, tout en orientant progressivement vos pensées vers davantage d’affection et de tendresse. Vous pouvez également l’utiliser même si vous n’êtes pas encore mariée : il a été conçu pour vous accompagner dans le travail sur certains blocages intérieurs susceptibles de freiner votre engagement amoureux et votre chemin vers une relation épanouissante."
+          },
+          {
+            "term": "La recharge énergétique par le Reiki",
+            "text": "Chaque pièce est soigneusement préparée et énergétiquement chargée par le Reiki, dans le but de favoriser une atmosphère vibrante d’amour et de bienveillance."
+          },
+          {
+            "term": "La bénédiction et la sérénité à travers le Coran",
+            "text": "Cette création est également imprégnée de la récitation du Saint Coran et des Beaux Noms d’Allah, afin de vous inviter à cultiver un profond sentiment d’amour, d’affection et de miséricorde au sein de votre relation."
+          }
+        ]
+      },
+      {
+        "title": "Pourquoi choisir le « Trophée d’Amour » dès aujourd’hui ?",
+        "items": [
+          {
+            "text": "Il apporte une touche décorative raffinée et une atmosphère chaleureuse, empreinte de spiritualité, à votre chambre ou à votre espace de vie."
+          },
+          {
+            "text": "Il aide à créer un environnement apaisé, qui encourage le dialogue et le rapprochement affectif entre les deux partenaires."
+          },
+          {
+            "text": "C’est un cadeau exceptionnel et riche de sens pour la personne que vous aimez, lors d’une occasion spéciale ou pour marquer un nouveau départ, vers une relation pleine de bienfaits."
+          }
+        ]
+      }
+    ],
+    "closing": "Faites de votre maison un espace qui vibre d’amour et de sérénité. Commandez votre « Trophée d’Amour » dès aujourd’hui et commencez un nouveau chemin d’harmonie affective et spirituelle."
+  },
+  ar: {
+    "title": "بوابتك نحو علاقة يسودها الحب الدائم والمودة والرحمة",
+    "intro": [],
+    "sections": [
+      {
+        "title": "كيف يعمل «رمز الحب»؟",
+        "items": [
+          {
+            "term": "البرمجة اللاواعية الإيجابية",
+            "text": "وجود هذا الرمز في محيطك اليومي يعمل كتذكير بصري مستمر لعقلك الباطن، مما يرسّخ مفاهيم الحب الدائم والتفاهم ويعيد برمجة الأفكار نحو المودة والرحمة علما بأنك يمكن أن تستعمليه حتى ان لم تكوني متزوجة لأنه مصمم ليساعدك على التخلص من جزء من البلوكات التي تمنع ارتباطك"
+          },
+          {
+            "term": "الشحن الطاقي بالريكي",
+            "text": "تم إعداد كل قطعة وشحنها بطاقة الريكي للمساعدة على رفع ذبذبات المحبة في المكان."
+          },
+          {
+            "term": "البركة والسكينة بالقرآن الكريم",
+            "text": "هذه القطعة مشحونة أيضا بالقرآن الكريم و أسماء الله الحسنى لتمنحك شعوراً عميقاً بالحب و المودة و الرحمة في علاقتك."
+          }
+        ]
+      },
+      {
+        "title": "لماذا تقتني «رمز الحب» الآن؟",
+        "items": [
+          {
+            "text": "يضفي لمسة جمالية وروحانية دافئة على غرفة النوم أو مساحة المعيشة."
+          },
+          {
+            "text": "يساعد في خلق بيئة هادئة تشجع على الحوار والتقارب العاطفي بين الشريكين."
+          },
+          {
+            "text": "يُعد هدية استثنائية وذات معنى عميق لمن تحب في المناسبات الخاصة أو كبداية جديدة لعلاقة مليئة بالخير."
+          }
+        ]
+      }
+    ],
+    "closing": "اجعل من منزلك مساحة تنبض بالحب والسكينة. اطلب «رمز الحب» الخاص بك اليوم وابدأ رحلة جديدة من التناغم العاطفي والروحي."
+  }
+};
 export const productTexts = {
   'bracelet-bazi': bazi,
   'collier-bazi': bazi,
@@ -711,7 +810,9 @@ export const productTexts = {
   'livre-excellence': livreExcellence,
   'accessoires-apprentissage': accessoiresApprentissage,
   'bouteille-verre': bouteilleVerre,
-  'collier-cle': collierCle
+  'collier-cle': collierCle,
+  'grenouille-fortune': grenouilleFortune,
+  'trophee-amour': tropheeAmour
 };
 
 // A text that replaces the one above for one choice only, keyed on the catalogue's French value of that choice.

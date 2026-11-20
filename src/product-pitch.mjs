@@ -74,6 +74,14 @@ export const productPitch = {
   'pieces-feng-shui': {
     fr: 'Trois pièces chinoises nouées d’un fil rouge : un objet Feng Shui que Rayda propose pour l’abondance financière.',
     ar: 'ثلاث قطع نقدية صينية مربوطة بخيط أحمر، من منتجات الفنج شوي التي تقترحها رايدا للوفرة المالية.'
+  },
+  'grenouille-fortune': {
+    fr: 'Une grenouille de la fortune dorée (Chan Chu), assise sur des pièces, une pièce dans la bouche : un symbole Feng Shui de richesse, chargé en Reiki de l’Argent.',
+    ar: 'ضفدع المال الذهبي (تشان تشو)، يجلس على كومة من العملات ويحمل في فمه عملة: رمز فنج شوي للثروة، مشحون بريكي المال.'
+  },
+  'trophee-amour': {
+    fr: 'Deux cygnes en miroir doré dont les cous dessinent un cœur : un symbole d’amour durable pour la chambre ou le salon, chargé par le Reiki et le Saint Coran.',
+    ar: 'بجعتان بلون ذهبي مرآوي تشكّل رقبتاهما قلبًا: رمز للحب الدائم لغرفة النوم أو مساحة المعيشة، مشحون بالريكي والقرآن الكريم.'
   }
 };
 

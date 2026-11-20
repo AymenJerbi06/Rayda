@@ -10,9 +10,9 @@ vm.runInNewContext(await readFile(path.join(root, "src/catalog.js"), "utf8"), co
 const catalog = context.window.STORE_CATALOG;
 const configContext = { window: {} };
 vm.runInNewContext(await readFile(path.join(root, "src/site-config.js"), "utf8"), configContext);
-test("catalog has seventeen unique products in ten browseable collections", () => {
-  assert.equal(catalog.products.length, 17);
-  assert.equal(new Set(catalog.products.map((x) => x.slug)).size, 17);
+test("catalog has nineteen unique products in ten browseable collections", () => {
+  assert.equal(catalog.products.length, 19);
+  assert.equal(new Set(catalog.products.map((x) => x.slug)).size, 19);
   assert.equal(catalog.collections.length, 10);
   for (const collection of catalog.collections) {
     for (const id of collection.productIds) assert.ok(catalog.products.some((x) => x.id === id));
@@ -39,10 +39,11 @@ test("every product photo is a local imported asset", async () => {
 test("the active storefront uses Issolatej and the organized catalog", () => {
   assert.equal(configContext.window.STORE_CONFIG.previewStage, false);
   assert.equal(configContext.window.STORE_CONFIG.brand.name, "Issolatej");
-  // 16 lifestyle scenes (one leading each of 16 products), 54 ChatGPT photos made from Rayda's photos for 12 of them,
-  // Rayda's own 3 photos of the two pieces without AI photos (the Arbre de Vie keyring and the Fleur de Vie pendant),
-  // and her own 11 photos of the bottle, the key necklace and the Feng Shui coins (15 November).
-  assert.equal(catalog.products.reduce((count, product) => count + product.images.length, 0), 84);
+  // 18 lifestyle scenes (one leading each of 18 products), 59 ChatGPT photos made from Rayda's photos for 14 of them
+  // (the money frog and the love trophy since 20 November), Rayda's own 3 photos of the two pieces without AI photos (the
+  // Arbre de Vie keyring and the Fleur de Vie pendant), and her own 11 photos of the bottle, the key necklace and the
+  // Feng Shui coins (15 November).
+  assert.equal(catalog.products.reduce((count, product) => count + product.images.length, 0), 91);
 });
 test("the build respects the selected presentation mode and excludes review screenshots", async () => {
   const dist = path.join(root, "dist");
@@ -142,7 +143,7 @@ test("price variants, unknown prices and selection totals", async () => {
 test("search and filters distinguish custom from non-custom pieces", async () => {
   const {filterProducts}=await import('../src/commerce-core.js');
   assert.equal(filterProducts(catalog.products,{mode:'custom'}).length,4);
-  assert.equal(filterProducts(catalog.products,{mode:'ready'}).length,13);
+  assert.equal(filterProducts(catalog.products,{mode:'ready'}).length,15);
   assert.equal(filterProducts(catalog.products,{search:'energie amour'}).length,1);
   assert.equal(filterProducts(catalog.products,{search:'no-such-piece'}).length,0);
   const sorted=filterProducts(catalog.products,{sort:'price-asc'});
@@ -304,7 +305,7 @@ test("product photos keep their size and crop: the main photo is shown whole and
 });
 test("AI photos follow each lifestyle scene instead of Rayda's photos, colours show their own photo, and the gallery says so", async () => {
   const ai = catalog.products.filter((p) => p.images.some((image) => image.src.includes('-ai-')));
-  assert.equal(ai.length, 12);
+  assert.equal(ai.length, 14);
   for (const p of ai) {
     assert.ok(p.images[0].src.endsWith('-ugc.jpg'), p.id + ' keeps its lifestyle photo first');
     assert.equal(p.coverImageIndex, 0);
@@ -313,7 +314,7 @@ test("AI photos follow each lifestyle scene instead of Rayda's photos, colours s
       assert.ok(image.alt.length > 10);
     }
   }
-  assert.equal(ai.reduce((n, p) => n + p.images.length - 1, 0), 54);
+  assert.equal(ai.reduce((n, p) => n + p.images.length - 1, 0), 59);
   // Rayda sells the wallet in green, yellow and red only: no pink photo, and the group photo shows three.
   assert.ok(!catalog.products.find((p) => p.id === 'portefeuille-hafidha').images.some((image) => /rose|ai-couleurs/.test(image.src)));
   // The wallet's colour is chosen from the client's birth date, so it has no colour buttons.
@@ -489,8 +490,8 @@ test("paths: the home page and the Boutique open with Rayda's collections, each 
       for (const other of catalog.paths.filter((o) => o.slug !== p.slug)) assert.ok(html.includes('href="/' + prefix + 'parcours/' + other.slug + '/"'), prefix + p.slug + ' → ' + other.slug);
     }
   }
-  // Her two collections by her own names ("مجموعة التألق العلمي", "مجموعة الوفرة"), the love path after them.
-  for (const [slug, fr, ar] of [['etudes', 'Excellence scolaire', 'التألق العلمي'], ['abondance', 'Abondance', 'الوفرة'], ['amour', 'Énergie Amour', 'طاقة الحب']]) {
+  // Her three collections by her own names ("مجموعة التألق العلمي", "مجموعة الوفرة", "مجموعة الحب").
+  for (const [slug, fr, ar] of [['etudes', 'Excellence scolaire', 'التألق العلمي'], ['abondance', 'Abondance', 'الوفرة'], ['amour', 'Amour', 'الحب']]) {
     assert.ok((await readFile(path.join(root, 'dist/parcours', slug, 'index.html'), 'utf8')).includes('<h1>' + fr + '</h1>'), slug);
     assert.ok((await readFile(path.join(root, 'dist/ar/parcours', slug, 'index.html'), 'utf8')).includes('<h1>' + ar + '</h1>'), 'ar ' + slug);
   }
@@ -505,8 +506,8 @@ test("the bottle, the key necklace and the Feng Shui coins: her prices, her own 
   assert.equal(priceLabel(key, 'Collier standard'), '45 TND');
   assert.equal(priceLabel(key, 'Collier long'), '55 TND');
   assert.equal(priceLabelAr(key, 'Collier long'), '55 د.ت');
-  assert.equal(coins.price, null);
-  assert.equal(priceLabel(coins), 'Tarif à confirmer');
+  // Her price for the coins came on 19 November ("ثمنها 45", in reply to her own photo of them).
+  assert.equal(priceLabel(coins), '45 TND');
   for (const p of [bottle, key, coins]) {
     assert.equal(p.custom, false, p.id);
     // A lifestyle scene first (the cover), then Rayda's own photos, as she sent them: <id>-01.jpg and on.
@@ -522,7 +523,7 @@ test("the bottle, the key necklace and the Feng Shui coins: her prices, her own 
   // with the wallet, the card and the dollar-crown-infinity décor. The Clé de Vie is not in her list.
   const pieces = (slug) => [...catalog.paths.find((p) => p.slug === slug).productIds];
   assert.deepEqual(pieces('etudes'), ['livre-excellence', 'accessoires-apprentissage', 'bouteille-verre']);
-  assert.deepEqual(pieces('abondance'), ['portefeuille-hafidha', 'carte-million-dollar', 'decor-abondance', 'collier-cle', 'bracelet-bazi', 'pieces-feng-shui']);
+  assert.deepEqual(pieces('abondance'), ['portefeuille-hafidha', 'carte-million-dollar', 'decor-abondance', 'collier-cle', 'bracelet-bazi', 'pieces-feng-shui', 'grenouille-fortune']);
   if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
   const page = (p) => readFile(path.join(root, 'dist', p, 'index.html'), 'utf8');
   const checks = [
@@ -531,7 +532,7 @@ test("the bottle, the key necklace and the Feng Shui coins: her prices, her own 
     ['ar/products/bouteille-verre', ['تجمع هذه القارورة بين بُعدين متكاملين:', 'الأول: البُعد الطاقي', 'وقد استلهمتُ جزءا من فكرتها من الأبحاث العلمية حول تأثير الكلمات والرموز في بلورات الماء.', 'الثاني: بُعد البرمجة الذهنية واللاوعي', 'لأن نجاح أبنائنا لا يحتاج إلى المعرفة وحدها، بل يحتاج أيضاً إلى الثقة بالنفس، والتحفيز، والبيئة الإيجابية.']],
     ['products/collier-cle', ['Lorsque l’on comprend que tout est énergie, et que les symboles peuvent générer des fréquences subtiles et interagir avec notre inconscient', 'La clé est un symbole profondément associé à la chance, à l’ouverture des portes et à la facilitation des choses, avec la permission de Dieu.', '<legend>Longueur</legend>', 'Collier standard', 'Collier long']],
     ['ar/products/collier-cle', ['عندما نعلم أن كل شيء طاقة و أن الرموز تُحدث ترددات لاواعية و تفاعلا خفيا مع اللاوعي نعرف أن وجود قلادة المفتاح في هذا الموقع ليس اعتباطيا فهي رمز يرتبط بمعاني الحظ و التسهيل بإذن الله و يتم تدعيم ذلك بالشحن الطاقي من خلال ريكي المال.', '<legend>الطول</legend>', 'قلادة عادية', 'قلادة طويلة']],
-    ['products/pieces-feng-shui', ['<h1>Pièces chinoises Feng Shui</h1>', 'Tarif à confirmer']],
+    ['products/pieces-feng-shui', ['<h1>Pièces chinoises Feng Shui</h1>', '45 TND']],
     ['ar/products/pieces-feng-shui', ['<h1>قطع نقدية صينية للفنج شوي</h1>', 'منتجات الفنج شوي']]
   ];
   for (const [file, texts] of checks) {
@@ -539,5 +540,55 @@ test("the bottle, the key necklace and the Feng Shui coins: her prices, her own 
     for (const text of texts) assert.ok(html.includes(text), file + ': ' + text);
     // The gallery says that only the first photo is a staged scene (her real photos follow).
     assert.match(html, file.startsWith('ar/') ? /الصورة الأولى مشهد مُعَدّ انطلاقًا من صور رايدا\./ : /La première photo est une mise en scène créée à partir des photos de Rayda\./, file);
+  }
+});
+test("the money frog and the love trophy: her prices, her texts in both languages, a scene and ChatGPT photos, her collections", async () => {
+  const { priceLabel, priceLabelAr } = await import('../src/commerce-core.js');
+  const byId = (id) => catalog.products.find((p) => p.id === id);
+  const frog = byId('grenouille-fortune'), trophy = byId('trophee-amour');
+  assert.equal(priceLabel(frog), '80 TND');
+  assert.equal(priceLabelAr(frog), '80 د.ت');
+  assert.equal(priceLabel(trophy), '115 TND');
+  for (const p of [frog, trophy]) {
+    assert.equal(p.custom, false, p.id);
+    // A CreateUGC scene first (the cover), then ChatGPT photos made from her photos (20 November).
+    assert.ok(p.images[0].src.endsWith('/organized/' + p.id + '-ugc.jpg'), p.id);
+    assert.equal(p.coverImageIndex, 0, p.id);
+    assert.ok(p.images.slice(1).every((image) => new RegExp('/organized/' + p.id + '-ai-[a-z]+\\.jpg$').test(image.src)), p.id);
+    assert.ok(catalog.collections.find((c) => c.slug === 'objets-dores').productIds.includes(p.id), p.id);
+  }
+  assert.deepEqual([frog.images.length, trophy.images.length], [4, 3]);
+  assert.match(trophy.images[0].alt, /« الله الجامع »/);
+  // The frog joins her abundance collection; her love collection ("مجموعة الحب") opens with the trophy.
+  const pieces = (slug) => [...catalog.paths.find((p) => p.slug === slug).productIds];
+  assert.ok(pieces('abondance').includes('grenouille-fortune'));
+  assert.deepEqual(pieces('amour'), ['trophee-amour', 'bracelet-amour']);
+  if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
+  const page = (p) => readFile(path.join(root, 'dist', p, 'index.html'), 'utf8');
+  const checks = [
+    // The build sets a no-break space before French colons and question marks, and inside « ».
+    ['products/grenouille-fortune', ['<h1>Grenouille de la fortune</h1>', '80 TND', 'grenouille à trois pattes, est l’un des symboles les plus emblématiques de richesse et d’abondance', 'avec une pièce d’or dans la bouche, symbole de chance et de prospérité', 'Elle vous est proposée chargée en Reiki de l’Argent.', 'Matière : résine et pièce en métal', 'Dimensions : 4,5 × 4 cm']],
+    ['ar/products/grenouille-fortune', ['<h1>ضفدع المال</h1>', '80 د.ت', 'يعدّ ضفدع المال (المعروف أيضاً بـ &quot;تشان تشو&quot; أو الضفدع ذو الثلاثة أرجل) من أشهر رموز الثروة والوفرة في فلسفة الفنج شوي الصينية.', 'ويحمل في فمه عملة ذهبية ترمز الحظ السعيد وتدفق المال إلى المنزل أو مكان العمل.', 'يأتيكم مشحونا بريكي المال', 'الأبعاد: 4,5 سنتمتر × 4 سنتمتر']],
+    ['products/trophee-amour', ['<h1>Trophée d’Amour</h1>', '115 TND', 'une pièce décorative conçue avec soin pour devenir un véritable ancrage visuel et spirituel', 'La programmation positive du subconscient', 'Vous pouvez également l’utiliser même si vous n’êtes pas encore mariée', 'des Beaux Noms d’Allah', '<li><p>Il apporte une touche décorative raffinée et une atmosphère chaleureuse, empreinte de spiritualité, à votre chambre ou à votre espace de vie.</p></li>']],
+    ['ar/products/trophee-amour', ['<h1>رمز الحب</h1>', '115 د.ت', 'أقدم لك «رمز الحب»، وهو قطعة فنية مصممة بعناية لتعمل كمرساة بصرية وروحية تدعم توازنك العاطفي وتجذب إليك طاقة الاستقرار.', 'بوابتك نحو علاقة يسودها الحب الدائم والمودة والرحمة', 'علما بأنك يمكن أن تستعمليه حتى ان لم تكوني متزوجة لأنه مصمم ليساعدك على التخلص من جزء من البلوكات التي تمنع ارتباطك', '<li><p>يضفي لمسة جمالية وروحانية دافئة على غرفة النوم أو مساحة المعيشة.</p></li>', 'اجعل من منزلك مساحة تنبض بالحب والسكينة. اطلب «رمز الحب» الخاص بك اليوم وابدأ رحلة جديدة من التناغم العاطفي والروحي.']]
+  ];
+  for (const [file, texts] of checks) {
+    const html = await page(file);
+    for (const text of texts) assert.ok(html.includes(text), file + ': ' + text);
+    // A plain point (no lead words) never prints an empty or "undefined" lead.
+    assert.doesNotMatch(html, /<b>undefined<\/b>|<b><\/b>/, file);
+    // The gallery says its photos are staged scenes made from Rayda's photos, and keeps its arrows (several photos).
+    assert.match(html, file.startsWith('ar/') ? /الصور مشاهد مُعَدّة انطلاقًا من صور رايدا\./ : /Les photos sont des mises en scène créées à partir des photos de Rayda\./, file);
+    assert.doesNotMatch(html, /s-gallery-single/, file);
+  }
+  // A piece with a single photo (the Arbre de Vie keyring) shows no arrows, counter or thumbnails.
+  for (const file of ['products/porte-cles-arbre-vie', 'ar/products/porte-cles-arbre-vie']) {
+    assert.match(await page(file), /class="s-gallery s-gallery-single"/, file);
+  }
+  // Her love collection by her name, opening with the trophy, in both languages.
+  for (const [file, h1] of [['parcours/amour', 'Amour'], ['ar/parcours/amour', 'الحب']]) {
+    const html = await page(file);
+    assert.ok(html.includes('<h1>' + h1 + '</h1>'), file);
+    assert.deepEqual([...html.matchAll(/data-product-card="([^"]+)"/g)].map((m) => m[1]), ['trophee-amour', 'bracelet-amour'], file);
   }
 });

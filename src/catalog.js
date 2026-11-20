@@ -2,7 +2,7 @@
   "use strict";
   // Source: organized Products/Catalogue Produits - Issolatej.xlsx.
   // Image files are copied from the numbered source folders without editing them.
-  // Sixteen products also lead with a lifestyle scene, <id>-ugc.jpg, made with CreateUGC from Rayda's own photo of
+  // Eighteen products also lead with a lifestyle scene, <id>-ugc.jpg, made with CreateUGC from Rayda's own photo of
   // the piece (originals in "om Adem/UGC photos (CreateUGC)"); the product pages say so under the gallery. On the
   // bottle's scene the printed verses are Rayda's real print, laid in from her photo letter for letter, and the Feng
   // Shui coins in theirs are her real coins and cord, laid in from her photo.
@@ -272,19 +272,57 @@
       missing: ["Modèle de clé du collier long", "Longueurs exactes", "Disponibilité"]
     }),
     // Her "Feng Shui products for financial abundance" ("منتجات الفنج شوي للوفرة المالية"): three Chinese coins tied with
-    // a red string. She sent photos only, without a price or a text yet. The scene's coins and cord are her real ones,
-    // laid in from her photo (CreateUGC invented the characters).
+    // a red string. She sent photos only; on 19 November she gave the price, 45 TND, in reply to her own photo of the
+    // coins ("ثمنها 45"). Still no text from her. The scene's coins and cord are her real ones, laid in from her photo
+    // (CreateUGC invented the characters).
     make({
       id: "pieces-feng-shui", name: "Pièces chinoises Feng Shui", eyebrow: "Feng Shui · fil rouge", type: "decor", collections: ["objets-dores"],
-      price: null, availability: "quote", custom: false, photoCount: 3, photoAlt: "Trois pièces chinoises Feng Shui nouées d’un fil rouge, près de tiges de bambou",
+      price: amount(45), availability: "quote", custom: false, photoCount: 3, photoAlt: "Trois pièces chinoises Feng Shui nouées d’un fil rouge, près de tiges de bambou",
       lifestyle: "Les trois pièces chinoises nouées d’un fil rouge posées sur une table en bois, près d’un vase de bambous",
       description: "Trois pièces chinoises nouées d’un fil rouge : un objet Feng Shui que Rayda propose pour l’abondance financière.",
       benefits: [
         { icon: "abundance", label: "Un objet Feng Shui pour une intention d’abondance financière" }
       ],
       details: ["Trois pièces à trou carré, nouées d’un fil rouge", "La signification symbolique appartient à la démarche de Rayda, sans promesse de résultat"],
-      priceNote: "Prix non communiqué dans les éléments reçus. Demandez le tarif avant commande.",
-      missing: ["Prix", "Texte de Rayda", "Dimensions", "Disponibilité"]
+      priceNote: "Tarif communiqué : 45 TND. Disponibilité à confirmer.",
+      missing: ["Texte de Rayda", "Dimensions", "Disponibilité"]
+    }),
+    // Her money frog ("ضفدع المال"), sent on 19 November with her Feng Shui abundance symbols ("نكملوا في رموز الوفرة
+    // المستعملة في الفنج شوي"): her texts in both languages; resin with a metal coin, 4.5 × 4 cm, 80 TND ("المادة :راتنج و
+    // العملة معدنية / الأبعاد: 4,5 سنتمتر ×4 سنتمتر / الثمن: 80د", "Prix : 80 DT"). Her six photos, as sent, are kept in the
+    // folder (grenouille-fortune-01…06.jpg); the gallery shows a CreateUGC scene and three ChatGPT photos made from them
+    // (20 November), seen from the side so the scroll on the front of the base stays out of sight.
+    make({
+      id: "grenouille-fortune", name: "Grenouille de la fortune", eyebrow: "Feng Shui · résine dorée", type: "decor", collections: ["objets-dores"],
+      price: amount(80), availability: "quote", custom: false, lifestyle: "Grenouille de la fortune dorée posée sur un bureau en chêne clair, près d’un vase de bambous porte-bonheur et d’un thé à la menthe",
+      aiPhotos: [["main", "Grenouille de la fortune dorée posée au creux d’une main"], ["console", "Grenouille de la fortune dorée sur une console d’entrée, près d’une coupelle de clés et de bambous porte-bonheur"], ["bureau", "Grenouille de la fortune dorée sur un bureau, à côté d’un ordinateur portable, d’un carnet et d’une plante"]],
+      description: "La grenouille de la fortune, également connue sous le nom de « Chan Chu » ou grenouille à trois pattes, est l’un des symboles les plus emblématiques de richesse et d’abondance dans la philosophie chinoise du Feng Shui.",
+      benefits: [
+        { icon: "abundance", label: "Un symbole Feng Shui de richesse et d’abondance" },
+        { icon: "protection", label: "Chargée en Reiki de l’Argent, selon la démarche de Rayda" }
+      ],
+      details: ["Matière : résine et pièce en métal", "Dimensions : 4,5 × 4 cm", "La signification symbolique appartient à la démarche de Rayda, sans promesse de résultat"],
+      priceNote: "Tarif communiqué : 80 TND. Disponibilité à confirmer.",
+      missing: ["Disponibilité"]
+    }),
+    // Her love trophy ("رمز الحب", "Trophée d’Amour"), sent the same night "with the love collection" ("هذا مع مجموعة
+    // الحب"): plexiglass ("زجاج شبكي Plexi"), 115 TND ("115د"). Her Arabic text is complete; her French message was cut
+    // off after its first "why now" point in the screenshots, so its last two points and its closing line are translated
+    // from her Arabic (product-texts.mjs). The medallion is engraved « الله الجامع ». Her one photo is kept in the folder
+    // (trophee-amour-01.jpg); the gallery shows a CreateUGC scene, whose medallion reproduces her engraving, and two
+    // ChatGPT photos (20 November), each medallion checked letter by letter.
+    make({
+      id: "trophee-amour", name: "Trophée d’Amour", eyebrow: "Décoration · plexiglas doré", type: "decor", collections: ["objets-dores"],
+      price: amount(115), availability: "quote", custom: false, lifestyle: "Trophée d’Amour, médaillon gravé « الله الجامع », posé sur une table de chevet près d’une lampe et d’un lit en lin crème",
+      aiPhotos: [["etagere", "Trophée d’Amour posé sur une étagère en bois, près d’une fenêtre, d’une bougie et de livres"], ["commode", "Trophée d’Amour sur une commode blanche, près d’un petit vase de roses et d’une coupelle de perles"]],
+      description: "Je vous présente le « Trophée d’Amour », une pièce décorative conçue avec soin pour devenir un véritable ancrage visuel et spirituel, favorisant votre équilibre émotionnel et vous invitant à accueillir une énergie de stabilité et d’harmonie dans votre vie affective.",
+      benefits: [
+        { icon: "love", label: "Un symbole d’amour durable, d’affection et de miséricorde" },
+        { icon: "protection", label: "Chargé par le Reiki, le Saint Coran et les Beaux Noms d’Allah, selon la démarche de Rayda" }
+      ],
+      details: ["Matière : plexiglas", "Deux cygnes en miroir doré dont les cous dessinent un cœur, ailes et cœurs rouges, médaillon gravé « الله الجامع »", "La signification symbolique appartient à la démarche de Rayda, sans promesse de résultat"],
+      priceNote: "Tarif communiqué : 115 TND. Disponibilité à confirmer.",
+      missing: ["Dimensions", "Disponibilité"]
     })
   ];
   window.STORE_CATALOG = {
@@ -295,19 +333,20 @@
       { slug: "colliers", name: "Colliers", description: "Collier BaZi composé pour une personne, colliers Énergie d’apprentissage et collier Clé.", productIds: ["collier-bazi", "accessoires-apprentissage", "collier-cle"] },
       { slug: "porte-cles", name: "Porte-clés", description: "Porte-clés de pierre et Arbre de Vie.", productIds: ["porte-cles-pierre", "porte-cles-arbre-vie"] },
       { slug: "portefeuilles", name: "Portefeuilles", description: "Portefeuille Hafidha El Mel dans les coloris photographiés.", productIds: ["portefeuille-hafidha"] },
-      { slug: "objets-dores", name: "Objets dorés", description: "Carte, objets décoratifs dorés et pièces chinoises Feng Shui.", productIds: ["carte-million-dollar", "decor-abondance", "cle-de-vie", "fleur-de-vie", "pieces-feng-shui"] },
+      { slug: "objets-dores", name: "Objets dorés", description: "Carte, objets décoratifs dorés, symboles Feng Shui et Trophée d’Amour.", productIds: ["carte-million-dollar", "decor-abondance", "cle-de-vie", "fleur-de-vie", "pieces-feng-shui", "grenouille-fortune", "trophee-amour"] },
       { slug: "voiture", name: "Pendentifs voiture", description: "Pendentifs décoratifs à suspendre dans la voiture.", productIds: ["pendentif-voiture-fleur", "pendentif-voiture-ankh"] },
       { slug: "livres", name: "Livres", description: "Le livre « Votre excellence est votre choix », en trois éditions : primaire, collège et lycée, baccalauréat.", productIds: ["livre-excellence"] },
       { slug: "apprentissage", name: "Accessoires d’étude", description: "Bracelet et colliers Énergie d’apprentissage, préparés à partir de votre date de naissance, et la bouteille d’eau en verre aux versets et affirmations.", productIds: ["accessoires-apprentissage", "bouteille-verre"] }
     ],
     // Paths ("chemins"): the first choice on the home page and in the Boutique; each opens /parcours/<slug>/ with only
-    // its pieces. The study and money paths are Rayda's own collections as she sent them on 15 November, "مجموعة
-    // التألق العلمي" and "مجموعة الوفرة"; she sent no love collection, so that path keeps the Énergie Amour bracelet.
+    // its pieces. They are Rayda's own collections: "مجموعة التألق العلمي" and "مجموعة الوفرة" as she sent them on 15
+    // November (the frog joined the abundance one on 19 November, with her Feng Shui abundance symbols), and "مجموعة
+    // الحب", named when she sent the Trophée d’Amour on 19 November; the Énergie Amour bracelet stays in it.
     // Arabic words are in catalog-ar.mjs (pathsAr).
     paths: [
       { slug: "etudes", icon: "study", name: "Excellence scolaire", summary: "Pour les élèves et les étudiants : étudier avec plus de concentration et de confiance.", description: "La collection Excellence scolaire de Rayda : son livre « Votre excellence est votre choix » en trois éditions, les accessoires Énergie d’apprentissage et la bouteille d’eau en verre aux versets et affirmations.", productIds: ["livre-excellence", "accessoires-apprentissage", "bouteille-verre"] },
-      { slug: "abondance", icon: "money", name: "Abondance", summary: "Pour accueillir l’abondance financière au quotidien.", description: "La collection Abondance de Rayda : le portefeuille Hafidha El Mel avec ses cartes et son exercice pour élargir l’énergie de réception de l’argent, la carte Million Dollar, le décor Abondance au dollar, à la couronne et à l’infini, le collier Clé, le bracelet BaZi et les pièces chinoises Feng Shui.", productIds: ["portefeuille-hafidha", "carte-million-dollar", "decor-abondance", "collier-cle", "bracelet-bazi", "pieces-feng-shui"] },
-      { slug: "amour", icon: "love", name: "Énergie Amour", summary: "Pour ouvrir votre cœur à l’énergie de l’amour.", description: "Le bracelet Énergie Amour en quartz rose : un bracelet pour activer l’énergie de l’amour, selon les mots de Rayda.", productIds: ["bracelet-amour"] }
+      { slug: "abondance", icon: "money", name: "Abondance", summary: "Pour accueillir l’abondance financière au quotidien.", description: "La collection Abondance de Rayda : le portefeuille Hafidha El Mel avec ses cartes et son exercice pour élargir l’énergie de réception de l’argent, la carte Million Dollar, le décor Abondance au dollar, à la couronne et à l’infini, le collier Clé, le bracelet BaZi, les pièces chinoises Feng Shui et la grenouille de la fortune.", productIds: ["portefeuille-hafidha", "carte-million-dollar", "decor-abondance", "collier-cle", "bracelet-bazi", "pieces-feng-shui", "grenouille-fortune"] },
+      { slug: "amour", icon: "love", name: "Amour", summary: "Pour ouvrir votre cœur à l’énergie de l’amour.", description: "La collection Amour de Rayda : le Trophée d’Amour, un symbole d’amour durable chargé par le Reiki et le Saint Coran, et le bracelet Énergie Amour en quartz rose.", productIds: ["trophee-amour", "bracelet-amour"] }
     ],
     products: products
   };
