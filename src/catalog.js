@@ -2,13 +2,15 @@
   "use strict";
   // Source: organized Products/Catalogue Produits - Issolatej.xlsx.
   // Image files are copied from the numbered source folders without editing them.
-  // Eighteen products also lead with a lifestyle scene, <id>-ugc.jpg, made with CreateUGC from Rayda's own photo of
+  // Seventeen products also lead with a lifestyle scene, <id>-ugc.jpg, made with CreateUGC from Rayda's own photo of
   // the piece (originals in "om Adem/UGC photos (CreateUGC)"); the product pages say so under the gallery. On the
   // bottle's scene the printed verses are Rayda's real print, laid in from her photo letter for letter, and the Feng
   // Shui coins in theirs are her real coins and cord, laid in from her photo.
   // Products with aiPhotos show, after that scene, photos made in ChatGPT from Rayda's own photos instead of her
   // photos: <id>-ai-<shot>.jpg (originals in "om Adem/ChatGPT photos (full size)"). Each entry is [shot, alt], and
   // variantImageIndex counts within aiPhotos. The product pages say so under the gallery.
+  // ownPhotos adds more of Rayda's own photos after those, by number: [n, alt] shows <id>-<nn>.jpg (21 November: her
+  // new BaZi necklaces and bracelets, and her photos of the learning necklaces).
   function amount(min, max, confirmationRequired) {
     return min == null ? null : { min: min, max: max == null ? min : max, currency: "TND", confirmationRequired: !!confirmationRequired };
   }
@@ -25,6 +27,9 @@
         alt: (item.photoAlt || item.name) + (item.photoCount > 1 ? " — vue " + (index + 1) : "")
       };
     });
+    if (item.ownPhotos) item.images = item.images.concat(item.ownPhotos.map(function (photo) {
+      return { src: "/assets/products/organized/" + item.id + "-" + String(photo[0]).padStart(2, "0") + ".jpg", alt: photo[1] };
+    }));
     if (item.lifestyle) {
       item.images.unshift({ src: "/assets/products/organized/" + item.id + "-ugc.jpg", alt: item.lifestyle });
       item.coverImageIndex = 0;
@@ -32,6 +37,7 @@
     }
     delete item.lifestyle;
     delete item.aiPhotos;
+    delete item.ownPhotos;
     delete item.photoCount;
     delete item.photoAlt;
     return item;
@@ -41,6 +47,9 @@
       id: "bracelet-bazi", name: "Bracelet BaZi sur mesure", eyebrow: "Bracelet · création personnalisée", type: "jewelry", collections: ["creations-bazi", "bracelets"],
       price: amount(140, 180, true), availability: "made-to-order", custom: true, lifestyle: "Bracelet BaZi porté au poignet, à côté d’un verre de thé à la menthe",
       aiPhotos: [["wrist", "Exemple de bracelet BaZi porté au poignet, avec sa breloque en pyrite"], ["flatlay", "Exemple de bracelet BaZi posé à plat sur du lin crème"], ["macro", "Gros plan sur les pierres et la pyrite d’un bracelet BaZi"], ["dish", "Exemple de bracelet BaZi dans une coupelle en céramique crème"]],
+      // Eight more bracelets made by Rayda, one photo each, sent on 21 November ("هاذم تو براسلايات بازي … خليهم مع التصاور").
+      ownPhotos: [[17, "Bracelet BaZi réalisé par Rayda, en perles bleues, jaunes, bleu clair et vertes, posé sur du lin près d’une tige de bambou"], [18, "Bracelet BaZi réalisé par Rayda, en perles roses, vertes, violettes et bleu clair, avec une pierre brute claire"], [19, "Bracelet BaZi réalisé par Rayda, en éclats orange et verts, avec des perles grises"], [20, "Bracelet BaZi réalisé par Rayda, en perles roses, bleues, grises et violettes, avec une pierre brute scintillante"],
+        [21, "Bracelet BaZi réalisé par Rayda, en perles vertes et roses, avec une pierre brute dorée entourée de fil doré"], [22, "Bracelet BaZi réalisé par Rayda, en éclats verts et orange, perles bleues et pierre brute claire, près de tiges de bambou"], [23, "Bracelet BaZi réalisé par Rayda, en éclats orange, perles roses et violettes, avec une pierre brute rose"], [24, "Bracelet BaZi réalisé par Rayda, en perles roses, violettes, vertes et noires, avec une pierre brute claire"]],
       description: "Parce que chaque personne a une carte énergétique différente… une empreinte énergétique unique… une alchimie qui lui est propre, les accessoires BaZi — une création à laquelle je suis parvenue après des années d’expérience dans le domaine des pierres et des sciences de l’énergie — sont des pièces conçues de façon personnelle à partir de votre carte BaZi : on y analyse la composition de vos éléments, et ceux qui ont besoin d’être soutenus ou équilibrés, puis on choisit les composants de l’accessoire en fonction de ces données.",
       benefits: [
         { icon: "personalization", label: "Unique : composé selon votre propre carte BaZi" },
@@ -52,10 +61,14 @@
       priceNote: "Fourchette communiquée : 140 à 180 TND. Le tarif final est confirmé avant préparation.",
       missing: ["Composition exacte de la commande", "Tour de poignet précis", "Délai de fabrication", "Disponibilité"]
     }),
+    // 21 November, her one change for the BaZi necklace: "نحب تعمل التصاور هاذم اختار وحدة منهم لابستها اللي في التصويرة".
+    // Her photos of three necklaces replace the earlier example (its scene and AI photos stay in the folder), and one of
+    // them, in blue beads with a rough stone, is shown worn first: made in ChatGPT from her photo.
     make({
-      id: "collier-bazi", coverImageIndex: 2, name: "Collier BaZi complet", eyebrow: "Collier · création personnalisée", type: "jewelry", collections: ["creations-bazi", "colliers"],
-      price: amount(320), availability: "made-to-order", custom: true, lifestyle: "Collier BaZi porté sur un haut en lin crème",
-      aiPhotos: [["neck", "Exemple de collier BaZi porté, vu de face"], ["side", "Exemple de collier BaZi porté, vu de profil"], ["flatlay", "Exemple de collier BaZi posé à plat sur du lin crème"], ["macro", "Gros plan sur le pendentif en pierre brute entouré de fil doré d’un collier BaZi"]],
+      id: "collier-bazi", name: "Collier BaZi complet", eyebrow: "Collier · création personnalisée", type: "jewelry", collections: ["creations-bazi", "colliers"],
+      price: amount(320), availability: "made-to-order", custom: true,
+      aiPhotos: [["porte", "Collier BaZi en perles bleues avec une pierre brute scintillante, porté sur un haut en lin crème"]],
+      ownPhotos: [[4, "Collier BaZi réalisé par Rayda, en perles bleues avec une pierre brute scintillante, près d’un bracelet assorti"], [5, "Collier BaZi réalisé par Rayda, en perles roses, vertes et noires, avec un pendentif noir facetté"], [6, "Le même collier posé sur un tissu beige, près d’une tige de bambou"], [7, "Collier BaZi réalisé par Rayda, en perles multicolores, avec une pierre brute dorée entourée de fil doré"]],
       description: "Parce que chaque personne a une carte énergétique différente… une empreinte énergétique unique… une alchimie qui lui est propre, les accessoires BaZi — une création à laquelle je suis parvenue après des années d’expérience dans le domaine des pierres et des sciences de l’énergie — sont des pièces conçues de façon personnelle à partir de votre carte BaZi : on y analyse la composition de vos éléments, et ceux qui ont besoin d’être soutenus ou équilibrés, puis on choisit les composants de l’accessoire en fonction de ces données.",
       benefits: [
         { icon: "personalization", label: "Composition unique selon votre lecture BaZi" },
@@ -225,6 +238,8 @@
       id: "accessoires-apprentissage", name: "Accessoires Énergie d’apprentissage", eyebrow: "Bracelet ou collier · préparé pour vous", type: "jewelry", collections: ["apprentissage", "bracelets", "colliers"],
       price: amount(100, 130), availability: "made-to-order", custom: true, lifestyle: "Le bracelet et les deux colliers Énergie d’apprentissage posés sur un bureau d’étude, près d’un cahier ouvert",
       aiPhotos: [["bracelet-wrist", "Bracelet Énergie d’apprentissage porté au poignet pendant une séance d’écriture"], ["chaine-neck", "Collier Énergie d’apprentissage sur chaîne dorée, porté"], ["cordon-desk", "Collier Énergie d’apprentissage sur cordon noir, posé sur un bureau près d’un cahier"]],
+      // Her own photos of the two necklaces, sent on 21 November ("بالنسبة لقلادة تفعيل عملية التعلم عندي زادة التصاور هاذم").
+      ownPhotos: [[1, "Collier Énergie d’apprentissage sur cordon noir, en perles violettes, bleu clair et bleues, près de tiges de bambou"], [2, "Collier Énergie d’apprentissage sur chaîne dorée, en perles violettes, bleu clair et bleues"]],
       description: "Cette collection s’appuie sur les fréquences des pierres précieuses, reconnues pour leur capacité à stimuler la perception et à apaiser les pensées qui s’emballent.",
       benefits: [
         { icon: "clarity", label: "Pensé pour soutenir la concentration pendant les études" },
@@ -323,6 +338,74 @@
       details: ["Matière : plexiglas", "Deux cygnes en miroir doré dont les cous dessinent un cœur, ailes et cœurs rouges, médaillon gravé « الله الجامع »", "La signification symbolique appartient à la démarche de Rayda, sans promesse de résultat"],
       priceNote: "Tarif communiqué : 115 TND. Disponibilité à confirmer.",
       missing: ["Dimensions", "Disponibilité"]
+    }),
+    // Her love bottle, "قارورة الحب" / "Bouteille de l’Amour", for her love collection (her messages of 20 and 21 November):
+    // glass, 1 litre, 55 TND ("المادة :بلور / السعة :لتر / الثمن :55د"; "Matière : Verre / Contenance : 1 litre / Prix :
+    // 55 DT"). Its photos are the three she sent on 19 November, just after the trophy. It has no product type of its
+    // own, so it is found through her Amour collection and the whole Boutique.
+    make({
+      id: "bouteille-amour", name: "Bouteille de l’Amour", eyebrow: "Bouteille · verre, 1 litre", type: "accessory", collections: [],
+      price: amount(55), availability: "quote", custom: false, photoCount: 3, photoAlt: "Bouteille de l’Amour en verre d’un litre, imprimée en rouge de versets du Coran et de symboles",
+      description: "La Bouteille de l’Amour agit sur deux niveaux complémentaires :",
+      benefits: [
+        { icon: "love", label: "Pensée pour l’amour, la tendresse et l’harmonie au sein du couple" },
+        { icon: "personalization", label: "Les personnes non mariées peuvent aussi l’utiliser" },
+        { icon: "protection", label: "Versets du Coran, Beaux Noms d’Allah et symboles, selon la démarche de Rayda" }
+      ],
+      details: ["Matière : verre", "Contenance : 1 litre", "Imprimée en rouge de versets du Coran, des Beaux Noms d’Allah et de symboles", "La dimension énergétique et symbolique appartient à la démarche de Rayda, sans promesse de résultat"],
+      priceNote: "Tarif communiqué : 55 TND. Disponibilité à confirmer.",
+      missing: ["Disponibilité"]
+    }),
+    // Her four charged keyrings (21 November), 30 TND each, with one sentence each in Arabic and in French. The love one
+    // came with her love collection; the other three are "the rest of the products, after the love collection" ("هذه بقية
+    // المنتجات … بعد مجموعة الحب"). Each photo came just before its text. The writing on each was read from her photos.
+    make({
+      id: "porte-cles-amour", name: "Porte-clés Amour", eyebrow: "Porte-clés énergétique · amour", type: "accessory", collections: ["porte-cles"],
+      price: amount(30), availability: "quote", custom: false, photoCount: 2, photoAlt: "Porte-clés Amour : deux cygnes dorés sur un disque blanc nacré, sous l’inscription « وجعل بينكم مودة ورحمة » et deux cœurs rouges",
+      description: "Un porte-clés énergétique chargé, conçu pour programmer le subconscient à l’amour, à la tendresse, à la compassion et à une relation amoureuse durable.",
+      benefits: [
+        { icon: "love", label: "Pensé pour l’amour, la tendresse et une relation amoureuse durable" },
+        { icon: "protection", label: "Porte-clés énergétique chargé, selon la démarche de Rayda" }
+      ],
+      details: ["Disque blanc nacré orné de feuilles dorées, de deux cygnes dorés et de deux cœurs rouges", "Inscription en rouge : « وجعل بينكم مودة ورحمة »", "La signification symbolique appartient à la démarche de Rayda, sans promesse de résultat"],
+      priceNote: "Tarif communiqué : 30 TND. Disponibilité à confirmer.",
+      missing: ["Dimensions", "Disponibilité"]
+    }),
+    make({
+      id: "porte-cles-chance", name: "Porte-clés Chance", eyebrow: "Porte-clés énergétique · chance", type: "accessory", collections: ["porte-cles"],
+      price: amount(30), availability: "quote", custom: false, photoCount: 2, photoAlt: "Porte-clés Chance : une croix ankh dorée sur un disque blanc nacré, entourée de versets en rouge",
+      description: "Un porte-clés énergétique chargé, conçu pour programmer le subconscient à attirer la chance et à favoriser la fluidité et la facilité dans la vie.",
+      benefits: [
+        { icon: "abundance", label: "Pensé pour attirer la chance" },
+        { icon: "calm", label: "Pour plus de fluidité et de facilité au quotidien, selon la démarche de Rayda" }
+      ],
+      details: ["Disque blanc nacré orné de feuilles dorées et d’une croix ankh dorée", "Inscriptions en rouge : « إنا فتحنا لك فتحا مبينا » et « وما يلقاها إلا ذو حظ عظيم »", "La signification symbolique appartient à la démarche de Rayda, sans promesse de résultat"],
+      priceNote: "Tarif communiqué : 30 TND. Disponibilité à confirmer.",
+      missing: ["Dimensions", "Disponibilité"]
+    }),
+    make({
+      id: "porte-cles-voyage", name: "Porte-clés Voyage", eyebrow: "Porte-clés énergétique · voyage", type: "accessory", collections: ["porte-cles"],
+      price: amount(30), availability: "quote", custom: false, photoCount: 3, photoAlt: "Porte-clés Voyage : un globe et un avion dorés sur un disque blanc nacré, entourés de versets en rouge",
+      description: "Un porte-clés énergétique chargé, conçu pour programmer le subconscient à faciliter les voyages et à favoriser les déplacements en toute fluidité.",
+      benefits: [
+        { icon: "calm", label: "Pensé pour faciliter les voyages et les déplacements" },
+        { icon: "protection", label: "Porte-clés énergétique chargé, selon la démarche de Rayda" }
+      ],
+      details: ["Disque blanc nacré orné de feuilles dorées, d’un globe et d’un avion dorés", "Inscriptions en rouge : « وقال اركبوا فيها بسم الله مجراها ومرساها » et « هو الذي جعل لكم الأرض ذلولا فامشوا في مناكبها »", "La signification symbolique appartient à la démarche de Rayda, sans promesse de résultat"],
+      priceNote: "Tarif communiqué : 30 TND. Disponibilité à confirmer.",
+      missing: ["Dimensions", "Disponibilité"]
+    }),
+    make({
+      id: "porte-cles-protection", name: "Porte-clés Protection", eyebrow: "Porte-clés énergétique · protection", type: "accessory", collections: ["porte-cles"],
+      price: amount(30), availability: "quote", custom: false, photoCount: 2, photoAlt: "Porte-clés Protection : une Fleur de Vie argentée cerclée d’or sur un disque blanc nacré, entre deux inscriptions en rouge",
+      description: "Un porte-clés énergétique chargé, conçu pour programmer le subconscient à se protéger des énergies négatives et à renforcer son bouclier énergétique.",
+      benefits: [
+        { icon: "protection", label: "Pensé pour se protéger des énergies négatives" },
+        { icon: "calm", label: "Pour renforcer son bouclier énergétique, selon la démarche de Rayda" }
+      ],
+      details: ["Disque blanc nacré orné de feuilles dorées et d’une Fleur de Vie cerclée d’or", "Inscriptions en rouge : « فالله خير حافظا » et « وهو على كل شيء قدير »", "La signification symbolique appartient à la démarche de Rayda, sans promesse de résultat"],
+      priceNote: "Tarif communiqué : 30 TND. Disponibilité à confirmer.",
+      missing: ["Dimensions", "Disponibilité"]
     })
   ];
   window.STORE_CATALOG = {
@@ -331,7 +414,7 @@
       { slug: "creations-bazi", name: "Créations BaZi", description: "Pièces conçues après un échange autour de la carte BaZi.", productIds: ["bracelet-bazi", "collier-bazi", "portefeuille-hafidha"] },
       { slug: "bracelets", name: "Bracelets", description: "Bracelet BaZi sur mesure, bracelet Énergie Amour et bracelet Énergie d’apprentissage.", productIds: ["bracelet-bazi", "bracelet-amour", "accessoires-apprentissage"] },
       { slug: "colliers", name: "Colliers", description: "Collier BaZi composé pour une personne, colliers Énergie d’apprentissage et collier Clé.", productIds: ["collier-bazi", "accessoires-apprentissage", "collier-cle"] },
-      { slug: "porte-cles", name: "Porte-clés", description: "Porte-clés de pierre et Arbre de Vie.", productIds: ["porte-cles-pierre", "porte-cles-arbre-vie"] },
+      { slug: "porte-cles", name: "Porte-clés", description: "Porte-clés énergétiques Amour, Chance, Voyage et Protection, porte-clés de pierre et Arbre de Vie.", productIds: ["porte-cles-pierre", "porte-cles-arbre-vie", "porte-cles-amour", "porte-cles-chance", "porte-cles-voyage", "porte-cles-protection"] },
       { slug: "portefeuilles", name: "Portefeuilles", description: "Portefeuille Hafidha El Mel dans les coloris photographiés.", productIds: ["portefeuille-hafidha"] },
       { slug: "objets-dores", name: "Objets dorés", description: "Carte, objets décoratifs dorés, symboles Feng Shui et Trophée d’Amour.", productIds: ["carte-million-dollar", "decor-abondance", "cle-de-vie", "fleur-de-vie", "pieces-feng-shui", "grenouille-fortune", "trophee-amour"] },
       { slug: "voiture", name: "Pendentifs voiture", description: "Pendentifs décoratifs à suspendre dans la voiture.", productIds: ["pendentif-voiture-fleur", "pendentif-voiture-ankh"] },
@@ -346,7 +429,7 @@
     paths: [
       { slug: "etudes", icon: "study", name: "Excellence scolaire", summary: "Pour les élèves et les étudiants : étudier avec plus de concentration et de confiance.", description: "La collection Excellence scolaire de Rayda : son livre « Votre excellence est votre choix » en trois éditions, les accessoires Énergie d’apprentissage et la bouteille d’eau en verre aux versets et affirmations.", productIds: ["livre-excellence", "accessoires-apprentissage", "bouteille-verre"] },
       { slug: "abondance", icon: "money", name: "Abondance", summary: "Pour accueillir l’abondance financière au quotidien.", description: "La collection Abondance de Rayda : le portefeuille Hafidha El Mel avec ses cartes et son exercice pour élargir l’énergie de réception de l’argent, la carte Million Dollar, le décor Abondance au dollar, à la couronne et à l’infini, le collier Clé, le bracelet BaZi, les pièces chinoises Feng Shui et la grenouille de la fortune.", productIds: ["portefeuille-hafidha", "carte-million-dollar", "decor-abondance", "collier-cle", "bracelet-bazi", "pieces-feng-shui", "grenouille-fortune"] },
-      { slug: "amour", icon: "love", name: "Amour", summary: "Pour ouvrir votre cœur à l’énergie de l’amour.", description: "La collection Amour de Rayda : le Trophée d’Amour, un symbole d’amour durable chargé par le Reiki et le Saint Coran, et le bracelet Énergie Amour en quartz rose.", productIds: ["trophee-amour", "bracelet-amour"] }
+      { slug: "amour", icon: "love", name: "Amour", summary: "Pour ouvrir votre cœur à l’énergie de l’amour.", description: "La collection Amour de Rayda : le Trophée d’Amour, un symbole d’amour durable chargé par le Reiki et le Saint Coran, la Bouteille de l’Amour, le porte-clés Amour et le bracelet Énergie Amour en quartz rose.", productIds: ["trophee-amour", "bouteille-amour", "porte-cles-amour", "bracelet-amour"] }
     ],
     products: products
   };

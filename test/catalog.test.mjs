@@ -10,9 +10,9 @@ vm.runInNewContext(await readFile(path.join(root, "src/catalog.js"), "utf8"), co
 const catalog = context.window.STORE_CATALOG;
 const configContext = { window: {} };
 vm.runInNewContext(await readFile(path.join(root, "src/site-config.js"), "utf8"), configContext);
-test("catalog has nineteen unique products in ten browseable collections", () => {
-  assert.equal(catalog.products.length, 19);
-  assert.equal(new Set(catalog.products.map((x) => x.slug)).size, 19);
+test("catalog has twenty-four unique products in ten browseable collections", () => {
+  assert.equal(catalog.products.length, 24);
+  assert.equal(new Set(catalog.products.map((x) => x.slug)).size, 24);
   assert.equal(catalog.collections.length, 10);
   for (const collection of catalog.collections) {
     for (const id of collection.productIds) assert.ok(catalog.products.some((x) => x.id === id));
@@ -39,11 +39,12 @@ test("every product photo is a local imported asset", async () => {
 test("the active storefront uses Issolatej and the organized catalog", () => {
   assert.equal(configContext.window.STORE_CONFIG.previewStage, false);
   assert.equal(configContext.window.STORE_CONFIG.brand.name, "Issolatej");
-  // 18 lifestyle scenes (one leading each of 18 products), 59 ChatGPT photos made from Rayda's photos for 14 of them
-  // (the money frog and the love trophy since 20 November), Rayda's own 3 photos of the two pieces without AI photos (the
-  // Arbre de Vie keyring and the Fleur de Vie pendant), and her own 11 photos of the bottle, the key necklace and the
-  // Feng Shui coins (15 November).
-  assert.equal(catalog.products.reduce((count, product) => count + product.images.length, 0), 91);
+  // 17 lifestyle scenes (one leading each of 17 products), 56 ChatGPT photos made from Rayda's photos for 14 products
+  // (since 21 November the BaZi necklace has one, her new necklace worn, and no scene), and Rayda's own 40 photos: the
+  // Arbre de Vie keyring and the Fleur de Vie pendant (3), the bottle, the key necklace and the Feng Shui coins (11, 15
+  // November), and since 21 November the BaZi bracelets (8) and necklaces (4), the learning necklaces (2), the love
+  // bottle (3) and the four energy keyrings (9).
+  assert.equal(catalog.products.reduce((count, product) => count + product.images.length, 0), 113);
 });
 test("the build respects the selected presentation mode and excludes review screenshots", async () => {
   const dist = path.join(root, "dist");
@@ -143,11 +144,11 @@ test("price variants, unknown prices and selection totals", async () => {
 test("search and filters distinguish custom from non-custom pieces", async () => {
   const {filterProducts}=await import('../src/commerce-core.js');
   assert.equal(filterProducts(catalog.products,{mode:'custom'}).length,4);
-  assert.equal(filterProducts(catalog.products,{mode:'ready'}).length,15);
+  assert.equal(filterProducts(catalog.products,{mode:'ready'}).length,20);
   assert.equal(filterProducts(catalog.products,{search:'energie amour'}).length,1);
   assert.equal(filterProducts(catalog.products,{search:'no-such-piece'}).length,0);
   const sorted=filterProducts(catalog.products,{sort:'price-asc'});
-  assert.equal(sorted[0].id,'livre-excellence'); // the primary edition, 35 TND
+  assert.equal(sorted[0].id,'porte-cles-amour'); // the energy keyrings, 30 TND, in catalogue order
   assert.equal(sorted.at(-1).price,null);
 });
 
@@ -303,18 +304,24 @@ test("product photos keep their size and crop: the main photo is shown whole and
   assert.match(rule, /border-radius:/);
   assert.doesNotMatch(rule, /object-fit|padding|transform|scale/);
 });
-test("AI photos follow each lifestyle scene instead of Rayda's photos, colours show their own photo, and the gallery says so", async () => {
+test("AI photos follow each lifestyle scene, Rayda's own photos come after them, colours show their own photo, and the gallery says so", async () => {
   const ai = catalog.products.filter((p) => p.images.some((image) => image.src.includes('-ai-')));
   assert.equal(ai.length, 14);
   for (const p of ai) {
-    assert.ok(p.images[0].src.endsWith('-ugc.jpg'), p.id + ' keeps its lifestyle photo first');
-    assert.equal(p.coverImageIndex, 0);
-    for (const image of p.images.slice(1)) {
-      assert.match(image.src, new RegExp('/' + p.id + '-ai-[a-z-]+\\.jpg$'));
-      assert.ok(image.alt.length > 10);
-    }
+    // The lifestyle scene first (the BaZi necklace has none since 21 November: it opens with her new necklace worn),
+    // then the ChatGPT photos, then her own photos where she sent new ones (21 November).
+    const scene = p.images[0].src.endsWith('-ugc.jpg');
+    assert.ok(scene || p.id === 'collier-bazi', p.id + ' keeps its lifestyle photo first');
+    if (scene) assert.equal(p.coverImageIndex, 0);
+    const rest = p.images.slice(scene ? 1 : 0);
+    const own = rest.findIndex((image) => !image.src.includes('-ai-'));
+    const made = own < 0 ? rest : rest.slice(0, own);
+    assert.ok(made.length > 0, p.id);
+    for (const image of made) assert.match(image.src, new RegExp('/' + p.id + '-ai-[a-z-]+\\.jpg$'));
+    if (own > -1) for (const image of rest.slice(own)) assert.match(image.src, new RegExp('/' + p.id + '-\\d{2}\\.jpg$'));
+    for (const image of p.images) assert.ok(image.alt.length > 10, image.src);
   }
-  assert.equal(ai.reduce((n, p) => n + p.images.length - 1, 0), 59);
+  assert.equal(ai.reduce((n, p) => n + p.images.filter((image) => image.src.includes('-ai-')).length, 0), 56);
   // Rayda sells the wallet in green, yellow and red only: no pink photo, and the group photo shows three.
   assert.ok(!catalog.products.find((p) => p.id === 'portefeuille-hafidha').images.some((image) => /rose|ai-couleurs/.test(image.src)));
   // The wallet's colour is chosen from the client's birth date, so it has no colour buttons.
@@ -325,10 +332,11 @@ test("AI photos follow each lifestyle scene instead of Rayda's photos, colours s
   assert.match(amour.images[amour.variantImageIndex['Quartz rose uni · 100 TND']].src, /-ai-uni-wrist\.jpg$/);
   assert.match(amour.images[amour.variantImageIndex['Composition avec cœur · tarif à confirmer']].src, /-ai-coeur-wrist\.jpg$/);
   if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
+  // The bracelets' gallery: the scene and the ChatGPT photos first, then her own photos, and it says which are which.
   const fr = await readFile(path.join(root, 'dist/products/bracelet-bazi/index.html'), 'utf8');
-  assert.match(fr, /Les photos sont des mises en scène créées à partir des photos de Rayda\. Votre pièce est composée pour vous/);
+  assert.match(fr, /Les premières photos sont des mises en scène créées à partir des photos de Rayda\s; les suivantes sont ses propres photos\. Votre pièce est composée pour vous/);
   const ar = await readFile(path.join(root, 'dist/ar/products/bracelet-bazi/index.html'), 'utf8');
-  assert.match(ar, /الصور مشاهد مُعَدّة انطلاقًا من صور رايدا\./);
+  assert.match(ar, /الصور الأولى مشاهد مُعَدّة انطلاقًا من صور رايدا، وما يليها صورها الخاصة\./);
   const keyring = await readFile(path.join(root, 'dist/products/porte-cles-arbre-vie/index.html'), 'utf8');
   assert.doesNotMatch(keyring, /mises en scène/);
 });
@@ -562,7 +570,7 @@ test("the money frog and the love trophy: her prices, her texts in both language
   // The frog joins her abundance collection; her love collection ("مجموعة الحب") opens with the trophy.
   const pieces = (slug) => [...catalog.paths.find((p) => p.slug === slug).productIds];
   assert.ok(pieces('abondance').includes('grenouille-fortune'));
-  assert.deepEqual(pieces('amour'), ['trophee-amour', 'bracelet-amour']);
+  assert.deepEqual(pieces('amour'), ['trophee-amour', 'bouteille-amour', 'porte-cles-amour', 'bracelet-amour']);
   if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
   const page = (p) => readFile(path.join(root, 'dist', p, 'index.html'), 'utf8');
   const checks = [
@@ -585,10 +593,85 @@ test("the money frog and the love trophy: her prices, her texts in both language
   for (const file of ['products/porte-cles-arbre-vie', 'ar/products/porte-cles-arbre-vie']) {
     assert.match(await page(file), /class="s-gallery s-gallery-single"/, file);
   }
-  // Her love collection by her name, opening with the trophy, in both languages.
+  // Her love collection by her name, opening with the trophy, in both languages (the love bottle and the Amour keyring
+  // joined it on 21 November).
   for (const [file, h1] of [['parcours/amour', 'Amour'], ['ar/parcours/amour', 'الحب']]) {
     const html = await page(file);
     assert.ok(html.includes('<h1>' + h1 + '</h1>'), file);
-    assert.deepEqual([...html.matchAll(/data-product-card="([^"]+)"/g)].map((m) => m[1]), ['trophee-amour', 'bracelet-amour'], file);
+    assert.deepEqual([...html.matchAll(/data-product-card="([^"]+)"/g)].map((m) => m[1]), ['trophee-amour', 'bouteille-amour', 'porte-cles-amour', 'bracelet-amour'], file);
+  }
+});
+test("the love bottle and the four energy keyrings: her prices, her texts word for word, her own photos; her new BaZi and learning photos", async () => {
+  const { priceLabel, priceLabelAr } = await import('../src/commerce-core.js');
+  const { productTexts } = await import('../src/product-texts.mjs');
+  const { productPitch } = await import('../src/product-pitch.mjs');
+  const { productsAr } = await import('../src/catalog-ar.mjs');
+  const byId = (id) => catalog.products.find((p) => p.id === id);
+  const files = (p) => [...p.images].map((image) => image.src.split('/').pop());
+  // The love bottle ("قارورة الحب"): glass, one litre, 55 TND, her text in both languages, her three photos.
+  const bottle = byId('bouteille-amour');
+  assert.equal(priceLabel(bottle), '55 TND');
+  assert.equal(priceLabelAr(bottle), '55 د.ت');
+  assert.equal(bottle.custom, false);
+  assert.deepEqual(files(bottle), ['bouteille-amour-01.jpg', 'bouteille-amour-02.jpg', 'bouteille-amour-03.jpg']);
+  assert.ok(bottle.details.includes('Matière : verre') && bottle.details.includes('Contenance : 1 litre'));
+  assert.ok(productsAr['bouteille-amour'].details.includes('المادة: بلور') && productsAr['bouteille-amour'].details.includes('السعة: لتر'));
+  assert.deepEqual(productTexts['bouteille-amour'].fr.sections.map((section) => section.title), ['1. La programmation du subconscient', '2. La dynamisation énergétique de l’eau']);
+  assert.equal(productTexts['bouteille-amour'].ar.intro.length, 2);
+  // The four keyrings, 30 TND each: her own sentence is the description and the line on the page, in both languages,
+  // and the verses written on each are in its details.
+  const keyrings = {
+    'porte-cles-amour': ['حامل مفاتيح مشحون يبرمج اللاوعي على المودة و الرحمة و علاقة الحب الدائمة', ['وجعل بينكم مودة ورحمة']],
+    'porte-cles-chance': ['حامل مفاتيح مشحون يبرمج اللاوعي على الحظ و التسهيل', ['إنا فتحنا لك فتحا مبينا', 'وما يلقاها إلا ذو حظ عظيم']],
+    'porte-cles-voyage': ['حامل مفاتيح مشحون يبرمج اللاوعي على تسهيل السفر', ['وقال اركبوا فيها بسم الله مجراها ومرساها', 'هو الذي جعل لكم الأرض ذلولا فامشوا في مناكبها']],
+    'porte-cles-protection': ['حامل مفاتيح مشحون يبرمج اللاوعي على الحماية من الطاقات السلبية و التدرع الطاقي', ['فالله خير حافظا', 'وهو على كل شيء قدير']]
+  };
+  for (const [id, [ar, verses]] of Object.entries(keyrings)) {
+    const k = byId(id);
+    assert.equal(priceLabel(k), '30 TND', id);
+    assert.equal(priceLabelAr(k), '30 د.ت', id);
+    assert.equal(k.custom, false, id);
+    assert.ok(k.images.length >= 2 && files(k).every((file, i) => file === id + '-0' + (i + 1) + '.jpg'), id);
+    assert.equal(productsAr[id].description, ar, id);
+    assert.equal(productPitch[id].ar, ar, id);
+    assert.equal(productPitch[id].fr, k.description, id);
+    for (const verse of verses) {
+      assert.ok(k.details.some((line) => line.includes('« ' + verse + ' »')), id + ': ' + verse);
+      assert.ok(productsAr[id].details.some((line) => line.includes('«' + verse + '»')), id + ' (ar): ' + verse);
+    }
+  }
+  // They join the keyring collection; her love collection has the bottle and the Amour keyring after the trophy.
+  assert.deepEqual([...catalog.collections.find((c) => c.slug === 'porte-cles').productIds], ['porte-cles-pierre', 'porte-cles-arbre-vie', ...Object.keys(keyrings)]);
+  assert.deepEqual([...catalog.paths.find((p) => p.slug === 'amour').productIds], ['trophee-amour', 'bouteille-amour', 'porte-cles-amour', 'bracelet-amour']);
+  // Her new photos (21 November): the BaZi necklace opens with her new necklace worn (ChatGPT, from her photo), then her
+  // four necklaces; the bracelets and the learning accessories end with her own photos.
+  assert.deepEqual(files(byId('collier-bazi')), ['collier-bazi-ai-porte.jpg', 'collier-bazi-04.jpg', 'collier-bazi-05.jpg', 'collier-bazi-06.jpg', 'collier-bazi-07.jpg']);
+  assert.deepEqual(files(byId('bracelet-bazi')).slice(-8), [17, 18, 19, 20, 21, 22, 23, 24].map((n) => 'bracelet-bazi-' + n + '.jpg'));
+  assert.deepEqual(files(byId('accessoires-apprentissage')).slice(-2), ['accessoires-apprentissage-01.jpg', 'accessoires-apprentissage-02.jpg']);
+  if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
+  const page = (p) => readFile(path.join(root, 'dist', p, 'index.html'), 'utf8');
+  const checks = [
+    ['products/bouteille-amour', ['<h1>Bouteille de l’Amour</h1>', '55 TND', '1 litre', '1. La programmation du subconscient', 'Elle vise à programmer le subconscient autour des valeurs de l’amour, de la tendresse, de la bienveillance et d’une belle harmonie au sein du couple.', 'Les personnes non mariées peuvent également l’utiliser.', '2. La dynamisation énergétique de l’eau', 'sont destinés à charger le noyau de l’eau en énergie.', 'qui accompagne votre démarche de mieux-être et vous aide à cultiver une fréquence intérieure en résonance avec l’amour, la tendresse et la miséricorde.']],
+    ['ar/products/bouteille-amour', ['<h1>قارورة الحب</h1>', '55 د.ت', '1- برمجة اللاوعي على المودة و الرحمة و على العلاقة الجميلة بين الزوجين', 'علما ان غير المتزوجين يمكن أن يستعملوها', '2- شحن نواة الماء بطاقة القرآن الكريم و أسماء الله الحسنى و الرموز الطاقية', 'تساعدك على التشافي و على أن تكون على تردد الحب و المودة و الرحمة']]
+  ];
+  for (const [id, [ar]] of Object.entries(keyrings)) {
+    checks.push(['products/' + id, ['<h1>' + byId(id).name + '</h1>', '30 TND', byId(id).description]]);
+    checks.push(['ar/products/' + id, ['<h1>' + productsAr[id].name + '</h1>', '30 د.ت', ar]]);
+  }
+  for (const [file, texts] of checks) {
+    const html = await page(file);
+    for (const text of texts) assert.ok(html.includes(text), file + ': ' + text);
+    // Her own photos only: no line about staged scenes, and the gallery keeps its arrows (two photos or more).
+    assert.doesNotMatch(html, /mises? en scène|مشاهد مُعَدّة|مشهد مُعَدّ/, file);
+    assert.doesNotMatch(html, /s-gallery-single/, file);
+  }
+  // A gallery that opens with ChatGPT photos and goes on with her own says which are which.
+  assert.match(await page('products/collier-bazi'), /La première photo est une mise en scène créée à partir des photos de Rayda\s; les suivantes sont ses propres photos\. Votre pièce est composée pour vous/);
+  assert.match(await page('ar/products/collier-bazi'), /الصورة الأولى مشهد مُعَدّ انطلاقًا من صور رايدا، وما يليها صورها الخاصة\./);
+  assert.match(await page('products/accessoires-apprentissage'), /Les premières photos sont des mises en scène créées à partir des photos de Rayda\s; les suivantes sont ses propres photos\. Votre pièce est préparée pour vous/);
+  // The keyring pages show the four new keyrings after the stone and Arbre de Vie keyrings, in French and in Arabic.
+  for (const file of ['collections/porte-cles', 'ar/collections/porte-cles']) {
+    const cards = [...(await page(file)).matchAll(/data-product-card="([^"]+)"/g)].map((m) => m[1]);
+    assert.deepEqual(cards, ['porte-cles-pierre', 'porte-cles-arbre-vie', ...Object.keys(keyrings)], file);
   }
 });

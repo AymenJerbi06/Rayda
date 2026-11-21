@@ -797,6 +797,37 @@ const tropheeAmour = {
     "closing": "اجعل من منزلك مساحة تنبض بالحب والسكينة. اطلب «رمز الحب» الخاص بك اليوم وابدأ رحلة جديدة من التناغم العاطفي والروحي."
   }
 };
+// Her love bottle text (her messages of 20 and 21 November; the user sent her full French on 21 November). Its first
+// line is the product description (catalog.js, catalog-ar.mjs). The title is her own closing words. Her French has two
+// headed levels; her Arabic has the same two levels as numbered paragraphs, kept as she wrote them.
+const bouteilleAmour = {
+  fr: {
+    "title": "En résonance avec l’amour, la tendresse et la miséricorde",
+    "sections": [
+      {
+        "title": "1. La programmation du subconscient",
+        "paragraphs": [
+          "Elle vise à programmer le subconscient autour des valeurs de l’amour, de la tendresse, de la bienveillance et d’une belle harmonie au sein du couple.",
+          "Les personnes non mariées peuvent également l’utiliser. Cette démarche les aide à se libérer progressivement de certains blocages inconscients susceptibles d’entraver l’attraction de relations amoureuses épanouissantes et leur épanouissement dans la durée, grâce à une nouvelle programmation positive du subconscient."
+        ]
+      },
+      {
+        "title": "2. La dynamisation énergétique de l’eau",
+        "paragraphs": [
+          "Les inscriptions et les symboles figurant sur la bouteille, faisant appel aux versets du Saint Coran, aux Beaux Noms d’Allah et aux symboles énergétiques, sont destinés à charger le noyau de l’eau en énergie.",
+          "Vous buvez ainsi une eau dynamisée, imprégnée de vibrations harmonieuses, qui accompagne votre démarche de mieux-être et vous aide à cultiver une fréquence intérieure en résonance avec l’amour, la tendresse et la miséricorde."
+        ]
+      }
+    ]
+  },
+  ar: {
+    "title": "على تردد الحب والمودة والرحمة",
+    "intro": [
+      "1- برمجة اللاوعي على المودة و الرحمة و على العلاقة الجميلة بين الزوجين علما ان غير المتزوجين يمكن أن يستعملوها و هذا يساعدهم على التخلص من جزء من البلوكات التي تمنع جذب علاقات الحب و دوامها بناءا على البرمجة اللاواعية الجديدة التي تحصل لهم.",
+      "2- شحن نواة الماء بطاقة القرآن الكريم و أسماء الله الحسنى و الرموز الطاقية و هو ما يجعلك تشرب ماءا حيا مشحونا بذبذبات رائعة تساعدك على التشافي و على أن تكون على تردد الحب و المودة و الرحمة"
+    ]
+  }
+};
 export const productTexts = {
   'bracelet-bazi': bazi,
   'collier-bazi': bazi,
@@ -812,7 +843,8 @@ export const productTexts = {
   'bouteille-verre': bouteilleVerre,
   'collier-cle': collierCle,
   'grenouille-fortune': grenouilleFortune,
-  'trophee-amour': tropheeAmour
+  'trophee-amour': tropheeAmour,
+  'bouteille-amour': bouteilleAmour
 };
 
 // A text that replaces the one above for one choice only, keyed on the catalogue's French value of that choice.

@@ -82,6 +82,27 @@ export const productPitch = {
   'trophee-amour': {
     fr: 'Deux cygnes en miroir doré dont les cous dessinent un cœur : un symbole d’amour durable pour la chambre ou le salon, chargé par le Reiki et le Saint Coran.',
     ar: 'بجعتان بلون ذهبي مرآوي تشكّل رقبتاهما قلبًا: رمز للحب الدائم لغرفة النوم أو مساحة المعيشة، مشحون بالريكي والقرآن الكريم.'
+  },
+  'bouteille-amour': {
+    fr: 'Une bouteille d’eau en verre d’un litre, imprimée de versets du Coran, des Beaux Noms d’Allah et de symboles : pour l’amour, la tendresse et l’harmonie du couple.',
+    ar: 'قارورة ماء من البلور بسعة لتر، عليها آيات قرآنية وأسماء الله الحسنى ورموز طاقية: للمودة والرحمة والعلاقة الجميلة بين الزوجين.'
+  },
+  // The four keyrings: Rayda's own sentence for each (its catalogue description), short enough to lead the page.
+  'porte-cles-amour': {
+    fr: 'Un porte-clés énergétique chargé, conçu pour programmer le subconscient à l’amour, à la tendresse, à la compassion et à une relation amoureuse durable.',
+    ar: 'حامل مفاتيح مشحون يبرمج اللاوعي على المودة و الرحمة و علاقة الحب الدائمة'
+  },
+  'porte-cles-chance': {
+    fr: 'Un porte-clés énergétique chargé, conçu pour programmer le subconscient à attirer la chance et à favoriser la fluidité et la facilité dans la vie.',
+    ar: 'حامل مفاتيح مشحون يبرمج اللاوعي على الحظ و التسهيل'
+  },
+  'porte-cles-voyage': {
+    fr: 'Un porte-clés énergétique chargé, conçu pour programmer le subconscient à faciliter les voyages et à favoriser les déplacements en toute fluidité.',
+    ar: 'حامل مفاتيح مشحون يبرمج اللاوعي على تسهيل السفر'
+  },
+  'porte-cles-protection': {
+    fr: 'Un porte-clés énergétique chargé, conçu pour programmer le subconscient à se protéger des énergies négatives et à renforcer son bouclier énergétique.',
+    ar: 'حامل مفاتيح مشحون يبرمج اللاوعي على الحماية من الطاقات السلبية و التدرع الطاقي'
   }
 };
 
