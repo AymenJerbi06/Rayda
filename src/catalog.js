@@ -2,15 +2,18 @@
   "use strict";
   // Source: organized Products/Catalogue Produits - Issolatej.xlsx.
   // Image files are copied from the numbered source folders without editing them.
-  // Seventeen products also lead with a lifestyle scene, <id>-ugc.jpg, made with CreateUGC from Rayda's own photo of
+  // Twenty-two products also lead with a lifestyle scene, <id>-ugc.jpg, made with CreateUGC from Rayda's own photo of
   // the piece (originals in "om Adem/UGC photos (CreateUGC)"); the product pages say so under the gallery. On the
   // bottle's scene the printed verses are Rayda's real print, laid in from her photo letter for letter, and the Feng
   // Shui coins in theirs are her real coins and cord, laid in from her photo.
   // Products with aiPhotos show, after that scene, photos made in ChatGPT from Rayda's own photos instead of her
   // photos: <id>-ai-<shot>.jpg (originals in "om Adem/ChatGPT photos (full size)"). Each entry is [shot, alt], and
   // variantImageIndex counts within aiPhotos. The product pages say so under the gallery.
-  // ownPhotos adds more of Rayda's own photos after those, by number: [n, alt] shows <id>-<nn>.jpg (21 November: her
-  // new BaZi necklaces and bracelets, and her photos of the learning necklaces).
+  // ownPhotos can add Rayda's own photos after those, by number: [n, alt] shows <id>-<nn>.jpg. No product uses it or
+  // photoCount any more: since 21 November every gallery shows only scenes and ChatGPT photos made from her photos (the
+  // user's request). Her photos stay in the folder as <id>-<nn>.jpg. On the love bottle, the four energy keyrings and
+  // the Feng Shui coins, the writing, print and coins in the new photos are hers: laid in from her photos, or checked
+  // against them stroke by stroke.
   function amount(min, max, confirmationRequired) {
     return min == null ? null : { min: min, max: max == null ? min : max, currency: "TND", confirmationRequired: !!confirmationRequired };
   }
@@ -46,10 +49,11 @@
     make({
       id: "bracelet-bazi", name: "Bracelet BaZi sur mesure", eyebrow: "Bracelet · création personnalisée", type: "jewelry", collections: ["creations-bazi", "bracelets"],
       price: amount(140, 180, true), availability: "made-to-order", custom: true, lifestyle: "Bracelet BaZi porté au poignet, à côté d’un verre de thé à la menthe",
-      aiPhotos: [["wrist", "Exemple de bracelet BaZi porté au poignet, avec sa breloque en pyrite"], ["flatlay", "Exemple de bracelet BaZi posé à plat sur du lin crème"], ["macro", "Gros plan sur les pierres et la pyrite d’un bracelet BaZi"], ["dish", "Exemple de bracelet BaZi dans une coupelle en céramique crème"]],
-      // Eight more bracelets made by Rayda, one photo each, sent on 21 November ("هاذم تو براسلايات بازي … خليهم مع التصاور").
-      ownPhotos: [[17, "Bracelet BaZi réalisé par Rayda, en perles bleues, jaunes, bleu clair et vertes, posé sur du lin près d’une tige de bambou"], [18, "Bracelet BaZi réalisé par Rayda, en perles roses, vertes, violettes et bleu clair, avec une pierre brute claire"], [19, "Bracelet BaZi réalisé par Rayda, en éclats orange et verts, avec des perles grises"], [20, "Bracelet BaZi réalisé par Rayda, en perles roses, bleues, grises et violettes, avec une pierre brute scintillante"],
-        [21, "Bracelet BaZi réalisé par Rayda, en perles vertes et roses, avec une pierre brute dorée entourée de fil doré"], [22, "Bracelet BaZi réalisé par Rayda, en éclats verts et orange, perles bleues et pierre brute claire, près de tiges de bambou"], [23, "Bracelet BaZi réalisé par Rayda, en éclats orange, perles roses et violettes, avec une pierre brute rose"], [24, "Bracelet BaZi réalisé par Rayda, en perles roses, violettes, vertes et noires, avec une pierre brute claire"]],
+      aiPhotos: [["wrist", "Exemple de bracelet BaZi porté au poignet, avec sa breloque en pyrite"], ["flatlay", "Exemple de bracelet BaZi posé à plat sur du lin crème"], ["macro", "Gros plan sur les pierres et la pyrite d’un bracelet BaZi"], ["dish", "Exemple de bracelet BaZi dans une coupelle en céramique crème"],
+        // Eight more bracelets made by Rayda (her photos of 21 November, "هاذم تو براسلايات بازي … خليهم مع التصاور"), each
+        // shown as a ChatGPT photo made from her photo of it.
+        ["modele-a", "Exemple de bracelet BaZi en perles bleues, jaunes, bleu clair et vertes, posé sur du lin crème"], ["modele-b", "Exemple de bracelet BaZi en perles blanches, vertes et violettes, avec une pierre brute claire"], ["modele-c", "Exemple de bracelet BaZi en éclats orange, verts et clairs, avec une pierre brune polie"], ["modele-d", "Exemple de bracelet BaZi en perles violettes, blanches et bleues, avec une pierre brute grise cerclée de fil argenté"],
+        ["modele-e", "Exemple de bracelet BaZi en perles vertes et blanches et éclats orange, avec une pierre brute dorée cerclée de fil doré"], ["modele-f", "Exemple de bracelet BaZi en éclats verts et rouges, perles bleues et pierre brute claire"], ["modele-g", "Exemple de bracelet BaZi en éclats orange, perles violettes et blanches, avec une pierre brute claire"], ["modele-h", "Exemple de bracelet BaZi en perles violettes, blanches, vertes et noires, avec une pierre brute claire"]],
       description: "Parce que chaque personne a une carte énergétique différente… une empreinte énergétique unique… une alchimie qui lui est propre, les accessoires BaZi — une création à laquelle je suis parvenue après des années d’expérience dans le domaine des pierres et des sciences de l’énergie — sont des pièces conçues de façon personnelle à partir de votre carte BaZi : on y analyse la composition de vos éléments, et ceux qui ont besoin d’être soutenus ou équilibrés, puis on choisit les composants de l’accessoire en fonction de ces données.",
       benefits: [
         { icon: "personalization", label: "Unique : composé selon votre propre carte BaZi" },
@@ -62,13 +66,13 @@
       missing: ["Composition exacte de la commande", "Tour de poignet précis", "Délai de fabrication", "Disponibilité"]
     }),
     // 21 November, her one change for the BaZi necklace: "نحب تعمل التصاور هاذم اختار وحدة منهم لابستها اللي في التصويرة".
-    // Her photos of three necklaces replace the earlier example (its scene and AI photos stay in the folder), and one of
-    // them, in blue beads with a rough stone, is shown worn first: made in ChatGPT from her photo.
+    // Her three new necklaces replace the earlier example (its scene and AI photos stay in the folder). One of them, in
+    // blue beads with a rough stone, is shown worn first; then each necklace laid flat. All four are ChatGPT photos made
+    // from her photos (collier-bazi-04…07.jpg, kept in the folder).
     make({
       id: "collier-bazi", name: "Collier BaZi complet", eyebrow: "Collier · création personnalisée", type: "jewelry", collections: ["creations-bazi", "colliers"],
       price: amount(320), availability: "made-to-order", custom: true,
-      aiPhotos: [["porte", "Collier BaZi en perles bleues avec une pierre brute scintillante, porté sur un haut en lin crème"]],
-      ownPhotos: [[4, "Collier BaZi réalisé par Rayda, en perles bleues avec une pierre brute scintillante, près d’un bracelet assorti"], [5, "Collier BaZi réalisé par Rayda, en perles roses, vertes et noires, avec un pendentif noir facetté"], [6, "Le même collier posé sur un tissu beige, près d’une tige de bambou"], [7, "Collier BaZi réalisé par Rayda, en perles multicolores, avec une pierre brute dorée entourée de fil doré"]],
+      aiPhotos: [["porte", "Collier BaZi en perles bleues avec une pierre brute scintillante, porté sur un haut en lin crème"], ["lapis", "Collier BaZi en perles bleues avec une pierre brute scintillante cerclée de fil argenté, posé à plat sur du lin crème"], ["rose", "Collier BaZi en perles roses, vertes et noires, avec un pendentif noir facetté, posé à plat sur du lin crème"], ["tourmaline", "Collier BaZi en perles roses, vertes et grises, avec une pierre brute dorée cerclée de fil doré, posé à plat sur du lin crème"]],
       description: "Parce que chaque personne a une carte énergétique différente… une empreinte énergétique unique… une alchimie qui lui est propre, les accessoires BaZi — une création à laquelle je suis parvenue après des années d’expérience dans le domaine des pierres et des sciences de l’énergie — sont des pièces conçues de façon personnelle à partir de votre carte BaZi : on y analyse la composition de vos éléments, et ceux qui ont besoin d’être soutenus ou équilibrés, puis on choisit les composants de l’accessoire en fonction de ces données.",
       benefits: [
         { icon: "personalization", label: "Composition unique selon votre lecture BaZi" },
@@ -111,7 +115,7 @@
     }),
     make({
       id: "porte-cles-arbre-vie", name: "Porte-clés Arbre de Vie", eyebrow: "Accessoire · arbre de vie", type: "accessory", collections: ["porte-cles"],
-      price: null, availability: "quote", custom: false, featured: false, photoCount: 1,
+      price: null, availability: "quote", custom: false, featured: false, aiPhotos: [["lin", "Porte-clés Arbre de Vie en fil argenté et perles de pierre, posé sur du lin crème"], ["sac", "Porte-clés Arbre de Vie accroché à l’anse d’un sac en toile crème"]],
       description: "Porte-clés Arbre de Vie en fil enroulé avec des perles colorées, tel qu’il apparaît sur la photographie fournie.",
       benefits: [
         { icon: "abundance", label: "Arbre de Vie, symbole d'ancrage et de croissance" },
@@ -188,7 +192,7 @@
     }),
     make({
       id: "pendentif-voiture-fleur", name: "Pendentif voiture · Fleur de Vie", eyebrow: "Accessoire voiture · doré", type: "car", collections: ["voiture"],
-      price: amount(80), availability: "quote", custom: false, photoCount: 2, lifestyle: "Pendentif Fleur de Vie suspendu au rétroviseur d’une voiture",
+      price: amount(80), availability: "quote", custom: false, aiPhotos: [], lifestyle: "Pendentif Fleur de Vie suspendu au rétroviseur d’une voiture",
       description: "Nous vous présentons le luxueux pendentif de voiture au symbole doré de la « Fleur de Vie » : un accessoire élégant, conçu avec soin pour apporter une touche de beauté exceptionnelle à votre voiture, et pour être en même temps une source de sérénité et d’harmonie énergétique pendant la conduite.",
       benefits: [
         { icon: "protection", label: "Pensé pour accompagner vos trajets sereinement" },
@@ -237,9 +241,9 @@
     make({
       id: "accessoires-apprentissage", name: "Accessoires Énergie d’apprentissage", eyebrow: "Bracelet ou collier · préparé pour vous", type: "jewelry", collections: ["apprentissage", "bracelets", "colliers"],
       price: amount(100, 130), availability: "made-to-order", custom: true, lifestyle: "Le bracelet et les deux colliers Énergie d’apprentissage posés sur un bureau d’étude, près d’un cahier ouvert",
-      aiPhotos: [["bracelet-wrist", "Bracelet Énergie d’apprentissage porté au poignet pendant une séance d’écriture"], ["chaine-neck", "Collier Énergie d’apprentissage sur chaîne dorée, porté"], ["cordon-desk", "Collier Énergie d’apprentissage sur cordon noir, posé sur un bureau près d’un cahier"]],
-      // Her own photos of the two necklaces, sent on 21 November ("بالنسبة لقلادة تفعيل عملية التعلم عندي زادة التصاور هاذم").
-      ownPhotos: [[1, "Collier Énergie d’apprentissage sur cordon noir, en perles violettes, bleu clair et bleues, près de tiges de bambou"], [2, "Collier Énergie d’apprentissage sur chaîne dorée, en perles violettes, bleu clair et bleues"]],
+      aiPhotos: [["bracelet-wrist", "Bracelet Énergie d’apprentissage porté au poignet pendant une séance d’écriture"], ["chaine-neck", "Collier Énergie d’apprentissage sur chaîne dorée, porté"], ["cordon-desk", "Collier Énergie d’apprentissage sur cordon noir, posé sur un bureau près d’un cahier"],
+        // Her own necklaces (her photos of 21 November), each as a ChatGPT photo made from her photo of it.
+        ["cordon-carnet", "Collier Énergie d’apprentissage sur cordon noir, en perles violettes, bleu clair et bleues, posé près d’un carnet"], ["chaine-carnet", "Collier Énergie d’apprentissage sur chaîne dorée, en perles violettes, bleu clair et bleues, posé près d’un carnet"]],
       description: "Cette collection s’appuie sur les fréquences des pierres précieuses, reconnues pour leur capacité à stimuler la perception et à apaiser les pensées qui s’emballent.",
       benefits: [
         { icon: "clarity", label: "Pensé pour soutenir la concentration pendant les études" },
@@ -258,7 +262,7 @@
     // lettering was wrong), then her own photos.
     make({
       id: "bouteille-verre", name: "Bouteille d’eau en verre", eyebrow: "Bouteille · verre, 1 litre", type: "accessory", collections: ["apprentissage"],
-      price: amount(55), availability: "quote", custom: false, photoCount: 3, photoAlt: "Bouteille d’eau en verre d’un litre, imprimée de versets du Coran et d’affirmations positives",
+      price: amount(55), availability: "quote", custom: false, aiPhotos: [],
       lifestyle: "Bouteille d’eau en verre posée sur un bureau d’étude, à côté d’un cahier ouvert et d’un crayon",
       description: "Cette bouteille réunit deux dimensions complémentaires :",
       benefits: [
@@ -274,7 +278,7 @@
     // confirm with her, so the choice is the length only. The scene shows the flowered key; her photos show both keys.
     make({
       id: "collier-cle", name: "Collier Clé", eyebrow: "Collier · acier inoxydable", type: "jewelry", collections: ["colliers"],
-      price: amount(45, 55), availability: "quote", custom: false, photoCount: 5, photoAlt: "Collier Clé doré en acier inoxydable, pendentif clé serti de petites pierres brillantes",
+      price: amount(45, 55), availability: "quote", custom: false, aiPhotos: [["grande-cle", "Collier Clé doré : la grande clé fleurie, sertie de petites pierres brillantes, posée sur du lin crème"], ["petite-cle", "Collier Clé doré : la petite clé trèfle, sertie de petites pierres brillantes, posée sur du lin crème"]],
       lifestyle: "Collier Clé porté sur un haut en lin crème à col rond",
       description: "Lorsque l’on comprend que tout est énergie, et que les symboles peuvent générer des fréquences subtiles et interagir avec notre inconscient, on réalise que la présence du pendentif en forme de clé à cet emplacement n’a rien d’anodin.",
       benefits: [
@@ -292,7 +296,7 @@
     // (CreateUGC invented the characters).
     make({
       id: "pieces-feng-shui", name: "Pièces chinoises Feng Shui", eyebrow: "Feng Shui · fil rouge", type: "decor", collections: ["objets-dores"],
-      price: amount(45), availability: "quote", custom: false, photoCount: 3, photoAlt: "Trois pièces chinoises Feng Shui nouées d’un fil rouge, près de tiges de bambou",
+      price: amount(45), availability: "quote", custom: false, aiPhotos: [["lin", "Les trois pièces chinoises nouées d’un fil rouge, posées sur du lin près de tiges de bambou"], ["console", "Les trois pièces chinoises nouées d’un fil rouge, posées sur une console en chêne près d’une coupelle"]],
       lifestyle: "Les trois pièces chinoises nouées d’un fil rouge posées sur une table en bois, près d’un vase de bambous",
       description: "Trois pièces chinoises nouées d’un fil rouge : un objet Feng Shui que Rayda propose pour l’abondance financière.",
       benefits: [
@@ -341,11 +345,14 @@
     }),
     // Her love bottle, "قارورة الحب" / "Bouteille de l’Amour", for her love collection (her messages of 20 and 21 November):
     // glass, 1 litre, 55 TND ("المادة :بلور / السعة :لتر / الثمن :55د"; "Matière : Verre / Contenance : 1 litre / Prix :
-    // 55 DT"). Its photos are the three she sent on 19 November, just after the trophy. It has no product type of its
-    // own, so it is found through her Amour collection and the whole Boutique.
+    // 55 DT"). She sent three photos of it on 19 November, just after the trophy (bouteille-amour-01…03.jpg, kept in the
+    // folder). The gallery is a CreateUGC scene and two ChatGPT photos of the plain bottle, with her real print laid onto
+    // its two visible faces from her photos. It has no product type of its own, so it is found through her Amour
+    // collection and the whole Boutique.
     make({
       id: "bouteille-amour", name: "Bouteille de l’Amour", eyebrow: "Bouteille · verre, 1 litre", type: "accessory", collections: [],
-      price: amount(55), availability: "quote", custom: false, photoCount: 3, photoAlt: "Bouteille de l’Amour en verre d’un litre, imprimée en rouge de versets du Coran et de symboles",
+      price: amount(55), availability: "quote", custom: false, lifestyle: "Bouteille de l’Amour remplie d’eau, imprimée en rouge de versets du Coran, posée sur une table près de deux verres et d’un bouquet de roses",
+      aiPhotos: [["chevet", "Bouteille de l’Amour posée sur une table de chevet, ses versets imprimés en rouge sur le verre"], ["table", "Bouteille de l’Amour posée sur une table en chêne, près d’un verre"]],
       description: "La Bouteille de l’Amour agit sur deux niveaux complémentaires :",
       benefits: [
         { icon: "love", label: "Pensée pour l’amour, la tendresse et l’harmonie au sein du couple" },
@@ -359,9 +366,13 @@
     // Her four charged keyrings (21 November), 30 TND each, with one sentence each in Arabic and in French. The love one
     // came with her love collection; the other three are "the rest of the products, after the love collection" ("هذه بقية
     // المنتجات … بعد مجموعة الحب"). Each photo came just before its text. The writing on each was read from her photos.
+    // Each gallery is a CreateUGC scene, then two ChatGPT photos (held by its ring, laid on linen), made from her photos
+    // (porte-cles-<nom>-01….jpg, kept in the folder). The scenes kept her writing; on the ChatGPT photos of the Chance and
+    // Voyage keyrings the verse under the gold leaf came out wrong, so that band was replaced with the scene's.
     make({
       id: "porte-cles-amour", name: "Porte-clés Amour", eyebrow: "Porte-clés énergétique · amour", type: "accessory", collections: ["porte-cles"],
-      price: amount(30), availability: "quote", custom: false, photoCount: 2, photoAlt: "Porte-clés Amour : deux cygnes dorés sur un disque blanc nacré, sous l’inscription « وجعل بينكم مودة ورحمة » et deux cœurs rouges",
+      price: amount(30), availability: "quote", custom: false, lifestyle: "Porte-clés Amour : deux cygnes dorés sous l’inscription « وجعل بينكم مودة ورحمة » et deux cœurs rouges, posé sur une console, près d’un bouquet de roses et d’une coupelle de clés",
+      aiPhotos: [["main", "Porte-clés Amour tenu par son anneau : deux cygnes dorés sous l’inscription « وجعل بينكم مودة ورحمة » et deux cœurs rouges sur un disque blanc nacré"], ["lin", "Porte-clés Amour posé sur du lin crème : deux cygnes dorés sous l’inscription « وجعل بينكم مودة ورحمة » et deux cœurs rouges sur un disque blanc nacré"]],
       description: "Un porte-clés énergétique chargé, conçu pour programmer le subconscient à l’amour, à la tendresse, à la compassion et à une relation amoureuse durable.",
       benefits: [
         { icon: "love", label: "Pensé pour l’amour, la tendresse et une relation amoureuse durable" },
@@ -373,7 +384,8 @@
     }),
     make({
       id: "porte-cles-chance", name: "Porte-clés Chance", eyebrow: "Porte-clés énergétique · chance", type: "accessory", collections: ["porte-cles"],
-      price: amount(30), availability: "quote", custom: false, photoCount: 2, photoAlt: "Porte-clés Chance : une croix ankh dorée sur un disque blanc nacré, entourée de versets en rouge",
+      price: amount(30), availability: "quote", custom: false, lifestyle: "Porte-clés Chance : une croix ankh dorée entourée de versets en rouge, posé sur un bureau, près d’un carnet et d’un thé à la menthe",
+      aiPhotos: [["main", "Porte-clés Chance tenu par son anneau : une croix ankh dorée entourée de versets en rouge sur un disque blanc nacré"], ["lin", "Porte-clés Chance posé sur du lin crème : une croix ankh dorée entourée de versets en rouge sur un disque blanc nacré"]],
       description: "Un porte-clés énergétique chargé, conçu pour programmer le subconscient à attirer la chance et à favoriser la fluidité et la facilité dans la vie.",
       benefits: [
         { icon: "abundance", label: "Pensé pour attirer la chance" },
@@ -385,7 +397,8 @@
     }),
     make({
       id: "porte-cles-voyage", name: "Porte-clés Voyage", eyebrow: "Porte-clés énergétique · voyage", type: "accessory", collections: ["porte-cles"],
-      price: amount(30), availability: "quote", custom: false, photoCount: 3, photoAlt: "Porte-clés Voyage : un globe et un avion dorés sur un disque blanc nacré, entourés de versets en rouge",
+      price: amount(30), availability: "quote", custom: false, lifestyle: "Porte-clés Voyage : un globe et un avion dorés entourés de versets en rouge, posé sur une table, près d’un chapeau de paille, de lunettes de soleil et d’un appareil photo",
+      aiPhotos: [["main", "Porte-clés Voyage tenu par son anneau : un globe et un avion dorés entourés de versets en rouge sur un disque blanc nacré"], ["lin", "Porte-clés Voyage posé sur du lin crème : un globe et un avion dorés entourés de versets en rouge sur un disque blanc nacré"]],
       description: "Un porte-clés énergétique chargé, conçu pour programmer le subconscient à faciliter les voyages et à favoriser les déplacements en toute fluidité.",
       benefits: [
         { icon: "calm", label: "Pensé pour faciliter les voyages et les déplacements" },
@@ -397,7 +410,8 @@
     }),
     make({
       id: "porte-cles-protection", name: "Porte-clés Protection", eyebrow: "Porte-clés énergétique · protection", type: "accessory", collections: ["porte-cles"],
-      price: amount(30), availability: "quote", custom: false, photoCount: 2, photoAlt: "Porte-clés Protection : une Fleur de Vie argentée cerclée d’or sur un disque blanc nacré, entre deux inscriptions en rouge",
+      price: amount(30), availability: "quote", custom: false, lifestyle: "Porte-clés Protection : une Fleur de Vie argentée cerclée d’or entre deux inscriptions en rouge, posé sur une console d’entrée, avec une clé de maison",
+      aiPhotos: [["main", "Porte-clés Protection tenu par son anneau : une Fleur de Vie argentée cerclée d’or entre deux inscriptions en rouge sur un disque blanc nacré"], ["lin", "Porte-clés Protection posé sur du lin crème : une Fleur de Vie argentée cerclée d’or entre deux inscriptions en rouge sur un disque blanc nacré"]],
       description: "Un porte-clés énergétique chargé, conçu pour programmer le subconscient à se protéger des énergies négatives et à renforcer son bouclier énergétique.",
       benefits: [
         { icon: "protection", label: "Pensé pour se protéger des énergies négatives" },

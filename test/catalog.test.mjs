@@ -39,12 +39,12 @@ test("every product photo is a local imported asset", async () => {
 test("the active storefront uses Issolatej and the organized catalog", () => {
   assert.equal(configContext.window.STORE_CONFIG.previewStage, false);
   assert.equal(configContext.window.STORE_CONFIG.brand.name, "Issolatej");
-  // 17 lifestyle scenes (one leading each of 17 products), 56 ChatGPT photos made from Rayda's photos for 14 products
-  // (since 21 November the BaZi necklace has one, her new necklace worn, and no scene), and Rayda's own 40 photos: the
-  // Arbre de Vie keyring and the Fleur de Vie pendant (3), the bottle, the key necklace and the Feng Shui coins (11, 15
-  // November), and since 21 November the BaZi bracelets (8) and necklaces (4), the learning necklaces (2), the love
-  // bottle (3) and the four energy keyrings (9).
-  assert.equal(catalog.products.reduce((count, product) => count + product.images.length, 0), 113);
+  // 22 lifestyle scenes (one leading each of 22 products) and 85 ChatGPT photos made from Rayda's photos, for 22
+  // products. Since 21 November no gallery shows her photos as she sent them (the user's request): they stay in the
+  // folder as references. The BaZi necklace and the Arbre de Vie keyring have no scene; the glass bottle and the Fleur
+  // de Vie car pendant have only their scene.
+  assert.equal(catalog.products.reduce((count, product) => count + product.images.length, 0), 107);
+  for (const product of catalog.products) for (const image of product.images) assert.match(image.src, /-ugc\.jpg$|-ai-[a-z-]+\.jpg$/, image.src);
 });
 test("the build respects the selected presentation mode and excludes review screenshots", async () => {
   const dist = path.join(root, "dist");
@@ -304,24 +304,20 @@ test("product photos keep their size and crop: the main photo is shown whole and
   assert.match(rule, /border-radius:/);
   assert.doesNotMatch(rule, /object-fit|padding|transform|scale/);
 });
-test("AI photos follow each lifestyle scene, Rayda's own photos come after them, colours show their own photo, and the gallery says so", async () => {
+test("AI photos follow each lifestyle scene instead of Rayda's photos, colours show their own photo, and the gallery says so", async () => {
   const ai = catalog.products.filter((p) => p.images.some((image) => image.src.includes('-ai-')));
-  assert.equal(ai.length, 14);
+  assert.equal(ai.length, 22);
   for (const p of ai) {
-    // The lifestyle scene first (the BaZi necklace has none since 21 November: it opens with her new necklace worn),
-    // then the ChatGPT photos, then her own photos where she sent new ones (21 November).
+    // The lifestyle scene first (the BaZi necklace and the Arbre de Vie keyring have none), then only ChatGPT photos.
     const scene = p.images[0].src.endsWith('-ugc.jpg');
-    assert.ok(scene || p.id === 'collier-bazi', p.id + ' keeps its lifestyle photo first');
+    assert.ok(scene || ['collier-bazi', 'porte-cles-arbre-vie'].includes(p.id), p.id + ' keeps its lifestyle photo first');
     if (scene) assert.equal(p.coverImageIndex, 0);
-    const rest = p.images.slice(scene ? 1 : 0);
-    const own = rest.findIndex((image) => !image.src.includes('-ai-'));
-    const made = own < 0 ? rest : rest.slice(0, own);
-    assert.ok(made.length > 0, p.id);
-    for (const image of made) assert.match(image.src, new RegExp('/' + p.id + '-ai-[a-z-]+\\.jpg$'));
-    if (own > -1) for (const image of rest.slice(own)) assert.match(image.src, new RegExp('/' + p.id + '-\\d{2}\\.jpg$'));
-    for (const image of p.images) assert.ok(image.alt.length > 10, image.src);
+    for (const image of p.images.slice(scene ? 1 : 0)) {
+      assert.match(image.src, new RegExp('/' + p.id + '-ai-[a-z-]+\\.jpg$'));
+      assert.ok(image.alt.length > 10);
+    }
   }
-  assert.equal(ai.reduce((n, p) => n + p.images.filter((image) => image.src.includes('-ai-')).length, 0), 56);
+  assert.equal(ai.reduce((n, p) => n + p.images.filter((image) => image.src.includes('-ai-')).length, 0), 85);
   // Rayda sells the wallet in green, yellow and red only: no pink photo, and the group photo shows three.
   assert.ok(!catalog.products.find((p) => p.id === 'portefeuille-hafidha').images.some((image) => /rose|ai-couleurs/.test(image.src)));
   // The wallet's colour is chosen from the client's birth date, so it has no colour buttons.
@@ -332,13 +328,14 @@ test("AI photos follow each lifestyle scene, Rayda's own photos come after them,
   assert.match(amour.images[amour.variantImageIndex['Quartz rose uni · 100 TND']].src, /-ai-uni-wrist\.jpg$/);
   assert.match(amour.images[amour.variantImageIndex['Composition avec cœur · tarif à confirmer']].src, /-ai-coeur-wrist\.jpg$/);
   if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
-  // The bracelets' gallery: the scene and the ChatGPT photos first, then her own photos, and it says which are which.
   const fr = await readFile(path.join(root, 'dist/products/bracelet-bazi/index.html'), 'utf8');
-  assert.match(fr, /Les premières photos sont des mises en scène créées à partir des photos de Rayda\s; les suivantes sont ses propres photos\. Votre pièce est composée pour vous/);
+  assert.match(fr, /Les photos sont des mises en scène créées à partir des photos de Rayda\. Votre pièce est composée pour vous/);
   const ar = await readFile(path.join(root, 'dist/ar/products/bracelet-bazi/index.html'), 'utf8');
-  assert.match(ar, /الصور الأولى مشاهد مُعَدّة انطلاقًا من صور رايدا، وما يليها صورها الخاصة\./);
-  const keyring = await readFile(path.join(root, 'dist/products/porte-cles-arbre-vie/index.html'), 'utf8');
-  assert.doesNotMatch(keyring, /mises en scène/);
+  assert.match(ar, /الصور مشاهد مُعَدّة انطلاقًا من صور رايدا\./);
+  // No page says that some photos are her own: none is shown as she sent it.
+  for (const p of catalog.products) for (const dir of ['products/', 'ar/products/']) {
+    assert.doesNotMatch(await readFile(path.join(root, 'dist', dir + p.slug, 'index.html'), 'utf8'), /ses propres photos|صورها الخاصة/, dir + p.slug);
+  }
 });
 test("Rayda's notes: wallet name and price, her name in Arabic, no promised call or money, and the checkout questions", async () => {
   const wallet = catalog.products.find((p) => p.id === 'portefeuille-hafidha');
@@ -506,7 +503,7 @@ test("paths: the home page and the Boutique open with Rayda's collections, each 
   assert.ok(pathsAr.etudes.description.startsWith('مجموعة التألق العلمي'));
   assert.ok(pathsAr.abondance.description.startsWith('مجموعة الوفرة'));
 });
-test("the bottle, the key necklace and the Feng Shui coins: her prices, her own texts, a scene, then her own photos", async () => {
+test("the bottle, the key necklace and the Feng Shui coins: her prices, her own texts, a scene, then ChatGPT photos", async () => {
   const { priceLabel, priceLabelAr } = await import('../src/commerce-core.js');
   const byId = (id) => catalog.products.find((p) => p.id === id);
   const bottle = byId('bouteille-verre'), key = byId('collier-cle'), coins = byId('pieces-feng-shui');
@@ -518,12 +515,13 @@ test("the bottle, the key necklace and the Feng Shui coins: her prices, her own 
   assert.equal(priceLabel(coins), '45 TND');
   for (const p of [bottle, key, coins]) {
     assert.equal(p.custom, false, p.id);
-    // A lifestyle scene first (the cover), then Rayda's own photos, as she sent them: <id>-01.jpg and on.
+    // A lifestyle scene first (the cover), then ChatGPT photos made from her photos (21 November). The bottle has
+    // only its scene, which carries her real print.
     assert.match(p.images[0].src, new RegExp('/organized/' + p.id + '-ugc\\.jpg$'), p.id);
     assert.equal(p.coverImageIndex, 0);
-    assert.ok(p.images.slice(1).every((image) => new RegExp('/organized/' + p.id + '-0\\d\\.jpg$').test(image.src)), p.id);
+    assert.ok(p.images.slice(1).every((image) => new RegExp('/organized/' + p.id + '-ai-[a-z-]+\\.jpg$').test(image.src)), p.id);
   }
-  assert.deepEqual([bottle.images.length, key.images.length, coins.images.length], [4, 6, 4]);
+  assert.deepEqual([bottle.images.length, key.images.length, coins.images.length], [1, 3, 3]);
   assert.ok(catalog.collections.find((c) => c.slug === 'apprentissage').productIds.includes('bouteille-verre'));
   assert.ok(catalog.collections.find((c) => c.slug === 'colliers').productIds.includes('collier-cle'));
   assert.ok(catalog.collections.find((c) => c.slug === 'objets-dores').productIds.includes('pieces-feng-shui'));
@@ -546,8 +544,8 @@ test("the bottle, the key necklace and the Feng Shui coins: her prices, her own 
   for (const [file, texts] of checks) {
     const html = await page(file);
     for (const text of texts) assert.ok(html.includes(text), file + ': ' + text);
-    // The gallery says that only the first photo is a staged scene (her real photos follow).
-    assert.match(html, file.startsWith('ar/') ? /الصورة الأولى مشهد مُعَدّ انطلاقًا من صور رايدا\./ : /La première photo est une mise en scène créée à partir des photos de Rayda\./, file);
+    // The gallery says its photos are staged scenes (the bottle's single photo: "La photo est une mise en scène…").
+    assert.match(html, file.startsWith('ar/') ? /(الصور مشاهد مُعَدّة|الصورة مشهد مُعَدّ) انطلاقًا من صور رايدا\./ : /(Les photos sont des mises en scène créées|La photo est une mise en scène créée) à partir des photos de Rayda\./, file);
   }
 });
 test("the money frog and the love trophy: her prices, her texts in both languages, a scene and ChatGPT photos, her collections", async () => {
@@ -589,8 +587,9 @@ test("the money frog and the love trophy: her prices, her texts in both language
     assert.match(html, file.startsWith('ar/') ? /الصور مشاهد مُعَدّة انطلاقًا من صور رايدا\./ : /Les photos sont des mises en scène créées à partir des photos de Rayda\./, file);
     assert.doesNotMatch(html, /s-gallery-single/, file);
   }
-  // A piece with a single photo (the Arbre de Vie keyring) shows no arrows, counter or thumbnails.
-  for (const file of ['products/porte-cles-arbre-vie', 'ar/products/porte-cles-arbre-vie']) {
+  // A piece with a single photo (the glass bottle and the Fleur de Vie car pendant, each with its scene only) shows no
+  // arrows, counter or thumbnails.
+  for (const file of ['products/bouteille-verre', 'ar/products/bouteille-verre', 'products/pendentif-voiture-fleur', 'ar/products/pendentif-voiture-fleur']) {
     assert.match(await page(file), /class="s-gallery s-gallery-single"/, file);
   }
   // Her love collection by her name, opening with the trophy, in both languages (the love bottle and the Amour keyring
@@ -601,19 +600,20 @@ test("the money frog and the love trophy: her prices, her texts in both language
     assert.deepEqual([...html.matchAll(/data-product-card="([^"]+)"/g)].map((m) => m[1]), ['trophee-amour', 'bouteille-amour', 'porte-cles-amour', 'bracelet-amour'], file);
   }
 });
-test("the love bottle and the four energy keyrings: her prices, her texts word for word, her own photos; her new BaZi and learning photos", async () => {
+test("the love bottle and the four energy keyrings: her prices, her texts word for word, a scene and ChatGPT photos; her new BaZi and learning pieces", async () => {
   const { priceLabel, priceLabelAr } = await import('../src/commerce-core.js');
   const { productTexts } = await import('../src/product-texts.mjs');
   const { productPitch } = await import('../src/product-pitch.mjs');
   const { productsAr } = await import('../src/catalog-ar.mjs');
   const byId = (id) => catalog.products.find((p) => p.id === id);
   const files = (p) => [...p.images].map((image) => image.src.split('/').pop());
-  // The love bottle ("قارورة الحب"): glass, one litre, 55 TND, her text in both languages, her three photos.
+  // The love bottle ("قارورة الحب"): glass, one litre, 55 TND, her text in both languages; a scene and two ChatGPT
+  // photos, with her real print laid onto the bottle from her photos.
   const bottle = byId('bouteille-amour');
   assert.equal(priceLabel(bottle), '55 TND');
   assert.equal(priceLabelAr(bottle), '55 د.ت');
   assert.equal(bottle.custom, false);
-  assert.deepEqual(files(bottle), ['bouteille-amour-01.jpg', 'bouteille-amour-02.jpg', 'bouteille-amour-03.jpg']);
+  assert.deepEqual(files(bottle), ['bouteille-amour-ugc.jpg', 'bouteille-amour-ai-chevet.jpg', 'bouteille-amour-ai-table.jpg']);
   assert.ok(bottle.details.includes('Matière : verre') && bottle.details.includes('Contenance : 1 litre'));
   assert.ok(productsAr['bouteille-amour'].details.includes('المادة: بلور') && productsAr['bouteille-amour'].details.includes('السعة: لتر'));
   assert.deepEqual(productTexts['bouteille-amour'].fr.sections.map((section) => section.title), ['1. La programmation du subconscient', '2. La dynamisation énergétique de l’eau']);
@@ -631,7 +631,7 @@ test("the love bottle and the four energy keyrings: her prices, her texts word f
     assert.equal(priceLabel(k), '30 TND', id);
     assert.equal(priceLabelAr(k), '30 د.ت', id);
     assert.equal(k.custom, false, id);
-    assert.ok(k.images.length >= 2 && files(k).every((file, i) => file === id + '-0' + (i + 1) + '.jpg'), id);
+    assert.deepEqual(files(k), [id + '-ugc.jpg', id + '-ai-main.jpg', id + '-ai-lin.jpg'], id);
     assert.equal(productsAr[id].description, ar, id);
     assert.equal(productPitch[id].ar, ar, id);
     assert.equal(productPitch[id].fr, k.description, id);
@@ -643,11 +643,11 @@ test("the love bottle and the four energy keyrings: her prices, her texts word f
   // They join the keyring collection; her love collection has the bottle and the Amour keyring after the trophy.
   assert.deepEqual([...catalog.collections.find((c) => c.slug === 'porte-cles').productIds], ['porte-cles-pierre', 'porte-cles-arbre-vie', ...Object.keys(keyrings)]);
   assert.deepEqual([...catalog.paths.find((p) => p.slug === 'amour').productIds], ['trophee-amour', 'bouteille-amour', 'porte-cles-amour', 'bracelet-amour']);
-  // Her new photos (21 November): the BaZi necklace opens with her new necklace worn (ChatGPT, from her photo), then her
-  // four necklaces; the bracelets and the learning accessories end with her own photos.
-  assert.deepEqual(files(byId('collier-bazi')), ['collier-bazi-ai-porte.jpg', 'collier-bazi-04.jpg', 'collier-bazi-05.jpg', 'collier-bazi-06.jpg', 'collier-bazi-07.jpg']);
-  assert.deepEqual(files(byId('bracelet-bazi')).slice(-8), [17, 18, 19, 20, 21, 22, 23, 24].map((n) => 'bracelet-bazi-' + n + '.jpg'));
-  assert.deepEqual(files(byId('accessoires-apprentissage')).slice(-2), ['accessoires-apprentissage-01.jpg', 'accessoires-apprentissage-02.jpg']);
+  // Her new pieces (21 November), all as ChatGPT photos made from her photos: the BaZi necklace opens with her new
+  // necklace worn, then her three necklaces laid flat; eight more bracelets; her two learning necklaces.
+  assert.deepEqual(files(byId('collier-bazi')), ['collier-bazi-ai-porte.jpg', 'collier-bazi-ai-lapis.jpg', 'collier-bazi-ai-rose.jpg', 'collier-bazi-ai-tourmaline.jpg']);
+  assert.deepEqual(files(byId('bracelet-bazi')).slice(-8), [...'abcdefgh'].map((l) => 'bracelet-bazi-ai-modele-' + l + '.jpg'));
+  assert.deepEqual(files(byId('accessoires-apprentissage')).slice(-2), ['accessoires-apprentissage-ai-cordon-carnet.jpg', 'accessoires-apprentissage-ai-chaine-carnet.jpg']);
   if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
   const page = (p) => readFile(path.join(root, 'dist', p, 'index.html'), 'utf8');
   const checks = [
@@ -661,14 +661,20 @@ test("the love bottle and the four energy keyrings: her prices, her texts word f
   for (const [file, texts] of checks) {
     const html = await page(file);
     for (const text of texts) assert.ok(html.includes(text), file + ': ' + text);
-    // Her own photos only: no line about staged scenes, and the gallery keeps its arrows (two photos or more).
-    assert.doesNotMatch(html, /mises? en scène|مشاهد مُعَدّة|مشهد مُعَدّ/, file);
+    // The gallery says its photos are staged scenes made from her photos, and keeps its arrows (three photos).
+    assert.match(html, file.startsWith('ar/') ? /الصور مشاهد مُعَدّة انطلاقًا من صور رايدا\./ : /Les photos sont des mises en scène créées à partir des photos de Rayda\./, file);
     assert.doesNotMatch(html, /s-gallery-single/, file);
   }
-  // A gallery that opens with ChatGPT photos and goes on with her own says which are which.
-  assert.match(await page('products/collier-bazi'), /La première photo est une mise en scène créée à partir des photos de Rayda\s; les suivantes sont ses propres photos\. Votre pièce est composée pour vous/);
-  assert.match(await page('ar/products/collier-bazi'), /الصورة الأولى مشهد مُعَدّ انطلاقًا من صور رايدا، وما يليها صورها الخاصة\./);
-  assert.match(await page('products/accessoires-apprentissage'), /Les premières photos sont des mises en scène créées à partir des photos de Rayda\s; les suivantes sont ses propres photos\. Votre pièce est préparée pour vous/);
+  // Personalised pieces add that the buyer's piece can differ from the examples.
+  assert.match(await page('products/collier-bazi'), /Les photos sont des mises en scène créées à partir des photos de Rayda\. Votre pièce est composée pour vous/);
+  assert.match(await page('ar/products/collier-bazi'), /الصور مشاهد مُعَدّة انطلاقًا من صور رايدا\. تُركَّب قطعتكم/);
+  assert.match(await page('products/accessoires-apprentissage'), /Les photos sont des mises en scène créées à partir des photos de Rayda\. Votre pièce est préparée pour vous/);
+  // The Accompagnement page shows the new necklace worn, not the earlier example photo.
+  for (const file of ['accompagnement', 'ar/accompagnement']) {
+    const html = await page(file);
+    assert.ok(html.includes('/assets/products/organized/collier-bazi-ai-porte.jpg'), file);
+    assert.doesNotMatch(html, /collier-bazi-01\.jpg/, file);
+  }
   // The keyring pages show the four new keyrings after the stone and Arbre de Vie keyrings, in French and in Arabic.
   for (const file of ['collections/porte-cles', 'ar/collections/porte-cles']) {
     const cards = [...(await page(file)).matchAll(/data-product-card="([^"]+)"/g)].map((m) => m[1]);

@@ -1,5 +1,7 @@
 # The love bottle, the four energy keyrings and Rayda's new BaZi photos — 21 November 2026
 
+> **Changed the same evening:** the galleries no longer show Rayda's photos as she sent them. See `NO_RAW_PHOTOS_UPDATE.md`.
+
 Source: Rayda's WhatsApp messages of 20 and 21 November, sent by the user as screenshots, with her photos. The user also pasted her full French text for the bottle.
 
 ## What changed
