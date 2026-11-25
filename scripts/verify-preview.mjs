@@ -5,7 +5,7 @@ const root = new URL('../', import.meta.url);
 const context = { window: {} };
 vm.runInNewContext(await readFile(new URL('src/catalog.js', root), 'utf8'), context);
 const catalog = context.window.STORE_CATALOG;
-const pages = ['/', '/a-propos/', '/accompagnement/', '/contact/', '/checkout/',
+const pages = ['/', '/ar/', '/home.css', '/src/home.js', '/a-propos/', '/accompagnement/', '/contact/', '/checkout/',
   '/coaching/', '/coaching/paiement/', '/coaching/confirmation/', '/formations/', '/ar/coaching/', '/ar/formations/', '/admin/coaching/', '/admin/formations/',
   ...catalog.collections.map(c => '/collections/' + c.slug + '/'),
   ...catalog.products.map(p => '/products/' + p.slug + '/')];

@@ -2,7 +2,7 @@ import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 const root = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-for (const file of ["src/site-config.js", "src/preview-config.js", "src/catalog.js", "src/demo-catalog.js", "src/homepage.js", "src/app.js", "src/guidance.js", "src/guidance-pages.mjs", "src/build-guidance.mjs", "src/commerce-core.js", "src/commerce.js", "src/ux.js", "src/header.js", "src/leaf.js", "src/coaching-core.js", "src/coaching-store.js", "src/coaching.js", "src/admin-coaching.js", "src/admin.js", "src/admin-pages.mjs", "src/coaching-pages.mjs", "src/leaf-art.mjs", "src/courses.mjs", "src/shop-pages.mjs", "src/shop-pages-ar.mjs", "src/reviews.mjs", "src/review-captures.mjs", "build.mjs"]) {
+for (const file of ["src/site-config.js", "src/preview-config.js", "src/catalog.js", "src/demo-catalog.js", "src/homepage.js", "src/app.js", "src/guidance.js", "src/guidance-pages.mjs", "src/build-guidance.mjs", "src/commerce-core.js", "src/commerce.js", "src/ux.js", "src/header.js", "src/leaf.js", "src/home.js", "src/home-chapters.mjs", "src/coaching-core.js", "src/coaching-store.js", "src/coaching.js", "src/admin-coaching.js", "src/admin.js", "src/admin-pages.mjs", "src/coaching-pages.mjs", "src/leaf-art.mjs", "src/courses.mjs", "src/shop-pages.mjs", "src/shop-pages-ar.mjs", "src/reviews.mjs", "src/review-captures.mjs", "build.mjs"]) {
   const result = spawnSync(process.execPath, ["--check", path.join(root, file)], { stdio: "inherit" });
   if (result.status !== 0) process.exit(result.status || 1);
 }

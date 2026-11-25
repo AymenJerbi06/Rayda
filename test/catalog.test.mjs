@@ -114,11 +114,29 @@ test("the opening hero and its animation hooks are preserved; only the welcome p
 test("homepage carries the full brand narrative with illustrated categories and real product photos in the shop", async () => {
   const home = await readFile(path.join(root,'dist/index.html'),'utf8');
   const main = home.match(/<main[^>]*>([\s\S]*?)<\/main>/)[1];
-  // Hero, paths, products, approach intro, pillars, Rayda's bio, coaching and courses (24 November 2026), shifts/benefits,
-  // testimonial teaser.
-  assert.equal((main.match(/<section /g)||[]).length,9);
-  assert.equal((main.match(/class="s-category[" ]/g)||[]).length,8);
-  assert.doesNotMatch(main,/assets\/products\//);
+  // The hero, then five chapters, each about one thing (24 November 2026, night): the shop, coaching and courses,
+  // Rayda and her method, the clients' words, how to order. A bar of chips points at each of them, in order.
+  const chapters = ['boutique','coaching','rayda','avis','commander'];
+  for (const [page, words] of [[main, ['Je suis Raida Ghrab, chercheuse en sciences énergétiques','Une lecture unique à chaque personne','Des traditions anciennes, pensées pour aujourd’hui','Composer pour vous, pas pour tout le monde.','Livraison en Tunisie pour 7 TND, paiement à la livraison.']],
+    [(await readFile(path.join(root,'dist/ar/index.html'),'utf8')).match(/<main[^>]*>([\s\S]*?)<\/main>/)[1], ['رايدا الغراب باحثة في علوم الطاقة','قراءة فريدة لكل شخص','تقاليد قديمة، بروح اليوم','نُركّب من أجلكم، لا من أجل الجميع.','التوصيل في تونس بـ7 د.ت، والدفع عند الاستلام.']]]) {
+    assert.equal((page.match(/<section /g)||[]).length,6);
+    assert.deepEqual([...page.matchAll(/<section class="[^"]*h-chapter[^"]*" id="([a-z]+)"/g)].map(m=>m[1]),chapters);
+    assert.deepEqual([...page.matchAll(/class="h-chip" href="#([a-z]+)"/g)].map(m=>m[1]),chapters);
+    // The shop's two ways in, under the homepage's older addresses: the eight groups (#creations), the three paths (#chemins).
+    assert.equal((page.match(/class="s-category[" ]/g)||[]).length,8);
+    assert.match(page,/id="creations" role="tabpanel"/);
+    assert.match(page,/id="chemins" role="tabpanel"/);
+    assert.equal((page.match(/class="g-path"/g)||[]).length,3);
+    // All fifteen messages, each with its screenshot button; Rayda's words, the two pillars and the delivery terms kept.
+    assert.equal((page.match(/class="h-review" data-review/g)||[]).length,15);
+    assert.equal((page.match(/class="g-capture-link"/g)||[]).length,15);
+    for (const text of words) assert.ok(page.includes(text),text);
+    assert.doesNotMatch(page,/assets\/products\//);
+  }
+  // Only the homepage loads its chapters' style and script.
+  assert.match(home,/<link rel="stylesheet" href="\/home\.css" \/>/);
+  assert.match(home,/<script defer src="\/src\/home\.js"><\/script>/);
+  assert.doesNotMatch(await readFile(path.join(root,'dist/a-propos/index.html'),'utf8'),/home\.css|src\/home\.js/);
   // One family photo per group (21 November 2026): every piece of the group side by side.
   for (const name of ['bracelets','colliers','porte-cles','portefeuilles','objets-dores','bouteilles','voiture','livres']) {
     assert.ok(home.includes('/assets/categories/groupe-'+name+'.webp'), name);
@@ -242,10 +260,11 @@ test("each review opens its real screenshot: one button per review, with profile
   assert.equal((fr.match(/Les photos de profil et le prénom de sa fille sont floutés\./g) || []).length, 1);
   assert.equal((ar.match(/صور الملف الشخصي مموّهة\./g) || []).length, 14);
   assert.equal((ar.match(/صور الملف الشخصي واسم ابنتها مموّهة\./g) || []).length, 1);
-  // The homepage's message and the excerpts on the BaZi bracelet and necklace pages have their button too.
-  for (const [file, id] of [['index.html', 'sihem-calme'], ['ar/index.html', 'sihem-calme'], ['products/bracelet-bazi/index.html', 'nadia-bracelet'], ['ar/products/bracelet-bazi/index.html', 'nadia-bracelet'], ['products/collier-bazi/index.html', 'ichraf-collier'], ['ar/products/collier-bazi/index.html', 'ichraf-collier']]) {
+  // The homepage's messages (all fifteen since 24 November 2026, night, one at a time) and the excerpts on the BaZi
+  // bracelet and necklace pages have their button too.
+  for (const [file, id, count] of [['index.html', 'sihem-calme', 15], ['ar/index.html', 'sihem-calme', 15], ['products/bracelet-bazi/index.html', 'nadia-bracelet', 1], ['ar/products/bracelet-bazi/index.html', 'nadia-bracelet', 1], ['products/collier-bazi/index.html', 'ichraf-collier', 1], ['ar/products/collier-bazi/index.html', 'ichraf-collier', 1]]) {
     const html = await readFile(path.join(root, 'dist', file), 'utf8');
-    assert.equal((html.match(/class="g-capture-link"/g) || []).length, 1, file);
+    assert.equal((html.match(/class="g-capture-link"/g) || []).length, count, file);
     assert.ok(html.includes(`<a class="g-capture-link" href="${captureSrc(id)}"`), file);
     assert.match(html, /<script defer src="\/src\/ux\.js">/, file);
   }
@@ -411,7 +430,7 @@ test("Rayda's notes: wallet name and price, her name in Arabic, no promised call
   for (const file of ['dist/ar/index.html', 'dist/ar/checkout/index.html', 'dist/ar/products/bracelet-bazi/index.html', 'dist/products/bracelet-bazi/index.html', 'dist/checkout/index.html']) {
     const html = await readFile(path.join(root, file), 'utf8');
     // Her name ends in alif; the only "رايدة" left is inside a client's own message, quoted word for word.
-    const stray = (html.match(/[^<>]*رايدة[^<>]*/g) || []).filter((text) => !reviews.includes(text.trim().slice(0, 30)));
+    const stray = (html.match(/[^<>]*رايدة[^<>]*/g) || []).filter((text) => !reviews.includes(text.trim().replace(/^«\s*/, '').slice(0, 30)));
     assert.deepEqual(stray, [], file);
     assert.doesNotMatch(html, /Rayda vous appelle|Rayda vous recontacte|تتصل بكم رايد|تتواصل رايد/, file);
   }
@@ -459,9 +478,9 @@ test("motion.css and motion.js load last on every page, respect reduced motion a
 test("Rayda's welcome and who-is texts lead the home pages, in French and in Arabic", async () => {
   if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
   const fr = await readFile(path.join(root, 'dist/index.html'), 'utf8');
-  for (const text of ['Votre voyage vers la meilleure version de vous-même commence ici.', '<h2>Qui est Rayda\u00a0?</h2>', '<blockquote>Je suis Raida Ghrab, chercheuse en sciences énergétiques, en programmation du subconscient et Grand Maître en Reiki de l’Argent.</blockquote>', 'fondatrice de la marque I$$OLATEJ depuis 2017']) assert.ok(fr.includes(text), text);
+  for (const text of ['Votre voyage vers la meilleure version de vous-même commence ici.', '<h2 id="h-rayda-title">Qui est Rayda\u00a0?</h2>', '<blockquote>Je suis Raida Ghrab, chercheuse en sciences énergétiques, en programmation du subconscient et Grand Maître en Reiki de l’Argent.</blockquote>', 'fondatrice de la marque I$$OLATEJ depuis 2017']) assert.ok(fr.includes(text), text);
   const ar = await readFile(path.join(root, 'dist/ar/index.html'), 'utf8');
-  for (const text of ['ودع رحلة التحول الإيجابي تبدأ من هنا.', '<h2>من هي رايدا؟</h2>', '<blockquote>رايدا الغراب باحثة في علوم الطاقة و برمجة اللاوعي و جراند ماستر في ريكي المال</blockquote>', 'من بين رسائلي في الحياة مساعدتك على تطوير نسختك.']) assert.ok(ar.includes(text), text);
+  for (const text of ['ودع رحلة التحول الإيجابي تبدأ من هنا.', '<h2 id="h-rayda-title">من هي رايدا؟</h2>', '<blockquote>رايدا الغراب باحثة في علوم الطاقة و برمجة اللاوعي و جراند ماستر في ريكي المال</blockquote>', 'من بين رسائلي في الحياة مساعدتك على تطوير نسختك.']) assert.ok(ar.includes(text), text);
   // The old bio paragraphs are gone, replaced by her own words.
   assert.doesNotMatch(fr, /quatre mots qu’elle porte comme une signature/);
 });
@@ -538,17 +557,23 @@ test("paths: the home page and the Boutique open with Rayda's collections, each 
     assert.ok(pathsAr[p.slug]?.name && pathsAr[p.slug].summary && pathsAr[p.slug].description, p.slug);
   }
   if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
-  // Before the product types: right after the welcome on the home pages, at the top of the Boutique.
+  // At the top of the Boutique, before the product types. On the home pages (since 24 November 2026, night) they are
+  // the first chapter's second way in, "Par besoin", beside the product types ("Par famille").
   for (const [file, prefix] of [['dist/index.html', ''], ['dist/collections/all/index.html', ''], ['dist/ar/index.html', '/ar'], ['dist/ar/boutique/index.html', '/ar']]) {
     const main = (await readFile(path.join(root, file), 'utf8')).match(/<main[^>]*>([\s\S]*?)<\/main>/)[1];
-    const at = main.indexOf('<section class="g-paths" id="chemins"');
-    assert.ok(at > -1 && at < main.indexOf('class="s-category-grid"'), file);
+    if (file.endsWith('dist/index.html') || file.endsWith('ar/index.html')) {
+      const shop = main.indexOf('<section class="s-home-categories h-chapter h-shop" id="boutique"');
+      assert.ok(shop > -1 && shop < main.indexOf('<div class="h-panel h-panel-paths" id="chemins"'), file);
+    } else {
+      const at = main.indexOf('<section class="g-paths" id="chemins"');
+      assert.ok(at > -1 && at < main.indexOf('class="s-category-grid"'), file);
+    }
     const doors = [...main.matchAll(/<a class="g-path" href="([^"]+)">/g)].map((m) => m[1]);
     assert.deepEqual(doors, [...catalog.paths.map((p) => prefix + '/parcours/' + p.slug + '/')], file);
   }
   const home = await readFile(path.join(root, 'dist/index.html'), 'utf8');
-  // "/#chemins" (and "/ar/#chemins") opens the home page at the paths, for links Rayda shares.
-  assert.ok(home.indexOf('<section class="g-paths" id="chemins"') > home.indexOf('<section class="g-hero">'));
+  // "/#chemins" (and "/ar/#chemins") opens the home page at the paths, for links Rayda shares (src/home.js opens that tab).
+  assert.ok(home.indexOf('id="chemins" role="tabpanel"') > home.indexOf('<section class="g-hero">'));
   // Each path's page holds exactly its pieces, in French and in Arabic, and links to the other paths.
   for (const p of catalog.paths) {
     for (const prefix of ['', 'ar/']) {
@@ -854,7 +879,7 @@ test("coaching and Formations pages in both languages, linked from every page, w
     assert.equal((courses.match(/class="c-course"/g) || []).length, 4);
     assert.match(courses, /<button class="c-player-play" type="button" disabled/);
     assert.match(courses, /https:\/\/wa\.me\/\d+\?text=/);
-    assert.match(await page(prefix.replace(/\/$/, '')), /<section class="c-offers">/);
+    assert.match(await page(prefix.replace(/\/$/, '')), /<section class="c-offers h-chapter" id="coaching"/);
     assert.match(await page(prefix + 'accompagnement'), /<section class="c-banner">/);
   }
   const fr = await page('coaching');

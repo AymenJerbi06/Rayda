@@ -33,9 +33,9 @@ export async function buildGuidance(project, output, config) {
   for (const asset of ['rayda.jpg', 'reflection-journal.png', 'leaf-mark.svg']) {
     await cp(path.join(project, 'assets', 'brand', asset), path.join(output, 'assets', 'brand', asset));
   }
-  for (const file of ['guidance.css', 'commerce.css', 'polish.css', 'layers.css', 'emphasis.css', 'motion.css', 'header.css', 'leaf.css', 'coaching.css']) await cp(path.join(project, file), path.join(output, file));
+  for (const file of ['guidance.css', 'commerce.css', 'polish.css', 'layers.css', 'emphasis.css', 'motion.css', 'header.css', 'leaf.css', 'coaching.css', 'home.css']) await cp(path.join(project, file), path.join(output, file));
   await cp(path.join(project, 'src', 'admin.css'), path.join(output, 'admin.css'));
-  for (const file of ['guidance.js', 'social-menu.js', 'leaf.js', 'coaching.js', 'coaching-core.js', 'coaching-store.js', 'admin-coaching.js', 'ux.js', 'motion.js', 'header.js', 'contact-ar.js', 'commerce.js', 'commerce-core.js', 'site-config.js', 'catalog.js', 'admin.js']) {
+  for (const file of ['guidance.js', 'social-menu.js', 'leaf.js', 'home.js', 'coaching.js', 'coaching-core.js', 'coaching-store.js', 'admin-coaching.js', 'ux.js', 'motion.js', 'header.js', 'contact-ar.js', 'commerce.js', 'commerce-core.js', 'site-config.js', 'catalog.js', 'admin.js']) {
     await cp(path.join(project, 'src', file), path.join(output, 'src', file));
   }
   await mkdir(path.join(output, 'assets', 'products'), { recursive: true });

@@ -13,7 +13,8 @@ const arrow = '<span aria-hidden="true">↗</span>';
 // The paths in Arabic: same section and pages as the French ones (shop-pages.mjs), with the words of catalog-ar.mjs.
 const pathAr = path => ({ ...path, ...(pathsAr[path.slug] || {}) });
 export const pathLinksAr = catalog => (catalog.paths || []).map(path => ({ name: pathAr(path).name, href: '/ar/parcours/' + path.slug + '/' }));
-export const pathsSectionAr = catalog => pathsSection((catalog.paths || []).map(path => ({ ...pathAr(path), href: '/ar/parcours/' + path.slug + '/', more: path.productIds.length === 1 ? 'اكتشفوا القطعة' : 'اكتشفوا القطع' })), { eyebrow: 'اعثروا على طريقكم', title: 'من أين تبدؤون؟', intro: 'اختاروا ما يشبهكم: كل طريق يجمع القطع المُفكَّر فيها لما تبحثون عنه.' });
+export const pathItemsAr = catalog => (catalog.paths || []).map(path => ({ ...pathAr(path), href: '/ar/parcours/' + path.slug + '/', more: path.productIds.length === 1 ? 'اكتشفوا القطعة' : 'اكتشفوا القطع' }));
+export const pathsSectionAr = catalog => pathsSection(pathItemsAr(catalog), { eyebrow: 'اعثروا على طريقكم', title: 'من أين تبدؤون؟', intro: 'اختاروا ما يشبهكم: كل طريق يجمع القطع المُفكَّر فيها لما تبحثون عنه.' });
 export function pathPageAr(path, catalog) {
   const m = pathAr(path);
   const products = path.productIds.map(id => catalog.products.find(p => p.id === id)).filter(Boolean);

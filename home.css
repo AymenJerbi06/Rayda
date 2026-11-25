@@ -1,0 +1,177 @@
+/* The homepage in five chapters (24 November 2026, night): La boutique, Coaching & formations, Rayda et sa méthode,
+   Avis, Commander. A bar of the chapters sits under the hero and sticks to the top while they scroll by; the chapter
+   on screen lights up there with a small leaf. Colours are the site's tokens; no typeface is set (the Arabic quotes use
+   the site's Arabic face). Loaded on the homepage only, after the other style sheets. */
+
+/* ---------- The bar of chapters ---------- */
+.h-guide{position:sticky;top:0;z-index:60;background:var(--petal);color:var(--forest);border-bottom:1px solid #e2dacd;transition:top .38s cubic-bezier(.2,.7,.2,1),box-shadow .25s ease}
+.h-guide.is-stuck{box-shadow:0 12px 26px -20px color-mix(in srgb,var(--forest) 70%,transparent)}
+/* Scrolling up, the site's header slides in over the top: the bar then sticks just under it (its place on the page,
+   under the hero, doesn't move). */
+body:has(.g-header.is-floating.is-shown) .h-guide{top:var(--h-header,64px)}
+.h-guide-inner{display:flex;align-items:center;gap:22px;max-width:1600px;margin:0 auto;padding:10px var(--gutter)}
+.h-guide-label{flex:none;margin:0;font-size:11px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--green)}
+[dir="rtl"] .h-guide-label{font-size:14px;letter-spacing:0}
+.h-guide-list{display:flex;gap:8px;min-width:0;list-style:none;margin:0;padding:2px;overflow-x:auto;scrollbar-width:none;overscroll-behavior-x:contain}
+.h-guide-list::-webkit-scrollbar{display:none}
+.h-guide-list li{flex:none}
+.h-guide-list.more-end{-webkit-mask-image:linear-gradient(to right,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(to right,#000 calc(100% - 40px),transparent)}
+.h-guide-list.more-start{-webkit-mask-image:linear-gradient(to right,transparent,#000 40px);mask-image:linear-gradient(to right,transparent,#000 40px)}
+.h-guide-list.more-start.more-end{-webkit-mask-image:linear-gradient(to right,transparent,#000 40px,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(to right,transparent,#000 40px,#000 calc(100% - 40px),transparent)}
+[dir="rtl"] .h-guide-list.more-end{-webkit-mask-image:linear-gradient(to left,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(to left,#000 calc(100% - 40px),transparent)}
+[dir="rtl"] .h-guide-list.more-start{-webkit-mask-image:linear-gradient(to left,transparent,#000 40px);mask-image:linear-gradient(to left,transparent,#000 40px)}
+[dir="rtl"] .h-guide-list.more-start.more-end{-webkit-mask-image:linear-gradient(to left,transparent,#000 40px,#000 calc(100% - 40px),transparent);mask-image:linear-gradient(to left,transparent,#000 40px,#000 calc(100% - 40px),transparent)}
+.h-chip{display:inline-flex;align-items:center;gap:0;min-height:40px;padding:0 16px;border:1px solid #cfc6b8;border-radius:999px;background:var(--cream);color:var(--forest);font-size:13px;font-weight:600;white-space:nowrap;transition:background-color .25s ease,color .25s ease,border-color .25s ease,gap .3s ease}
+[dir="rtl"] .h-chip{font-size:15px}
+.h-chip:hover{border-color:var(--green)}
+.h-chip-leaf{display:inline-grid;place-items:center;width:0;height:14px;overflow:hidden;transition:width .3s ease}
+.h-chip-leaf svg{width:11px;height:14px;flex:none}
+.h-chip.is-active{gap:7px;background:var(--forest);border-color:var(--forest);color:var(--sage)}
+.h-chip.is-active .h-chip-leaf{width:11px}
+.h-chip.is-active .h-chip-leaf svg{--fold:-1;transform-origin:20% 95%;animation:lf-open 420ms var(--lf-spring,cubic-bezier(.3,1.5,.5,1)) both}
+.h-chip:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+/* A chapter starts just under the bar when the bar sends you there. */
+.h-chapter{scroll-margin-top:72px}
+.h-chapter:focus{outline:none}
+
+/* ---------- 1. La boutique: one heading, two ways in ---------- */
+.h-shop{z-index:1}
+.h-shop-body{min-width:0}
+.h-tabs{position:relative;display:inline-grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:4px;margin:0 0 30px;border:1px solid #d6cdbf;border-radius:999px;background:var(--cream-deep)}
+.h-tabs [role="tab"]{position:relative;z-index:1;display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:46px;padding:0 24px;border:0;border-radius:999px;background:none;color:var(--forest);font-size:14px;font-weight:600;cursor:pointer;transition:color .3s ease}
+[dir="rtl"] .h-tabs [role="tab"]{font-size:16px}
+.h-tabs [role="tab"][aria-selected="true"]{color:var(--paper)}
+.h-tabs [role="tab"]:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.h-tab-count{display:inline-grid;place-items:center;min-width:24px;height:24px;padding:0 7px;border-radius:999px;background:#21362f12;font-size:12px;font-weight:700;transition:background-color .3s ease,color .3s ease}
+.h-tabs [aria-selected="true"] .h-tab-count{background:var(--sage);color:var(--forest)}
+.h-tabs-pill{position:absolute;z-index:0;top:4px;bottom:4px;left:4px;width:calc(50% - 4px);border-radius:999px;background:var(--forest);transition:transform .38s cubic-bezier(.2,.7,.2,1)}
+.h-tabs[data-active="1"] .h-tabs-pill{transform:translateX(100%)}
+[dir="rtl"] .h-tabs-pill{left:auto;right:4px}
+[dir="rtl"] .h-tabs[data-active="1"] .h-tabs-pill{transform:translateX(-100%)}
+@keyframes h-panel-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.h-panel.is-in{animation:h-panel-in .45s cubic-bezier(.2,.7,.2,1) both}
+.h-panel+.h-panel{margin-top:44px}
+.h-panel-intro{max-width:620px;margin:0;font-size:16px;line-height:1.6;font-weight:500}
+.h-panel-paths .g-path-list{margin-top:26px}
+/* The next chapter tucks under the shop's rounded corner, so the corner shows its colour. */
+.h-shop+.c-offers{margin-top:-150px;padding-top:230px}
+
+/* ---------- 3. Rayda et sa méthode ---------- */
+.h-method{margin:36px 0 34px;padding-top:30px;border-top:1px solid #ffffff26}
+.h-method h3{margin:0 0 14px;font:400 clamp(26px,2.3vw,34px)/1.2 var(--serif);color:var(--paper)}
+.g-about .h-method>p{margin:0 0 22px}
+.h-pillars{display:grid;gap:12px;list-style:none;margin:0;padding:0}
+.h-pillars li{display:grid;grid-template-columns:48px minmax(0,1fr);gap:16px;align-items:start;padding:18px 20px;border:1px solid #ffffff1f;border-radius:16px;background:#ffffff08}
+.h-pillars svg{width:48px;height:48px;color:var(--sage)}
+.h-pillars b{display:block;margin-bottom:5px;font-size:17px;line-height:1.35;color:var(--paper)}
+.h-pillars span{display:block;font-size:14.5px;line-height:1.6;color:#d3dbd0}
+
+/* ---------- 4. Avis: what clients notice, then their messages one at a time ---------- */
+.h-reviews-chapter{position:relative;background:var(--cream-deep);color:var(--ink);padding:95px var(--gutter) 90px;text-align:center;border-top-right-radius:160px}
+[dir="rtl"] .h-reviews-chapter{border-top-right-radius:0;border-top-left-radius:160px}
+.h-reviews-head{max-width:760px;margin:0 auto}
+.h-reviews-head .g-display,.h-order-head .g-display{margin-top:16px;color:var(--forest);font-size:clamp(40px,4.6vw,64px);line-height:1.1}
+.h-lede{max-width:580px;margin:18px auto 0;font-size:17px;line-height:1.6;font-weight:500}
+.h-noticed{max-width:1000px;margin:40px auto 0}
+.h-noticed-title{margin:0 0 14px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--green)}
+[dir="rtl"] .h-noticed-title{font-size:15px;letter-spacing:0}
+.h-noticed ul{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;list-style:none;margin:0;padding:0}
+.h-noticed li{display:inline-flex;align-items:center;gap:9px;padding:10px 18px;border:1px solid #d6cdbf;border-radius:999px;background:var(--petal);color:var(--forest);font-size:14px;font-weight:600}
+[dir="rtl"] .h-noticed li{font-size:16px}
+.h-noticed-leaf svg{display:block;width:11px;height:14px;color:var(--green)}
+.h-reviews{max-width:900px;margin:36px auto 0}
+.h-reviews-frame{display:grid;grid-template-columns:52px minmax(0,1fr) 52px;grid-template-areas:"prev track next" "count count count";align-items:center;gap:16px}
+.h-reviews-track{grid-area:track}
+.h-reviews-nav.is-prev{grid-area:prev}
+.h-reviews-nav.is-next{grid-area:next}
+.h-reviews-count{grid-area:count}
+.h-reviews-track{display:flex;align-items:flex-start;list-style:none;margin:0;padding:0;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;overscroll-behavior-x:contain;border-radius:26px;transition:height .35s ease}
+.h-reviews-track::-webkit-scrollbar{display:none}
+.h-reviews-track:focus-visible{outline:2px solid var(--green);outline-offset:4px}
+.h-review{flex:0 0 100%;display:flex;flex-direction:column;align-items:center;min-width:0;padding:30px clamp(20px,4vw,52px) 28px;border-radius:26px;background:var(--petal);scroll-snap-align:center;scroll-snap-stop:always}
+.h-review .g-quote-mark{display:block;margin:12px 0 2px;font:400 64px/.6 var(--serif);color:#598566}
+.h-review .g-eyebrow{margin:10px 0 12px;font-size:11px}
+.h-review blockquote{margin:0;max-width:640px;font:500 clamp(21px,2.1vw,26px)/1.65 "Markazi Text",var(--serif);color:var(--ink)}
+.h-review .g-translation{width:100%;max-width:640px;margin-top:12px}
+.h-review .g-translation blockquote{font:500 15px/1.75 var(--sans)}
+.h-review-by{margin:16px 0 0;font-size:12px;font-weight:600;letter-spacing:.03em;opacity:.75}
+[dir="rtl"] .h-review-by{font-size:14px;letter-spacing:0}
+.h-review .g-capture-link{margin-top:14px}
+.h-reviews-nav{display:grid;place-items:center;width:52px;height:52px;border:1px solid #cfc6b8;border-radius:50%;background:var(--petal);color:var(--forest);cursor:pointer;transition:background-color .2s ease,color .2s ease,border-color .2s ease,transform .2s ease}
+.h-reviews-nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.h-reviews-nav.is-next svg,[dir="rtl"] .h-reviews-nav.is-prev svg{transform:scaleX(-1)}
+[dir="rtl"] .h-reviews-nav.is-next svg{transform:none}
+.h-reviews-nav:hover{background:var(--forest);border-color:var(--forest);color:var(--sage)}
+.h-reviews-nav:active{transform:scale(.94)}
+.h-reviews-nav:focus-visible{outline:2px solid var(--green);outline-offset:3px}
+.h-reviews-count{margin:0;font-size:13px;font-weight:600;color:var(--green);font-variant-numeric:tabular-nums}
+.h-reviews-count b{color:var(--forest)}
+.h-reviews-note{margin-top:26px}
+.h-reviews-chapter>.g-button{margin-top:24px}
+
+/* ---------- 5. Commander: three steps ---------- */
+.h-order{background:var(--cream);color:var(--ink);padding:90px max(var(--gutter),calc((100vw - 1440px)/2)) 100px;border-bottom-left-radius:160px}
+[dir="rtl"] .h-order{border-bottom-left-radius:0;border-bottom-right-radius:160px}
+.h-order-head{max-width:720px}
+.h-order-head .h-lede{margin:16px 0 0}
+.h-order-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;list-style:none;margin:42px 0 0;padding:0}
+.h-order-steps li{padding:28px 26px 30px;border:1px solid #ddd4c6;border-radius:22px;background:var(--petal)}
+.h-order-steps li:first-child{border-top-left-radius:60px}
+[dir="rtl"] .h-order-steps li:first-child{border-top-left-radius:22px;border-top-right-radius:60px}
+.h-step-number{display:grid;place-items:center;width:42px;height:42px;margin-bottom:18px;border-radius:50%;background:var(--forest);color:var(--sage);font-size:15px;font-weight:700}
+.h-order-steps h3{margin:0 0 8px;font:400 24px/1.2 var(--serif);color:var(--forest)}
+.h-order-steps p{margin:0;font-size:15px;line-height:1.6;color:#55625a}
+.h-order-actions{display:flex;flex-wrap:wrap;align-items:center;gap:16px 30px;margin-top:34px}
+.h-order-actions .g-button{margin:0}
+.h-order-actions p{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin:0;font-size:15px;font-weight:600;color:var(--forest)}
+.h-order-actions .g-text-link{margin:0;color:var(--forest)}
+.h-order-actions .g-text-link:hover{color:var(--green)}
+
+@media(max-width:1024px){
+  .h-shop+.c-offers{margin-top:-110px;padding-top:190px}
+  .h-reviews-chapter{border-top-right-radius:110px}
+  [dir="rtl"] .h-reviews-chapter{border-top-left-radius:110px}
+  .h-order{border-bottom-left-radius:110px}
+  [dir="rtl"] .h-order{border-bottom-right-radius:110px}
+  .h-order-steps{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+  .h-guide-inner{padding:8px 0 8px 14px;gap:0}
+  [dir="rtl"] .h-guide-inner{padding:8px 14px 8px 0}
+  .h-guide-label{display:none}
+  .h-guide-list{padding-inline-end:14px}
+  .h-chip{min-height:38px;padding:0 13px}
+  .h-chapter{scroll-margin-top:64px}
+  .h-tabs{display:grid;width:100%;margin-bottom:22px}
+  .h-tabs [role="tab"]{padding:0 12px;min-height:44px}
+  .h-panel+.h-panel{margin-top:34px}
+  .h-shop+.c-offers{margin-top:-70px;padding-top:124px}
+  .h-method{margin:28px 0 26px;padding-top:24px}
+  .h-pillars li{grid-template-columns:40px minmax(0,1fr);gap:13px;padding:15px 16px}
+  .h-pillars svg{width:40px;height:40px}
+  .h-reviews-chapter{padding:56px 16px 60px;border-top-right-radius:70px}
+  [dir="rtl"] .h-reviews-chapter{border-top-left-radius:70px}
+  .h-noticed{margin-top:30px}
+  .h-noticed li{padding:8px 14px;font-size:13px}
+  [dir="rtl"] .h-noticed li{font-size:15px}
+  .h-reviews{margin-top:28px}
+  .h-reviews-frame{grid-template-columns:minmax(0,1fr) auto auto;grid-template-areas:"track track track" "count prev next";gap:12px}
+  .h-reviews-nav{width:48px;height:48px}
+  .h-review{padding:24px 18px 22px}
+  .h-review .g-quote-mark{font-size:52px;margin-top:8px}
+  .h-reviews-count{text-align:start;padding-inline-start:6px}
+  .h-order{padding:56px 22px 70px;border-bottom-left-radius:70px}
+  [dir="rtl"] .h-order{border-bottom-right-radius:70px}
+  .h-order-steps{margin-top:30px;gap:12px}
+  .h-order-steps li{display:grid;grid-template-columns:42px minmax(0,1fr);column-gap:16px;padding:20px 18px}
+  .h-order-steps li:first-child{border-top-left-radius:40px}
+  [dir="rtl"] .h-order-steps li:first-child{border-top-right-radius:40px}
+  .h-step-number{grid-row:1/3;margin:0}
+  .h-order-steps h3{font-size:21px;margin-bottom:4px}
+  .h-order-steps p{font-size:14px}
+  .h-order-actions{margin-top:26px}
+}
+@media(prefers-reduced-motion:reduce){
+  .h-guide,.h-tabs-pill,.h-reviews-track,.h-chip,.h-chip-leaf{transition:none}
+  .h-chip.is-active .h-chip-leaf svg,.h-panel.is-in{animation:none}
+}

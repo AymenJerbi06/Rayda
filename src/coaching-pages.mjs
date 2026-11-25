@@ -68,7 +68,7 @@ const W = {
       result: 'Les formations accompagnent une démarche personnelle : elles ne garantissent aucun résultat, financier ou autre.'
     },
     offers: {
-      eyebrow: 'AVEC RAYDA, AUTREMENT', title: 'Un échange. <br />Ou une vidéo.',
+      eyebrow: 'COACHING &amp; FORMATIONS', title: 'Avec Rayda, <br />en séance ou en vidéo.',
       coachEyebrow: 'SÉANCES DE COACHING', coachTitle: 'Réservez un moment avec Rayda.',
       coachText: '30 minutes ou une heure, à un moment libre de son agenda. La séance est à vous dès que le paiement est confirmé.',
       coachCta: 'Voir l’agenda', soonEyebrow: 'FORMATIONS · BIENTÔT', soonTitle: 'Apprendre à votre rythme.',
@@ -126,7 +126,7 @@ const W = {
       result: 'ترافق الدورات مسعًى شخصيًا، ولا تضمن أي نتيجة، مالية أو غيرها.'
     },
     offers: {
-      eyebrow: 'مع رايدا، بطريقة أخرى', title: 'حوار. <br />أو فيديو.',
+      eyebrow: 'الكوتشينغ والدورات', title: 'مع رايدا، <br />في جلسة أو عبر الفيديو.',
       coachEyebrow: 'جلسات الكوتشينغ', coachTitle: 'احجزوا وقتًا مع رايدا.',
       coachText: '30 دقيقة أو ساعة، في وقت متاح من أجندتها. تصبح الجلسة لكم بمجرد تأكيد الدفع.',
       coachCta: 'شاهدوا الأجندة', soonEyebrow: 'الدورات · قريبًا', soonTitle: 'تعلّموا على إيقاعكم.',
@@ -193,7 +193,8 @@ export function formationsPage(lang, whatsapp, art) {
 // The homepage block that leads to the agenda and the courses.
 export function offersSection(lang) {
   const w = W[lang], o = w.offers;
-  return `<section class="c-offers"><div class="c-offers-head" data-reveal><p class="g-eyebrow">${o.eyebrow}</p><h2 class="g-display">${o.title}</h2></div><div class="c-offers-grid"><article class="c-offer" data-reveal="up">${icon('calendar')}<p class="g-eyebrow">${o.coachEyebrow}</p><h3>${o.coachTitle}</h3><p>${o.coachText}</p><a class="g-button" href="${w.bookHref}">${o.coachCta} ${arrow}</a></article><article class="c-offer c-offer-soon" data-reveal="up" style="--delay:120ms">${icon('video')}<p class="g-eyebrow">${o.soonEyebrow}</p><h3>${o.soonTitle}</h3><p>${o.soonText}</p><a class="g-text-link" href="${w.formationsHref}">${o.soonCta} ${arrow}</a></article></div></section>`;
+  // On the homepage this is the chapter "Coaching & formations" (its bar of chapters points here).
+  return `<section class="c-offers h-chapter" id="coaching" aria-labelledby="c-offers-title"><div class="c-offers-head" data-reveal><p class="g-eyebrow">${o.eyebrow}</p><h2 class="g-display" id="c-offers-title">${o.title}</h2></div><div class="c-offers-grid"><article class="c-offer" data-reveal="up">${icon('calendar')}<p class="g-eyebrow">${o.coachEyebrow}</p><h3>${o.coachTitle}</h3><p>${o.coachText}</p><a class="g-button" href="${w.bookHref}">${o.coachCta} ${arrow}</a></article><article class="c-offer c-offer-soon" data-reveal="up" style="--delay:120ms">${icon('video')}<p class="g-eyebrow">${o.soonEyebrow}</p><h3>${o.soonTitle}</h3><p>${o.soonText}</p><a class="g-text-link" href="${w.formationsHref}">${o.soonCta} ${arrow}</a></article></div></section>`;
 }
 
 // On Accompagnement: one line and a button to the agenda.
