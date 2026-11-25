@@ -141,7 +141,7 @@
       details: ["Dimensions communiquées : 19,5 × 11 cm", "Cuir naturel de très bonne qualité", "Livré avec des cartes chargées et un exercice pour développer la réception financière", "Il accompagne votre intention et vos efforts : ce n’est pas une garantie de recevoir de l’argent"]
     }),
     make({
-      id: "carte-million-dollar", name: "Carte Million Dollar dorée", eyebrow: "Objet doré · deux tailles", type: "decor", collections: ["objets-dores"],
+      id: "carte-million-dollar", name: "Carte Million Dollar dorée", eyebrow: "Objet doré · deux tailles", type: "decor", collections: ["portefeuilles"],
       price: amount(45, 50), variantPrices: { "Petite · 16 × 5,5 cm": 45, "Grande · 19 × 6 cm": 50 }, availability: "quote", custom: false, lifestyle: "Carte Million Dollar dorée tenue en main au-dessus d’un bureau",
       aiPhotos: [["fingers", "Carte Million Dollar dorée tenue entre les doigts"], ["flatlay", "Carte Million Dollar dorée posée à plat sur du lin crème"], ["desk", "Carte Million Dollar dorée posée debout sur un bureau"], ["macro", "Gros plan sur le sceau et l’inscription ONE MILLION DOLLARS de la carte"]],
       description: "Êtes-vous prêt(e) à ouvrir les portes de la prospérité financière et à transformer votre réalité économique ? Nous vous présentons la luxueuse carte Million Dollar dorée, conçue avec art pour être bien plus qu’un bel objet : un véritable aimant pour attirer l’argent et les opportunités d’investissement dans votre vie.",
@@ -261,7 +261,7 @@
     // scene whose printed verses are her real print, laid in from her close-up photo letter for letter (CreateUGC's own
     // lettering was wrong), then her own photos.
     make({
-      id: "bouteille-verre", name: "Bouteille d’eau en verre", eyebrow: "Bouteille · verre, 1 litre", type: "accessory", collections: ["apprentissage"],
+      id: "bouteille-verre", name: "Bouteille d’eau en verre", eyebrow: "Bouteille · verre, 1 litre", type: "accessory", collections: ["apprentissage", "bouteilles"],
       price: amount(55), availability: "quote", custom: false, aiPhotos: [],
       lifestyle: "Bouteille d’eau en verre posée sur un bureau d’étude, à côté d’un cahier ouvert et d’un crayon",
       description: "Cette bouteille réunit deux dimensions complémentaires :",
@@ -347,10 +347,10 @@
     // glass, 1 litre, 55 TND ("المادة :بلور / السعة :لتر / الثمن :55د"; "Matière : Verre / Contenance : 1 litre / Prix :
     // 55 DT"). She sent three photos of it on 19 November, just after the trophy (bouteille-amour-01…03.jpg, kept in the
     // folder). The gallery is a CreateUGC scene and two ChatGPT photos of the plain bottle, with her real print laid onto
-    // its two visible faces from her photos. It has no product type of its own, so it is found through her Amour
-    // collection and the whole Boutique.
+    // its two visible faces from her photos. Since 21 November it is in the Bouteilles group with the glass bottle for
+    // studies, as well as in her Amour collection.
     make({
-      id: "bouteille-amour", name: "Bouteille de l’Amour", eyebrow: "Bouteille · verre, 1 litre", type: "accessory", collections: [],
+      id: "bouteille-amour", name: "Bouteille de l’Amour", eyebrow: "Bouteille · verre, 1 litre", type: "accessory", collections: ["bouteilles"],
       price: amount(55), availability: "quote", custom: false, lifestyle: "Bouteille de l’Amour remplie d’eau, imprimée en rouge de versets du Coran, posée sur une table près de deux verres et d’un bouquet de roses",
       aiPhotos: [["chevet", "Bouteille de l’Amour posée sur une table de chevet, ses versets imprimés en rouge sur le verre"], ["table", "Bouteille de l’Amour posée sur une table en chêne, près d’un verre"]],
       description: "La Bouteille de l’Amour agit sur deux niveaux complémentaires :",
@@ -429,8 +429,9 @@
       { slug: "bracelets", name: "Bracelets", description: "Bracelet BaZi sur mesure, bracelet Énergie Amour et bracelet Énergie d’apprentissage.", productIds: ["bracelet-bazi", "bracelet-amour", "accessoires-apprentissage"] },
       { slug: "colliers", name: "Colliers", description: "Collier BaZi composé pour une personne, colliers Énergie d’apprentissage et collier Clé.", productIds: ["collier-bazi", "accessoires-apprentissage", "collier-cle"] },
       { slug: "porte-cles", name: "Porte-clés", description: "Porte-clés énergétiques Amour, Chance, Voyage et Protection, porte-clés de pierre et Arbre de Vie.", productIds: ["porte-cles-pierre", "porte-cles-arbre-vie", "porte-cles-amour", "porte-cles-chance", "porte-cles-voyage", "porte-cles-protection"] },
-      { slug: "portefeuilles", name: "Portefeuilles", description: "Portefeuille Hafidha El Mel dans les coloris photographiés.", productIds: ["portefeuille-hafidha"] },
-      { slug: "objets-dores", name: "Objets dorés", description: "Carte, objets décoratifs dorés, symboles Feng Shui et Trophée d’Amour.", productIds: ["carte-million-dollar", "decor-abondance", "cle-de-vie", "fleur-de-vie", "pieces-feng-shui", "grenouille-fortune", "trophee-amour"] },
+      { slug: "portefeuilles", name: "Portefeuille & carte", description: "Le portefeuille Hafidha El Mel en trois couleurs et la carte Million Dollar dorée, à glisser dans votre portefeuille.", productIds: ["portefeuille-hafidha", "carte-million-dollar"] },
+      { slug: "objets-dores", name: "Objets dorés", description: "Objets décoratifs dorés, symboles Feng Shui et Trophée d’Amour.", productIds: ["decor-abondance", "cle-de-vie", "fleur-de-vie", "pieces-feng-shui", "grenouille-fortune", "trophee-amour"] },
+      { slug: "bouteilles", name: "Bouteilles", description: "Deux bouteilles d’eau en verre d’un litre, imprimées de versets du Coran : l’une pour accompagner les études, l’autre pour l’amour.", productIds: ["bouteille-verre", "bouteille-amour"] },
       { slug: "voiture", name: "Pendentifs voiture", description: "Pendentifs décoratifs à suspendre dans la voiture.", productIds: ["pendentif-voiture-fleur", "pendentif-voiture-ankh"] },
       { slug: "livres", name: "Livres", description: "Le livre « Votre excellence est votre choix », en trois éditions : primaire, collège et lycée, baccalauréat.", productIds: ["livre-excellence"] },
       { slug: "apprentissage", name: "Accessoires d’étude", description: "Bracelet et colliers Énergie d’apprentissage, préparés à partir de votre date de naissance, et la bouteille d’eau en verre aux versets et affirmations.", productIds: ["accessoires-apprentissage", "bouteille-verre"] }

@@ -140,14 +140,14 @@ export const orderSteps = {
 // joined with "…". Only on the piece the message is about; tests check every piece is a real substring.
 export const productReviewParts = {
   'bracelet-bazi': {
-    id: 'confiance',
-    ar: ['من وقت إستلامي البراسلي الي خدمتهالي حسب خريطة البازي الخاصة بي', 'حتى أني موش عارفة كيفاش اكتسبت هل الثقة بالنفس الكبيرة'],
-    fr: ['depuis que j’ai reçu le bracelet que tu m’as fait selon ma carte BaZi', 'je ne sais même pas comment j’ai acquis cette grande confiance en moi']
+    id: 'nadia-bracelet',
+    ar: ['هزيت البراسلي ولبستها والله رجعتلي الروح'],
+    fr: ['J’ai pris le bracelet et je l’ai mis : vraiment, il m’a redonné vie.']
   },
   'collier-bazi': {
-    id: 'fille',
-    ar: ['وربي يعلم بنتي تحسنت نفسيتها برشا وصارت محبة للجو وتضحك و متفرهدة'],
-    fr: ['Dieu sait que le moral de ma fille s’est beaucoup amélioré : elle a de nouveau envie de sortir et de s’amuser, elle rit, elle est épanouie.']
+    id: 'ichraf-collier',
+    ar: ['مللي لبست السلسلة وليت حتى في النوم مانجمش نستغنى عليها', 'حسيت بالقوة بالثيقة بالراحة الطمأنينة'],
+    fr: ['depuis que je porte le collier : même pour dormir, je ne peux plus m’en passer.', 'je me suis sentie forte, confiante, apaisée, sereine.']
   }
 };
 
@@ -165,6 +165,7 @@ export function productReview(productId) {
   const reviewAr = reviewsAr.find(r => r.id === parts.id);
   return {
     id: parts.id,
+    name: review.name,
     ar: excerpt(review.ar, parts.ar),
     fr: excerpt(review.fr, parts.fr),
     theme: review.theme,

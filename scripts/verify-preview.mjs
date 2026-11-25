@@ -9,7 +9,9 @@ const pages = ['/', '/a-propos/', '/accompagnement/', '/contact/', '/checkout/',
   ...catalog.collections.map(c => '/collections/' + c.slug + '/'),
   ...catalog.products.map(p => '/products/' + p.slug + '/')];
 const images = [...new Set(catalog.products.flatMap(p => p.images.map(i => i.src))),
-  ...(await readdir(new URL('dist/assets/categories/', root))).map(n => '/assets/categories/' + n)];
+  ...(await readdir(new URL('dist/assets/categories/', root), { withFileTypes: true })).filter(d => d.isFile()).map(d => '/assets/categories/' + d.name),
+  ...(await readdir(new URL('dist/assets/categories/240/', root))).map(n => '/assets/categories/240/' + n),
+  ...(await readdir(new URL('dist/assets/avis/', root))).map(n => '/assets/avis/' + n)];
 for (const [label, urls] of [['pages', pages], ['images', images]]) {
   for (const url of urls) {
     const response = await fetch('http://127.0.0.1:4174' + url);

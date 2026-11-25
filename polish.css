@@ -174,3 +174,31 @@ body.has-floating-header{padding-top:var(--header-space,100px)}
 .g-menu nav a.g-lang-switch span[lang="ar"]{font-size:16px}
 /* A piece with a single photo (until its scenes are made): no arrows, counter or thumbnails to step through. */
 .s-gallery-single .s-gallery-controls,.s-gallery-single .s-thumbnails,.s-lightbox.s-gallery-single .s-lightbox-controls{display:none}
+/* Review cards (24 November 2026): the client's name as Rayda wrote it, in the site's Arabic typeface, then what the
+   message is about; and one plain line under the reviews saying the pieces promise no result. */
+.g-review-name{font-family:"Markazi Text",var(--serif);font-size:1.5em;font-weight:600;letter-spacing:0;line-height:1;unicode-bidi:isolate}
+.g-reviews-note{max-width:760px;margin:36px auto 0;text-align:center;font-size:12px;font-weight:600;letter-spacing:.02em;line-height:1.6;opacity:.72;text-wrap:balance}
+[dir="rtl"] .g-reviews-note{font-size:14px;letter-spacing:0}
+/* The real message behind each review (24 November 2026): an outlined button under every review, and a dialog that
+   shows Rayda's screenshot at a readable width, scrolling inside it when the message is long. */
+.g-capture-link{align-self:flex-start;display:inline-flex;align-items:center;gap:9px;min-height:44px;padding:0 18px 0 14px;border:1px solid currentColor;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.06em;line-height:1.2;text-transform:uppercase;transition:background-color .2s ease,border-color .2s ease,color .2s ease}
+.g-capture-link svg{width:18px;height:18px;flex:none}
+.g-capture-link:hover{background:var(--forest);border-color:var(--forest);color:var(--paper)}
+[dir="rtl"] .g-capture-link{padding:0 14px 0 18px;font-size:14px;letter-spacing:0;text-transform:none}
+.g-testimonials-teaser .g-capture-link{align-self:center;margin:8px 0 26px}
+.g-capture{width:min(600px,calc(100vw - 24px));max-width:none;max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px);padding:0;border:0;border-radius:10px;background:var(--forest);color:var(--paper);box-shadow:0 8px 70px #0003;overflow:hidden}
+.g-capture[open]{display:flex;flex-direction:column;animation:m-stage 340ms var(--ease-out)}
+.g-capture::backdrop{background:#10211cc2;-webkit-backdrop-filter:blur(5px) saturate(.9);backdrop-filter:blur(5px) saturate(.9)}
+.g-capture-head{flex:none;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 6px 6px 20px}
+[dir="rtl"] .g-capture-head{padding:6px 20px 6px 6px}
+.g-capture-head p{margin:0;font-size:12px;font-weight:600;letter-spacing:.04em;line-height:1.4}
+[dir="rtl"] .g-capture-head p{font-size:14px;letter-spacing:0}
+.g-capture .s-dialog-close{color:var(--paper)}
+.g-capture-frame{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:0 20px;scrollbar-width:thin;scrollbar-color:var(--sage) transparent}
+.g-capture-frame img{display:block;width:100%;height:auto;border-radius:14px;background:var(--paper)}
+.g-capture-note{flex:none;margin:0;padding:14px 20px 18px;font-size:11px;font-weight:600;letter-spacing:.04em;line-height:1.5;opacity:.8}
+[dir="rtl"] .g-capture-note{font-size:13px;letter-spacing:0}
+.g-capture :focus-visible{outline-color:var(--sage)}
+.g-capture .s-dialog-close:focus-visible{outline-offset:-6px}
+@media(max-width:700px){.g-capture-head{padding-inline-start:16px}.g-capture-frame{padding:0 12px}.g-capture-note{padding:12px 16px 16px}}
+@media(max-width:359px){.g-capture-link{gap:7px;padding:0 13px 0 11px;letter-spacing:.03em}[dir="rtl"] .g-capture-link{padding:0 11px 0 13px;letter-spacing:0}}

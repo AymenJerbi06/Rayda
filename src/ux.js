@@ -76,4 +76,60 @@
   };
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(centerCurrentCollection);
   else centerCurrentCollection();
+
+  // "Voir la capture d'écran" under a review opens the real message, Rayda's screenshot, in a dialog over the page.
+  // Without dialog support, or with Ctrl, Cmd, Shift or a middle click, the link opens the picture itself.
+  var captureLinks = document.querySelectorAll('a[data-capture]');
+  if (captureLinks.length && typeof HTMLDialogElement === 'function') {
+    var arabic = (document.documentElement.lang || '').indexOf('ar') === 0;
+    var capture = null;
+    var opener = null;
+    var buildCapture = function () {
+      var dialog = document.createElement('dialog');
+      dialog.className = 'g-capture';
+      dialog.setAttribute('aria-labelledby', 'g-capture-title');
+      dialog.innerHTML = '<div class="g-capture-head"><p id="g-capture-title"></p><button type="button" class="s-dialog-close" aria-label="' +
+        (arabic ? 'إغلاق الصورة' : 'Fermer la capture d’écran') + '">×</button></div>' +
+        '<div class="g-capture-frame"><img alt="" decoding="async" /></div><p class="g-capture-note"></p>';
+      document.body.appendChild(dialog);
+      capture = { dialog: dialog, title: dialog.querySelector('#g-capture-title'), frame: dialog.querySelector('.g-capture-frame'), image: dialog.querySelector('img'), note: dialog.querySelector('.g-capture-note') };
+      dialog.querySelector('.s-dialog-close').addEventListener('click', function () { dialog.close(); });
+      // A click on the dimmed page around the dialog closes it.
+      dialog.addEventListener('click', function (event) {
+        if (event.target !== dialog) return;
+        var box = dialog.getBoundingClientRect();
+        if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) dialog.close();
+      });
+      dialog.addEventListener('close', function () {
+        document.body.classList.remove('s-dialog-open');
+        capture.image.removeAttribute('src');
+        if (opener) opener.focus({ preventScroll: true });
+      });
+    };
+    Array.prototype.forEach.call(captureLinks, function (link) {
+      link.addEventListener('click', function (event) {
+        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+        event.preventDefault();
+        if (!capture) buildCapture();
+        opener = link;
+        var size = (link.getAttribute('data-capture') || '').split('x');
+        capture.image.width = Number(size[0]) || 900;
+        capture.image.height = Number(size[1]) || 1200;
+        capture.image.alt = link.getAttribute('data-capture-alt') || '';
+        capture.image.src = link.getAttribute('href');
+        var name = document.createElement('bdi');
+        name.className = 'g-review-name';
+        name.lang = 'ar';
+        name.dir = 'rtl';
+        name.textContent = link.getAttribute('data-capture-name') || '';
+        capture.title.textContent = '';
+        capture.title.appendChild(name);
+        capture.title.appendChild(document.createTextNode(' · ' + (link.getAttribute('data-capture-context') || '')));
+        capture.note.textContent = link.getAttribute('data-capture-note') || '';
+        capture.dialog.showModal();
+        capture.frame.scrollTop = 0;
+        document.body.classList.add('s-dialog-open');
+      });
+    });
+  }
 }());

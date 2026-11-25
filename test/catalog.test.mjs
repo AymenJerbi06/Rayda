@@ -10,10 +10,10 @@ vm.runInNewContext(await readFile(path.join(root, "src/catalog.js"), "utf8"), co
 const catalog = context.window.STORE_CATALOG;
 const configContext = { window: {} };
 vm.runInNewContext(await readFile(path.join(root, "src/site-config.js"), "utf8"), configContext);
-test("catalog has twenty-four unique products in ten browseable collections", () => {
+test("catalog has twenty-four unique products in eleven browseable collections", () => {
   assert.equal(catalog.products.length, 24);
   assert.equal(new Set(catalog.products.map((x) => x.slug)).size, 24);
-  assert.equal(catalog.collections.length, 10);
+  assert.equal(catalog.collections.length, 11);
   for (const collection of catalog.collections) {
     for (const id of collection.productIds) assert.ok(catalog.products.some((x) => x.id === id));
   }
@@ -118,9 +118,11 @@ test("homepage carries the full brand narrative with illustrated categories and 
   assert.equal((main.match(/<section /g)||[]).length,8);
   assert.equal((main.match(/class="s-category[" ]/g)||[]).length,8);
   assert.doesNotMatch(main,/assets\/products\//);
-  for (const name of ['bracelets','colliers','porte-cles','portefeuilles','objets-dores','voiture','livres','apprentissage']) {
-    assert.ok(home.includes('/assets/categories/'+name+'.webp'));
-    await access(path.join(root,'dist/assets/categories',name+'.webp'));
+  // One family photo per group (21 November 2026): every piece of the group side by side.
+  for (const name of ['bracelets','colliers','porte-cles','portefeuilles','objets-dores','bouteilles','voiture','livres']) {
+    assert.ok(home.includes('/assets/categories/groupe-'+name+'.webp'), name);
+    await access(path.join(root,'dist/assets/categories','groupe-'+name+'.webp'));
+    await access(path.join(root,'dist/assets/categories/240','groupe-'+name+'.webp'));
   }
   const shop = await readFile(path.join(root,'dist/collections/all/index.html'),'utf8');
   assert.match(shop,/Tout découvrir/);
@@ -181,16 +183,74 @@ test("the polish layer loads on every kind of page and French punctuation stays 
 });
 
 test("reviews quote the clients' Arabic word for word, with a labelled French translation on French pages", async () => {
+  // Since 24 November 2026: the 15 messages Rayda sent on 22 November replace the earlier five, each with the client's
+  // name as she wrote it; a daughter's first name is shortened to « ر. » as she asked.
   const { reviews } = await import('../src/reviews.mjs');
-  assert.equal(reviews.length, 5);
+  assert.equal(reviews.length, 15);
+  assert.equal(new Set(reviews.map((r) => r.id)).size, 15);
+  for (const review of reviews) {
+    assert.match(review.name, /^[\u0600-\u06FF ]+$/, review.id);
+    assert.ok(review.theme && review.context && review.ar && review.fr, review.id);
+    assert.doesNotMatch(review.ar + review.fr, /(^|\s)(ريما|Rima)(\s|$)/, review.id);
+  }
+  assert.ok(reviews.find((r) => r.id === 'fatma-fille').ar.includes('الحمدلله ر. جابت معدل'));
   const page = await readFile(path.join(root, 'dist/vos-mots/index.html'), 'utf8');
-  assert.equal((page.match(/<blockquote lang="ar" dir="rtl">/g) || []).length, 5);
-  assert.equal((page.match(/class="g-translation"/g) || []).length, 5);
+  assert.equal((page.match(/<blockquote lang="ar" dir="rtl">/g) || []).length, 15);
+  assert.equal((page.match(/class="g-translation"/g) || []).length, 15);
+  assert.equal((page.match(/<bdi class="g-review-name" lang="ar" dir="rtl">/g) || []).length, 15);
+  assert.ok(page.includes('<bdi class="g-review-name" lang="ar" dir="rtl">ندى نصري</bdi> · À propos de ses bracelets'));
   assert.match(page, /Traduit de l’arabe/);
   assert.match(page, /family=Markazi\+Text/);
+  assert.match(page, /<p class="g-reviews-note">[^<]*ne garantissent aucun résultat/);
   const ar = await readFile(path.join(root, 'dist/ar/vos-mots/index.html'), 'utf8');
-  assert.ok(ar.includes('ربي يباركلك مدام رايدة حبيتي'));
+  assert.ok(ar.includes('ربي يحفضك و يعزك يا مدام رايدة يا سمحة ربي يعزك'));
+  assert.ok(ar.includes('سهام شيخاوي · رسالة وصلت لرايدا'));
+  assert.match(ar, /<p class="g-reviews-note">[^<]*ولا تضمن أي نتيجة/);
   assert.doesNotMatch(ar, /g-translation/);
+  for (const html of [page, ar]) assert.doesNotMatch(html, /(^|[\s>«])ريما([\s<»]|$)/);
+  // The homepage opens with the first message and its client's name.
+  const home = await readFile(path.join(root, 'dist/index.html'), 'utf8');
+  assert.ok(home.includes('<bdi class="g-review-name" lang="ar" dir="rtl">سهام شيخاوي</bdi> · Message reçu par Rayda'));
+});
+
+test("each review opens its real screenshot: one button per review, with profile pictures and the daughter's name blurred", async () => {
+  // Since 24 November 2026 (the user's request): a button under every review opens the screenshot Rayda sent of that
+  // message, in a dialog built by src/ux.js; without JavaScript the link opens the picture itself.
+  const { reviews } = await import('../src/reviews.mjs');
+  const { reviewCaptures, captureSrc } = await import('../src/review-captures.mjs');
+  assert.deepEqual(Object.keys(reviewCaptures).sort(), reviews.map((r) => r.id).sort());
+  const webpSize = (buf) => {
+    const kind = buf.toString('ascii', 12, 16);
+    if (kind === 'VP8 ') return [buf.readUInt16LE(26) & 0x3fff, buf.readUInt16LE(28) & 0x3fff];
+    if (kind === 'VP8L') { const bits = buf.readUInt32LE(21); return [(bits & 0x3fff) + 1, ((bits >> 14) & 0x3fff) + 1]; }
+    return [buf.readUIntLE(24, 3) + 1, buf.readUIntLE(27, 3) + 1];
+  };
+  for (const [id, size] of Object.entries(reviewCaptures)) {
+    const file = await readFile(path.join(root, 'dist', captureSrc(id)));
+    assert.deepEqual(webpSize(file), [size.width, size.height], id);
+    assert.ok(size.width <= 900, id);
+  }
+  const fr = await readFile(path.join(root, 'dist/vos-mots/index.html'), 'utf8');
+  const ar = await readFile(path.join(root, 'dist/ar/vos-mots/index.html'), 'utf8');
+  for (const [html, label] of [[fr, 'Voir la capture d’écran'], [ar, 'شاهدوا صورة الرسالة']]) {
+    const links = [...html.matchAll(/<a class="g-capture-link" href="([^"]+)" data-capture="(\d+)x(\d+)"[^>]*>.*?<span>([^<]+)<\/span><\/a>/g)];
+    assert.deepEqual(links.map((m) => m[1]), reviews.map((r) => captureSrc(r.id)));
+    for (const m of links) assert.equal(m[4], label);
+  }
+  assert.equal((fr.match(/Les photos de profil sont floutées\./g) || []).length, 14);
+  assert.equal((fr.match(/Les photos de profil et le prénom de sa fille sont floutés\./g) || []).length, 1);
+  assert.equal((ar.match(/صور الملف الشخصي مموّهة\./g) || []).length, 14);
+  assert.equal((ar.match(/صور الملف الشخصي واسم ابنتها مموّهة\./g) || []).length, 1);
+  // The homepage's message and the excerpts on the BaZi bracelet and necklace pages have their button too.
+  for (const [file, id] of [['index.html', 'sihem-calme'], ['ar/index.html', 'sihem-calme'], ['products/bracelet-bazi/index.html', 'nadia-bracelet'], ['ar/products/bracelet-bazi/index.html', 'nadia-bracelet'], ['products/collier-bazi/index.html', 'ichraf-collier'], ['ar/products/collier-bazi/index.html', 'ichraf-collier']]) {
+    const html = await readFile(path.join(root, 'dist', file), 'utf8');
+    assert.equal((html.match(/class="g-capture-link"/g) || []).length, 1, file);
+    assert.ok(html.includes(`<a class="g-capture-link" href="${captureSrc(id)}"`), file);
+    assert.match(html, /<script defer src="\/src\/ux\.js">/, file);
+  }
+  const ux = await readFile(path.join(root, 'dist/src/ux.js'), 'utf8');
+  assert.match(ux, /querySelectorAll\('a\[data-capture\]'\)/);
+  assert.match(ux, /showModal\(\)/);
 });
 
 test("delivery is 7 TND on every order and the phone number is asked twice at checkout", async () => {
@@ -456,14 +516,15 @@ test("the learning accessories are prepared from the birth date: 100 TND for the
   assert.doesNotMatch(fr, /Le prix vous est donné/);
   // Her own French text (15 November), in place of the translation the page had before.
   for (const text of ['Cette collection s’appuie sur les fréquences des pierres précieuses', 'je veille sur l’aspect énergétique de chaque pièce', 'les Beaux Noms d’Allah (Al-Asma Al-Husna) et le Saint Coran.']) assert.ok(fr.includes(text), text);
-  // The home page and the Boutique end their category grid with "Livres" and "Accessoires d’étude", two ordinary cards.
+  // Since 21 November 2026 the accessories sit in the Bracelets and Colliers groups (and their own collection page);
+  // the home page and the Boutique show the eight groups, ending with the car pendants and the book.
   for (const file of ['dist/index.html', 'dist/collections/all/index.html', 'dist/ar/index.html', 'dist/ar/boutique/index.html']) {
     const html = await readFile(path.join(root, file), 'utf8');
     assert.doesNotMatch(html, /s-category-wide|excellence-scolaire/, file);
     const cards = [...html.matchAll(/<a class="s-category" href="([^"]+)"/g)].map((m) => m[1]);
     assert.equal(cards.length, 8, file);
-    assert.match(cards[6], /\/(collections\/livres|products\/livre-excellence)\/$/, file);
-    assert.match(cards[7], /\/(collections\/apprentissage|products\/accessoires-apprentissage)\/$/, file);
+    assert.match(cards[6], /\/collections\/voiture\/$/, file);
+    assert.match(cards[7], /\/products\/livre-excellence\/$/, file);
   }
 });
 test("paths: the home page and the Boutique open with Rayda's collections, each door leading to a page with only its pieces", async () => {
@@ -680,4 +741,43 @@ test("the love bottle and the four energy keyrings: her prices, her texts word f
     const cards = [...(await page(file)).matchAll(/data-product-card="([^"]+)"/g)].map((m) => m[1]);
     assert.deepEqual(cards, ['porte-cles-pierre', 'porte-cles-arbre-vie', ...Object.keys(keyrings)], file);
   }
+});
+test("eight groups that show every piece, one photo of each group's pieces together, and a header whose controls read as buttons (21 November 2026)", async () => {
+  const { shopGroups } = await import('../src/shop-pages.mjs');
+  // Every one of the 24 pieces is in one of the eight groups the home page, the Boutique, the header panel and the menu show.
+  assert.deepEqual(shopGroups.map((g) => g.slug), ['bracelets', 'colliers', 'porte-cles', 'portefeuilles', 'objets-dores', 'bouteilles', 'voiture', 'livres']);
+  const grouped = new Set(shopGroups.flatMap((g) => g.product ? [g.product] : [...catalog.collections.find((c) => c.slug === g.slug).productIds]));
+  assert.deepEqual([...catalog.products.filter((p) => !grouped.has(p.id)).map((p) => p.id)], []);
+  assert.deepEqual([...catalog.collections.find((c) => c.slug === 'bouteilles').productIds], ['bouteille-verre', 'bouteille-amour']);
+  assert.deepEqual([...catalog.collections.find((c) => c.slug === 'portefeuilles').productIds], ['portefeuille-hafidha', 'carte-million-dollar']);
+  assert.ok(!catalog.collections.find((c) => c.slug === 'objets-dores').productIds.includes('carte-million-dollar'));
+  if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
+  const page = (file) => readFile(path.join(root, 'dist', file, 'index.html'), 'utf8');
+  // Each card names its group and says what is inside; the photos are labelled as scenes made from Rayda's photos.
+  const home = await page('');
+  for (const g of shopGroups) assert.ok(home.includes(`<h3>${g.name}</h3><p>${g.inside}</p>`), g.slug);
+  assert.match(home, /Les photos sont des mises en scène créées à partir des photos de Rayda\./);
+  const homeAr = await page('ar');
+  for (const g of shopGroups) assert.ok(homeAr.includes(`<h3>${g.nameAr}</h3><p>${g.insideAr}</p>`), g.slug);
+  assert.match(homeAr, /الصور مشاهد مُعَدّة انطلاقًا من صور رايدا\./);
+  // The same header on every kind of page: each control has a visible word, Boutique opens the eight groups with
+  // their photos, and the phone menu starts with the same eight groups.
+  const fr = ['Réseaux', 'Boutique', 'Panier', 'Menu'];
+  const ar = ['تابعونا', 'المتجر', 'سلتي', 'القائمة'];
+  for (const [file, words] of [['', fr], ['collections/all', fr], ['collections/bouteilles', fr], ['products/carte-million-dollar', fr], ['checkout', fr], ['parcours/etudes', fr], ['ar', ar], ['ar/boutique', ar], ['ar/products/bouteille-amour', ar], ['ar/checkout', ar]]) {
+    const html = await page(file);
+    const header = html.match(/<header class="g-header">([\s\S]*?)<\/header>/)[1];
+    for (const word of words) assert.ok(header.includes(`<span class="g-control-word">${word}</span>`) || header.includes(`<b class="g-control-word">${word}</b>`), file + ' ' + word);
+    assert.ok(header.includes('<button class="g-shop-toggle" type="button" data-shop-toggle aria-expanded="false" aria-controls="g-shop-panel">'), file);
+    assert.match(header, /<nav class="g-shop-panel" id="g-shop-panel" aria-label="[^"]+" data-shop-panel hidden>/, file);
+    const tiles = [...header.matchAll(/<a class="g-shop-group" href="([^"]+)"><span class="g-shop-group-photo"><img src="([^"]+)"/g)];
+    assert.deepEqual(tiles.map((m) => m[1]), shopGroups.map((g) => (file.startsWith('ar') ? '/ar' : '') + (g.product ? '/products/' + g.product + '/' : '/collections/' + g.slug + '/')), file);
+    for (const [, , src] of tiles) await access(path.join(root, 'dist', src));
+    assert.ok(header.includes(file.startsWith('ar') ? '<a class="g-shop-panel-all" href="/ar/boutique/">' : '<a class="g-shop-panel-all" href="/collections/all/">'), file);
+    const menu = html.match(/<dialog class="g-menu"[\s\S]*?<\/dialog>/)[0];
+    assert.equal((menu.match(/<a href="[^"]+"><img src="\/assets\/categories\/240\/groupe-/g) || []).length, 8, file);
+    assert.ok(html.includes('<link rel="stylesheet" href="/header.css" />') && html.includes('<script defer src="/src/header.js"></script>'), file);
+  }
+  await access(path.join(root, 'dist/header.css'));
+  await access(path.join(root, 'dist/src/header.js'));
 });

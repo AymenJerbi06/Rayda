@@ -3,7 +3,7 @@ import path from 'node:path';
 import vm from 'node:vm';
 import { thumbSrc } from './commerce-core.js';
 import { guidanceRoutes, renderGuidancePage } from './guidance-pages.mjs';
-import { collectionPage, productPage, checkoutPage, pathPage } from './shop-pages.mjs';
+import { collectionPage, productPage, checkoutPage, pathPage, shopGroups } from './shop-pages.mjs';
 import { arGuidanceRoutes, renderGuidancePageAr } from './guidance-pages-ar.mjs';
 import { productPageAr, checkoutPageAr, collectionPageAr, pathPageAr } from './shop-pages-ar.mjs';
 import { collectionsAr, productsAr, pathsAr } from './catalog-ar.mjs';
@@ -30,17 +30,22 @@ export async function buildGuidance(project, output, config) {
   for (const asset of ['rayda.jpg', 'reflection-journal.png', 'leaf-mark.svg']) {
     await cp(path.join(project, 'assets', 'brand', asset), path.join(output, 'assets', 'brand', asset));
   }
-  for (const file of ['guidance.css', 'commerce.css', 'polish.css', 'layers.css', 'emphasis.css', 'motion.css']) await cp(path.join(project, file), path.join(output, file));
+  for (const file of ['guidance.css', 'commerce.css', 'polish.css', 'layers.css', 'emphasis.css', 'motion.css', 'header.css']) await cp(path.join(project, file), path.join(output, file));
   await cp(path.join(project, 'src', 'admin.css'), path.join(output, 'admin.css'));
-  for (const file of ['guidance.js', 'social-menu.js', 'ux.js', 'motion.js', 'contact-ar.js', 'commerce.js', 'commerce-core.js', 'site-config.js', 'catalog.js', 'admin.js']) {
+  for (const file of ['guidance.js', 'social-menu.js', 'ux.js', 'motion.js', 'header.js', 'contact-ar.js', 'commerce.js', 'commerce-core.js', 'site-config.js', 'catalog.js', 'admin.js']) {
     await cp(path.join(project, 'src', file), path.join(output, 'src', file));
   }
   await mkdir(path.join(output, 'assets', 'products'), { recursive: true });
   await cp(path.join(project, 'assets', 'products', 'organized'), path.join(output, 'assets', 'products', 'organized'), { recursive: true });
-  await mkdir(path.join(output, 'assets', 'categories'), { recursive: true });
-  for (const category of ['bracelets', 'colliers', 'porte-cles', 'portefeuilles', 'objets-dores', 'voiture', 'livres', 'apprentissage']) {
-    await cp(path.join(project, 'assets', 'categories', category + '.webp'), path.join(output, 'assets', 'categories', category + '.webp'));
+  // The family photo of each shop group, and its 240px copy for the header's Boutique panel and the phone menu.
+  await mkdir(path.join(output, 'assets', 'categories', '240'), { recursive: true });
+  for (const group of shopGroups) {
+    for (const folder of ['', '240']) {
+      await cp(path.join(project, 'assets', 'categories', folder, 'groupe-' + group.slug + '.webp'), path.join(output, 'assets', 'categories', folder, 'groupe-' + group.slug + '.webp'));
+    }
   }
+  // The screenshot behind each review (profile pictures blurred), opened from the button under the review.
+  await cp(path.join(project, 'assets', 'avis'), path.join(output, 'assets', 'avis'), { recursive: true });
   const context = { window: {} };
   vm.runInNewContext(await readFile(path.join(project, 'src', 'catalog.js'), 'utf8'), context);
   const catalog = context.window.STORE_CATALOG;

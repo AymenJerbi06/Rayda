@@ -1,0 +1,183 @@
+/* Header, 21 November 2026: one row of controls that all look like buttons.
+   Language, social links, Boutique, basket and (below 1025px) Menu share the site's button shape (9px corners), one height,
+   one border and one type style. Boutique is the one filled button: it opens the panel of the eight shop groups with their
+   photos (src/header.js). Loaded after motion.css. Colours are the site's own tokens; typefaces come from var(--sans) and
+   var(--serif) only. */
+
+.g-header:not(.is-floating){position:relative;z-index:65}
+.g-header{gap:clamp(12px,1.6vw,26px)}
+.g-desktop-nav{margin-left:0;margin-inline-start:auto;gap:clamp(14px,1.6vw,26px)}
+.g-desktop-nav a{position:relative;padding:12px 1px}
+.g-desktop-nav a::after{content:"";position:absolute;inset-inline:1px;bottom:6px;height:1.5px;background:var(--sage);transform:scaleX(0);transform-origin:center;transition:transform .2s ease}
+.g-desktop-nav a:hover::after,.g-desktop-nav a[aria-current="page"]::after{transform:scaleX(1)}
+.g-header-actions{display:flex;align-items:center;gap:10px;flex-shrink:0}
+
+/* One control style. */
+.g-header-actions>:is(.g-lang-switch,.g-shop-toggle,.s-selection-toggle,.g-menu-toggle),.g-header-actions .g-social-toggle{display:inline-flex;flex-direction:row;align-items:center;justify-content:center;gap:8px;width:auto;height:44px;min-width:44px;min-height:44px;margin:0;padding:0 15px;border:1px solid #ffffff3d;border-radius:9px;background:transparent;color:var(--paper);font:600 12px/1 var(--sans);letter-spacing:.07em;text-transform:uppercase;white-space:nowrap;cursor:pointer;box-shadow:none;transition:background .2s ease,border-color .2s ease,color .2s ease,transform .12s ease}
+.g-header-actions>:is(.g-lang-switch,.s-selection-toggle,.g-menu-toggle):hover,.g-header-actions .g-social-toggle:hover,.g-header-actions .g-social-toggle[aria-expanded="true"],.g-header-actions>.g-menu-toggle[aria-expanded="true"]{background:#ffffff14;border-color:var(--sage);color:var(--paper)}
+.g-header-actions :is(.g-lang-switch,.g-shop-toggle,.s-selection-toggle,.g-menu-toggle,.g-social-toggle):focus-visible{outline:2px solid var(--sage);outline-offset:3px}
+.g-header-actions :is(.g-lang-switch,.g-shop-toggle,.s-selection-toggle,.g-social-toggle) svg{width:18px;height:18px;flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.6;color:var(--sage)}
+.g-header-actions .g-lang-switch svg{width:16px;height:16px}
+.g-header-actions .g-lang-switch span[lang="ar"]{font-size:15px}
+.g-control-word{font:inherit;letter-spacing:inherit}
+
+/* Boutique: the filled one. */
+.g-header-actions>.g-shop-toggle{background:var(--sage);border-color:var(--sage);color:var(--forest);padding-inline:16px 12px}
+.g-header-actions>.g-shop-toggle svg{color:var(--forest)}
+.g-header-actions>.g-shop-toggle:hover,.g-header-actions>.g-shop-toggle[aria-expanded="true"]{background:var(--paper);border-color:var(--paper);color:var(--forest)}
+.g-header-actions .g-chevron{width:16px;height:16px;stroke-width:2;transition:transform .2s ease}
+.g-shop-toggle[aria-expanded="true"] .g-chevron{transform:rotate(180deg)}
+
+/* Social links: "@" and its name. */
+.g-header-actions .g-social-toggle .g-at{font:700 15px/1 var(--serif);color:var(--sage);text-transform:none;letter-spacing:0}
+.g-header-actions .g-social-toggle:hover .g-at,.g-header-actions .g-social-toggle[aria-expanded="true"] .g-at{color:var(--sage)}
+
+/* Basket: bag, word and count. */
+.g-header-actions>.s-selection-toggle svg{width:19px;height:20px;stroke-width:1.5}
+.g-header-actions>.s-selection-toggle [data-selection-count]{display:inline-flex;align-items:center;justify-content:center;min-width:22px;height:22px;padding:0 6px;border-radius:11px;background:#ffffff1f;color:var(--paper);font:700 11px/1 var(--sans);letter-spacing:0;font-variant-numeric:tabular-nums}
+
+/* Menu: three equal bars and the word, inside a bordered button. Hidden on wide screens, where the links show. */
+.g-header-actions>.g-menu-toggle{display:none}
+.g-menu-toggle .g-bars{display:inline-flex;flex-direction:column;justify-content:center;gap:4px;width:18px;height:18px;font-style:normal}
+.g-menu-toggle .g-bars span,.g-menu-toggle .g-bars span:first-child,.g-menu-toggle .g-bars span:last-child{display:block;width:18px;height:1.6px;margin:0;align-self:auto;border-radius:1px;background:var(--sage)}
+.g-menu-toggle b.g-control-word{font-weight:600}
+
+/* The Boutique panel, under the header. */
+.g-shop-panel{position:absolute;top:calc(100% - 4px);left:var(--gutter);right:var(--gutter);z-index:80;color:var(--ink)}
+.g-shop-panel[hidden]{display:none}
+.g-shop-panel-inner{background:var(--cream);border-radius:18px;box-shadow:0 34px 70px -24px #000a,0 0 0 1px #00000010;padding:24px 26px 22px;max-height:calc(100dvh - 120px);overflow:auto;overscroll-behavior:contain;animation:g-shop-in .22s ease}
+.g-shop-panel-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+.g-shop-panel-title{margin:0;font:400 30px/1.1 var(--serif);color:var(--forest)}
+.g-shop-panel-all{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 16px;border:1px solid var(--green);border-radius:9px;color:var(--green);font:600 12px/1 var(--sans);letter-spacing:.07em;text-transform:uppercase;white-space:nowrap}
+.g-shop-panel-all:hover{background:var(--green);color:var(--paper)}
+.g-shop-groups{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:14px}
+.g-shop-group{display:flex;flex-direction:column;gap:9px;height:100%;padding:6px 6px 10px;border-radius:14px;color:var(--ink);transition:background .2s ease}
+.g-shop-group:hover{background:var(--paper)}
+.g-shop-group:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.g-shop-group-photo{display:block;border-radius:11px;overflow:hidden;background:var(--cream-deep,#e6dfd4)}
+.g-shop-group-photo img{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:cover;transition:transform .35s ease}
+.g-shop-group:hover .g-shop-group-photo img{transform:scale(1.04)}
+.g-shop-group-text{display:flex;flex-direction:column;gap:4px;padding:0 2px}
+.g-shop-group-text strong{font:400 19px/1.15 var(--serif);color:var(--forest)}
+.g-shop-group-text small{font:500 11.5px/1.45 var(--sans);color:#4f5f56}
+.g-shop-panel-paths{display:flex;align-items:center;flex-wrap:wrap;gap:10px 14px;margin-top:18px;padding-top:16px;border-top:1px solid #23372f1f}
+.g-shop-panel-paths p{margin:0;font:600 12px/1 var(--sans);letter-spacing:.07em;text-transform:uppercase;color:var(--green)}
+.g-shop-panel-paths ul{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.g-shop-panel-paths a{display:inline-flex;align-items:center;min-height:40px;padding:0 16px;border:1px solid #23372f2e;border-radius:9px;background:var(--paper);color:var(--forest);font:600 13px/1 var(--sans)}
+.g-shop-panel-paths a:hover{border-color:var(--green);background:var(--petal,#f3eee6)}
+@keyframes g-shop-in{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+
+/* The phone and tablet menu starts with the shop groups, then the whole shop, then the pages. */
+.g-menu-heading{order:0;margin:0 0 14px;font:600 12px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--sage)}
+.g-menu-groups{order:1;list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px 10px}
+.g-menu-groups a{display:flex;flex-direction:column;gap:7px;color:var(--paper);font:600 12px/1.3 var(--sans)}
+.g-menu-groups a:hover span{color:var(--sage)}
+.g-menu-groups img{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:cover;border-radius:10px}
+
+/* Medium-wide screens: the words on the social and basket buttons give way to their icons. */
+@media (max-width:1240px){
+  .g-header-actions{gap:8px}
+  .g-header-actions .g-social-toggle .g-control-word{display:none}
+  .g-header-actions .g-social-toggle{padding:0 13px}
+}
+@media (max-width:1100px){
+  .g-header-actions>.s-selection-toggle .g-control-word{display:none}
+  .g-header-actions>.s-selection-toggle{padding:0 12px}
+}
+@media (max-width:1279px){
+  .g-shop-groups{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+/* Laptop and landscape-tablet screens that are not tall enough for two rows of big photos: all eight groups stay in one
+   row, with their names only (the home page and the menu still say what is inside each group). */
+@media (min-width:701px) and (max-width:1279px) and (max-height:960px){
+  .g-shop-groups{grid-template-columns:repeat(8,minmax(0,1fr));gap:12px}
+  .g-shop-group{padding:4px 4px 8px;gap:8px}
+  .g-shop-group-text strong{font-size:16px}
+  .g-shop-group-text small{display:none}
+}
+
+/* Below 1025px the page links move into the menu, and Menu shows. */
+@media (max-width:1024px){
+  .g-header-actions{margin-inline-start:auto}
+  .g-header-actions>.g-menu-toggle{display:inline-flex}
+  .g-header-actions>.s-selection-toggle .g-control-word{display:inline}
+  .g-menu[open]>.g-menu-heading{order:0}
+  .g-menu[open]>.g-menu-groups{order:1}
+  .g-menu[open]>.g-button{order:2;align-self:stretch;width:auto;margin:22px 0 26px;min-height:52px}
+  .g-menu[open]>nav{order:3;margin-bottom:24px}
+  .g-menu[open]>.g-social-row{order:4;margin-top:0}
+  .g-menu[open]>p{order:5}
+  .g-shop-panel-inner{max-height:calc(100dvh - 110px)}
+}
+@media (max-width:860px){
+  .g-header-actions>.s-selection-toggle .g-control-word{display:none}
+}
+
+/* Phones: a shorter row, the same shapes. The header's own gap comes back down to a phone size, the basket becomes a
+   square with its count on the corner, and Boutique and Menu keep their words (10.5px, as the old phone Boutique link). */
+@media (max-width:700px){
+  .g-header{gap:8px}
+  .g-header-actions{gap:5px}
+  .g-header-actions>:is(.g-lang-switch,.g-shop-toggle,.s-selection-toggle,.g-menu-toggle){height:40px;min-height:40px;min-width:38px;padding:0 10px;font-size:10.5px;letter-spacing:.03em;gap:6px}
+  .g-header-actions>.g-lang-switch{padding:0 7px}
+  .g-header-actions .g-lang-switch svg{display:none}
+  .g-header-actions .g-lang-switch span[lang="ar"]{font-size:15px}
+  .g-header-actions>.g-shop-toggle{padding-inline:10px}
+  .g-header-actions>.g-shop-toggle>svg:first-child,.g-header-actions>.g-shop-toggle .g-chevron{display:none}
+  .g-header-actions>.s-selection-toggle{width:38px;padding:0}
+  .g-header-actions>.s-selection-toggle svg{width:19px;height:20px}
+  .g-header-actions>.s-selection-toggle [data-selection-count]{position:absolute;top:-7px;inset-inline-end:-7px;min-width:19px;height:19px;padding:0 5px;border-radius:10px;background:var(--green);color:var(--paper);font-size:10px;box-shadow:0 0 0 2px var(--forest)}
+  .g-header-actions>.g-menu-toggle{padding:0 9px}
+  .g-shop-panel{left:10px;right:10px}
+  .g-shop-panel-inner{padding:18px 14px 16px;border-radius:16px;max-height:calc(100dvh - 86px)}
+  .g-shop-panel-head{margin-bottom:12px}
+  .g-shop-panel-title{font-size:23px}
+  .g-shop-panel-all{min-height:40px;padding:0 12px;font-size:11px}
+  .g-shop-groups{gap:10px 8px}
+  .g-shop-group{padding:0;gap:6px}
+  .g-shop-group:hover{background:none}
+  .g-shop-group-photo{border-radius:9px}
+  .g-shop-group-text strong{font:600 11.5px/1.25 var(--sans);color:var(--ink)}
+  .g-shop-group-text small{display:none}
+  .g-shop-panel-paths{margin-top:14px;padding-top:12px;gap:8px}
+  .g-shop-panel-paths a{min-height:38px;padding:0 12px;font-size:12.5px}
+}
+/* Narrower phones: a smaller wordmark and tighter buttons, so the row stays on one line with every word kept.
+   Measured with the site's real fonts at 430, 414, 412, 393, 390, 375 and 360px, in French and in Arabic. */
+@media (max-width:429px){
+  .g-header .g-brand>span{font-size:34px}
+}
+@media (max-width:409px){
+  .g-header{padding-inline:10px}
+  .g-header .g-brand>span{font-size:32px}
+}
+@media (max-width:389px){
+  .g-header{gap:6px}
+  .g-header .g-brand>span{font-size:29px}
+  .g-header-actions{gap:4px}
+  .g-header-actions>:is(.g-shop-toggle,.g-menu-toggle){font-size:10px;letter-spacing:.02em}
+  .g-header-actions>.g-shop-toggle{padding-inline:9px}
+  .g-header-actions>.g-menu-toggle{padding:0 8px}
+  .g-header-actions>.g-lang-switch{min-width:36px;padding:0 6px}
+  .g-header-actions>.s-selection-toggle{width:36px;min-width:36px}
+}
+/* Below 360px (very small phones), the wordmark shrinks again and Menu keeps its bordered button without the word. */
+@media (max-width:359px){
+  .g-header .g-brand>span{font-size:27px}
+  .g-header-actions>.g-menu-toggle b.g-control-word{display:none}
+  .g-header-actions>.g-menu-toggle{width:40px;padding:0}
+}
+
+/* Arabic pages: the same row, mirrored by the page direction; the words are never letter-spaced. */
+[dir="rtl"] .g-header-actions :is(.g-lang-switch,.g-shop-toggle,.s-selection-toggle,.g-menu-toggle,.g-social-toggle){letter-spacing:0;font-size:13px}
+[dir="rtl"] .g-shop-panel-all,[dir="rtl"] .g-shop-panel-paths p,[dir="rtl"] .g-menu-heading{letter-spacing:0;font-size:13px}
+[dir="rtl"] .g-shop-group-text strong{font-family:var(--serif)}
+@media (max-width:700px){
+  [dir="rtl"] .g-header-actions :is(.g-lang-switch,.g-shop-toggle,.s-selection-toggle,.g-menu-toggle){font-size:12px}
+  [dir="rtl"] .g-shop-group-text strong{font:700 12px/1.3 var(--sans)}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .g-shop-panel-inner{animation:none}
+  .g-chevron,.g-shop-group-photo img,.g-desktop-nav a::after{transition:none}
+}
