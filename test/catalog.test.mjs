@@ -114,8 +114,9 @@ test("the opening hero and its animation hooks are preserved; only the welcome p
 test("homepage carries the full brand narrative with illustrated categories and real product photos in the shop", async () => {
   const home = await readFile(path.join(root,'dist/index.html'),'utf8');
   const main = home.match(/<main[^>]*>([\s\S]*?)<\/main>/)[1];
-  // Hero, paths, products, approach intro, pillars, Rayda's bio, shifts/benefits, testimonial teaser.
-  assert.equal((main.match(/<section /g)||[]).length,8);
+  // Hero, paths, products, approach intro, pillars, Rayda's bio, coaching and courses (24 November 2026), shifts/benefits,
+  // testimonial teaser.
+  assert.equal((main.match(/<section /g)||[]).length,9);
   assert.equal((main.match(/class="s-category[" ]/g)||[]).length,8);
   assert.doesNotMatch(main,/assets\/products\//);
   // One family photo per group (21 November 2026): every piece of the group side by side.
@@ -780,4 +781,121 @@ test("eight groups that show every piece, one photo of each group's pieces toget
   }
   await access(path.join(root, 'dist/header.css'));
   await access(path.join(root, 'dist/src/header.js'));
+});
+
+test("coaching: slots come from Rayda's hours, a slot is held during payment and booked only once paid (24 November 2026)", async () => {
+  const C = await import('../src/coaching-core.js');
+  const now = Date.UTC(2026, 10, 30, 8, 0); // Monday 30 November 2026, 09:00 in Tunis
+  const s = Object.assign({}, C.DEFAULT_COACHING, { exceptions: [{ date: '2026-12-02', closed: true }] });
+  assert.deepEqual(C.tunisNow(now), { date: '2026-11-30', minutes: 540 });
+  // Tuesday: 10:00-12:30 and 15:00-18:00, one-hour sessions every 30 minutes; today is too close (24 hours' notice).
+  assert.deepEqual(C.daySlots(s, [], '2026-12-01', 60, now).map((x) => x.start), ['10:00', '10:30', '11:00', '11:30', '15:00', '15:30', '16:00', '16:30', '17:00']);
+  assert.equal(C.daysOverview(s, [], 30, now)[0].status, 'soon');
+  assert.equal(C.daysOverview(s, [], 30, now).find((d) => d.date === '2026-12-02').status, 'closed');
+  assert.equal(C.daysOverview(s, [], 30, now).find((d) => d.date === '2026-12-06').status, 'closed'); // Sunday
+  // Holding 10:30-11:30 blocks the 30-minute slots it covers, for everyone, until the hold lapses.
+  const held = C.createHold(s, [], { minutes: 60, date: '2026-12-01', start: '10:30', client: { name: 'A' } }, now, 'b1');
+  assert.ok(held.ok);
+  assert.equal(held.booking.status, 'pending');
+  assert.equal(held.booking.holdUntil, now + 15 * 60000);
+  const taken = (bookings, at) => C.daySlots(s, bookings, '2026-12-01', 30, at).filter((x) => x.status === 'taken').map((x) => x.start);
+  assert.deepEqual(taken(held.bookings, now), ['10:30', '11:00']);
+  assert.deepEqual(C.createHold(s, held.bookings, { minutes: 30, date: '2026-12-01', start: '11:00' }, now, 'b2'), { ok: false, reason: 'taken' });
+  assert.deepEqual(taken(held.bookings, now + 16 * 60000), [], 'an unpaid hold lapses on its own');
+  // Paid: booked for good, and a second payment report changes nothing.
+  const paid = C.confirmBooking(s, held.bookings, 'b1', { provider: 'demo' }, now + 5 * 60000);
+  assert.ok(paid.ok);
+  assert.equal(C.bookingState(paid.booking, now + 1e9), 'confirmed');
+  assert.deepEqual(taken(paid.bookings, now + 30 * 60000), ['10:30', '11:00'], 'still taken after the hold would have lapsed');
+  assert.ok(C.confirmBooking(s, paid.bookings, 'b1', {}, now).ok);
+  // A late payment books the slot only if nobody took it meanwhile.
+  const lapsed = C.createHold(s, [], { minutes: 30, date: '2026-12-01', start: '10:00' }, now, 'late');
+  const other = C.createHold(s, lapsed.bookings, { minutes: 30, date: '2026-12-01', start: '10:00' }, now + 20 * 60000, 'other');
+  assert.ok(other.ok);
+  assert.deepEqual(C.confirmBooking(s, other.bookings, 'late', {}, now + 21 * 60000), { ok: false, reason: 'conflict' });
+  // Rayda cancels: the slot is free again. A pause between sessions widens what a booking blocks.
+  assert.deepEqual(taken(C.cancelBooking(paid.bookings, 'b1', 'rayda', now).bookings, now), []);
+  const paused = Object.assign({}, s, { bufferMinutes: 30 });
+  assert.deepEqual(C.daySlots(paused, paid.bookings, '2026-12-01', 30, now).filter((x) => x.status === 'taken').map((x) => x.start), ['10:00', '10:30', '11:00', '11:30']);
+  // A session Rayda switched off cannot be held, nor can a slot outside her hours.
+  const offline = Object.assign({}, s, { sessions: [{ minutes: 30, price: 80, enabled: true }, { minutes: 60, price: 140, enabled: false }] });
+  assert.equal(C.createHold(offline, [], { minutes: 60, date: '2026-12-01', start: '10:00' }, now, 'x').reason, 'session');
+  assert.equal(C.createHold(s, [], { minutes: 30, date: '2026-12-01', start: '13:00' }, now, 'x').reason, 'closed');
+  assert.equal(C.createHold(offline, [], { minutes: 30, date: '2026-12-01', start: '10:00' }, now, 'x').booking.price, 80);
+  assert.match(C.icsFor(paid.booking, 'Séance', ''), /DTSTART:20261201T093000Z\r\nDTEND:20261201T103000Z/);
+});
+
+test("coaching and Formations pages in both languages, linked from every page, with the logic's words and no promises (24 November 2026)", async () => {
+  if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
+  assert.equal(configContext.window.STORE_CONFIG.coaching.mode, 'preview');
+  const page = (file) => readFile(path.join(root, 'dist', file, 'index.html'), 'utf8');
+  for (const [prefix, coaching, formations] of [['', 'Coaching', 'Formations'], ['ar/', 'الكوتشينغ', 'الدورات']]) {
+    for (const file of ['', 'contact', 'products/cle-de-vie', 'coaching', 'formations']) {
+      const html = await page(prefix + file);
+      assert.ok(html.includes(`<a href="/${prefix}coaching/">${coaching}</a><a href="/${prefix}formations/">${formations}</a>`), prefix + file);
+    }
+    const book = await page(prefix + 'coaching');
+    assert.match(book, /data-coaching="book"/);
+    // One question at a time (24 November 2026, night): five steps, only the first showing, a button to go on from
+    // each of the first four, a way back from the last four, a dot per step, and one submit at the end.
+    assert.equal((book.match(/<section class="c-panel" data-panel="[1-5]"/g) || []).length, 5);
+    assert.equal((book.match(/data-panel="[2-5]" hidden/g) || []).length, 4);
+    assert.equal((book.match(/ data-next>/g) || []).length, 4);
+    assert.equal((book.match(/ data-back>/g) || []).length, 4);
+    assert.equal((book.match(/<li data-dot="[1-5]"/g) || []).length, 5);
+    assert.equal((book.match(/type="submit"/g) || []).length, 1);
+    assert.equal((book.match(/<input type="radio" name="minutes" value="(30|60)"/g) || []).length, 2);
+    for (const field of ['name="name"', 'name="phone" type="tel"', 'name="email" type="email"']) assert.match(book, new RegExp(field + '[^>]*required'), field);
+    assert.match(book, /data-coaching-preview hidden/);
+    assert.match(book, /<script type="module" src="\/src\/coaching\.js"><\/script>/);
+    assert.match(await page(prefix + 'coaching/paiement'), /data-coaching="pay"/);
+    assert.match(await page(prefix + 'coaching/confirmation'), /data-coaching="done"/);
+    const courses = await page(prefix + 'formations');
+    assert.equal((courses.match(/class="c-course"/g) || []).length, 4);
+    assert.match(courses, /<button class="c-player-play" type="button" disabled/);
+    assert.match(courses, /https:\/\/wa\.me\/\d+\?text=/);
+    assert.match(await page(prefix.replace(/\/$/, '')), /<section class="c-offers">/);
+    assert.match(await page(prefix + 'accompagnement'), /<section class="c-banner">/);
+  }
+  const fr = await page('coaching');
+  assert.ok(fr.includes('Il n’est réservé qu’une fois le paiement confirmé.'));
+  assert.ok(fr.includes('ne garantit aucun résultat particulier'));
+  assert.ok((await page('formations')).includes('elles ne garantissent aucun résultat, financier ou autre.'));
+  assert.ok((await page('ar/formations')).includes('ولا تضمن أي نتيجة، مالية أو غيرها.'));
+  for (const file of ['coaching', 'ar/coaching', 'formations', 'ar/formations']) assert.doesNotMatch(await page(file), /Rayda vous appelle|Rayda vous recontacte|تتصل بكم رايد|رايدة/, file);
+  const js = await readFile(path.join(root, 'src/coaching.js'), 'utf8');
+  assert.ok(js.includes('Nous vous contactons avant la séance') && js.includes('يقع الاتصال بكم قبل الجلسة'));
+  for (const file of ['coaching.css', 'src/coaching.js', 'src/coaching-core.js', 'src/coaching-store.js', 'src/admin-coaching.js', 'src/courses-data.js']) await access(path.join(root, 'dist', file));
+  // The admin: Rayda's hours, days off, prices, rules, bookings and the e-mails Resend will send; and her courses.
+  const admin = await readFile(path.join(root, 'dist/admin/coaching/index.html'), 'utf8');
+  for (const hook of ['data-week', 'data-bookings-table', 'data-weekly-form', 'data-exception-form', 'data-sessions-form', 'data-rules-form', 'data-outbox-table']) assert.ok(admin.includes(hook), hook);
+  assert.match(admin, /<script type="module" src="\/src\/admin-coaching\.js"><\/script>/);
+  assert.match(await readFile(path.join(root, 'dist/admin/formations/index.html'), 'utf8'), /data-add-course-form/);
+  assert.match(await readFile(path.join(root, 'dist/admin/index.html'), 'utf8'), /href="\/admin\/coaching\/"/);
+});
+
+test("the leaf moves: the same drawing taken apart, a curtain between pages, loaders and blooms, and reduced motion respected (24 November 2026)", async () => {
+  const { leafArt } = await import('../src/leaf-art.mjs');
+  const { leaf } = await import('../src/guidance-pages.mjs');
+  const art = leafArt(leaf);
+  const shapes = (svg) => [...svg.matchAll(/ d="([^"]+)"/g)].map((m) => m[1]).sort();
+  assert.deepEqual(shapes(art), shapes(leaf), 'every shape of the locked drawing, unchanged');
+  assert.equal((art.match(/class="lf-leaf"/g) || []).length, 10);
+  assert.match(art, /class="lf-stem"[^>]*pathLength="1"/);
+  const css = await readFile(path.join(root, 'leaf.css'), 'utf8');
+  assert.match(css, /prefers-reduced-motion:reduce/);
+  assert.doesNotMatch(css.replace(/\/\*[\s\S]*?\*\//g, ''), /font-family|font\s*:/);
+  const js = await readFile(path.join(root, 'src/leaf.js'), 'utf8');
+  assert.match(js, /prefers-reduced-motion: reduce/);
+  assert.match(js, /pageshow/);
+  if (configContext.window.STORE_CONFIG.siteMode !== 'guidance') return;
+  for (const file of ['dist/index.html', 'dist/ar/index.html', 'dist/coaching/index.html', 'dist/ar/formations/index.html', 'dist/checkout/index.html', 'dist/products/bracelet-bazi/index.html']) {
+    const html = await readFile(path.join(root, file), 'utf8');
+    assert.ok(html.includes('<div class="lf-curtain" aria-hidden="true"><svg class="lf-art"'), file);
+    assert.ok(html.indexOf("sessionStorage.getItem('lf-nav')") < html.indexOf('<body'), file + ': the curtain is decided before the page paints');
+    assert.ok(html.includes('<link rel="stylesheet" href="/leaf.css" />') && html.includes('<script defer src="/src/leaf.js"></script>'), file);
+  }
+  const commerce = await readFile(path.join(root, 'src/commerce.js'), 'utf8');
+  assert.match(commerce, /IssolatejLeaf\.go\(checkout/);
+  assert.match(commerce, /IssolatejLeaf\?\.bloom\(result\)/);
 });

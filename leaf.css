@@ -1,0 +1,65 @@
+/* The leaf in motion (24 November 2026). The site's own leaf drawing, taken apart by src/leaf-art.mjs: its stem is
+   drawn from the bottom up and each leaf opens from the stem. It plays in four places:
+   - between two pages: a forest curtain grows from the link that was clicked, the leaf grows on it, and on the next
+     page the curtain lifts while the leaves let go;
+   - while something loads (the review screenshots, the coaching agenda, the payment step);
+   - when an order or a coaching session is confirmed: the leaf blooms above the message;
+   - each time the basket opens: a small leaf grows beside its title.
+   Colours are the site's tokens; no typeface is set. Visitors who prefer reduced motion see the finished leaf, still. */
+
+:root{--lf-ink:var(--sage,#a7ce9a);--lf-ease:cubic-bezier(.65,.05,.35,1);--lf-spring:cubic-bezier(.3,1.5,.5,1)}
+.lf-art{display:block;overflow:visible}
+.lf-art .lf-leaf{transform-box:view-box}
+
+/* ---------- The drawing grows: stem first, then each leaf opens as the stem reaches it ---------- */
+@keyframes lf-draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes lf-open{0%{transform:rotate(calc(var(--fold) * 62deg)) scale(0);opacity:0}45%{opacity:1}72%{transform:rotate(calc(var(--fold) * -7deg)) scale(1.06)}100%{transform:none;opacity:1}}
+@keyframes lf-sway{0%,100%{transform:none}50%{transform:rotate(calc(var(--fold) * -8deg))}}
+.lf-grow .lf-stem{stroke-dasharray:1;stroke-dashoffset:1;animation:lf-draw var(--lf-grow,640ms) var(--lf-ease) forwards}
+.lf-grow .lf-leaf{opacity:0;animation:lf-open 480ms var(--lf-spring) forwards;animation-delay:calc(var(--lf-grow,640ms) * (var(--i) + 1) / 11)}
+/* Once grown, the leaves keep breathing in the wind: a sign that something is still on its way. */
+.lf-grow.lf-sway .lf-leaf{animation:lf-open 480ms var(--lf-spring) forwards,lf-sway 2.4s ease-in-out infinite;animation-delay:calc(var(--lf-grow,640ms) * (var(--i) + 1) / 11),calc(var(--lf-grow,640ms) + 480ms + var(--i) * -.2s)}
+
+/* ---------- Between two pages ---------- */
+.lf-curtain{position:fixed;inset:0;z-index:2147483000;display:none;place-items:center;background:var(--forest,#21362f);color:var(--lf-ink);pointer-events:none}
+.lf-curtain .lf-art{width:clamp(92px,13vw,150px);height:auto}
+html.lf-leave .lf-curtain,html.lf-arrive .lf-curtain{display:grid}
+/* Leaving: the curtain grows from the link that was pressed (staging), the leaf grows on it. */
+@keyframes lf-cover{from{clip-path:circle(0 at var(--lf-x,50%) var(--lf-y,50%))}to{clip-path:circle(150vmax at var(--lf-x,50%) var(--lf-y,50%))}}
+html.lf-leave .lf-curtain{pointer-events:auto;animation:lf-cover 400ms var(--lf-ease) forwards}
+html.lf-leave .lf-curtain .lf-art{--lf-grow:360ms}
+html.lf-leave .lf-curtain .lf-stem{stroke-dasharray:1;stroke-dashoffset:1;animation:lf-draw 360ms var(--lf-ease) 40ms forwards}
+html.lf-leave .lf-curtain .lf-leaf{opacity:0;animation:lf-open 300ms var(--lf-spring) forwards,lf-sway 2.4s ease-in-out infinite;animation-delay:calc(40ms + 360ms * (var(--i) + 1) / 11),calc(700ms + var(--i) * -.2s)}
+/* Arriving: the next page opens behind the grown leaf; the leaves let go, top first, and the curtain lifts
+   with a rounded edge, like the arches of the site's photos. */
+@keyframes lf-lift{0%{clip-path:ellipse(150% 150% at 50% 0%)}100%{clip-path:ellipse(150% 0% at 50% 0%);visibility:hidden}}
+@keyframes lf-let-go{0%{transform:none;opacity:1}100%{transform:translate(calc(var(--fold) * -70px),-150px) rotate(calc(var(--fold) * -38deg)) scale(.7);opacity:0}}
+@keyframes lf-undraw{from{stroke-dashoffset:0}to{stroke-dashoffset:-1}}
+html.lf-arrive .lf-curtain{animation:lf-lift 520ms var(--lf-ease) 170ms forwards}
+html.lf-arrive .lf-curtain .lf-stem{stroke-dasharray:1;animation:lf-undraw 420ms var(--lf-ease) 120ms forwards}
+html.lf-arrive .lf-curtain .lf-leaf{animation:lf-let-go 440ms cubic-bezier(.5,0,.75,0) forwards;animation-delay:calc(40ms + (9 - var(--i)) * 16ms)}
+
+/* ---------- While something loads ---------- */
+@keyframes lf-breathe{0%,100%{transform:none;opacity:1}45%{transform:rotate(calc(var(--fold) * 24deg)) scale(.5);opacity:.3}}
+.lf-loader{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:var(--green,#315e50);font-size:12px;font-weight:600;letter-spacing:.04em;text-align:center}
+.lf-loader .lf-art{width:46px;height:auto}
+.lf-loader .lf-stem{stroke-dasharray:1;stroke-dashoffset:1;animation:lf-draw 700ms var(--lf-ease) forwards}
+.lf-loader .lf-leaf{animation:lf-breathe 1.5s ease-in-out infinite;animation-delay:calc(var(--i) * .11s)}
+[dir="rtl"] .lf-loader{font-size:14px;letter-spacing:0}
+.lf-loader.on-forest{color:var(--lf-ink)}
+
+/* ---------- When an order or a booking is confirmed ---------- */
+@keyframes lf-ring{0%{transform:scale(.3);opacity:.55}100%{transform:scale(1.6);opacity:0}}
+.lf-bloom{position:relative;display:grid;place-items:center;width:84px;height:108px;margin:0 auto 6px;color:var(--green,#315e50)}
+.lf-bloom::before{content:"";position:absolute;inset:14px 4px;border-radius:50%;background:var(--sage,#a7ce9a);opacity:0;animation:lf-ring 900ms ease-out 520ms}
+.lf-bloom .lf-art{position:relative;width:62px;height:auto;--lf-grow:700ms}
+
+/* ---------- The basket opens: a small leaf grows beside its title ---------- */
+.lf-mark{display:inline-block;width:24px;margin-inline-end:12px;vertical-align:-3px;color:var(--green,#315e50)}
+.lf-mark .lf-art{width:100%;height:auto;--lf-grow:520ms}
+
+@media(prefers-reduced-motion:reduce){
+  .lf-curtain{display:none!important}
+  .lf-grow .lf-stem,.lf-loader .lf-stem{stroke-dashoffset:0}
+  .lf-grow .lf-leaf{opacity:1}
+}

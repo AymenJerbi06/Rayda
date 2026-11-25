@@ -79,3 +79,47 @@ button.g-button.a-full{width:100%;justify-content:center}
   .a-nav{flex-direction:row}
   .a-main{padding:24px 18px 48px}
 }
+/* Coaching & agenda and Formations (24 November 2026) */
+.a-week-nav{display:flex;align-items:center;gap:10px;font-size:13.5px}
+.a-week-nav b{min-width:150px;text-align:center}
+.a-week-wrap{overflow-x:auto;padding-bottom:4px}
+.a-week{display:grid;grid-template-columns:52px repeat(7,minmax(108px,1fr));gap:8px;min-width:860px}
+.a-hours{position:relative;margin-top:40px}
+.a-hours span{position:absolute;right:6px;transform:translateY(-50%);font:600 11px/1 var(--sans);color:#7d8a82}
+.a-day-head{margin:0 0 8px;height:32px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:13px}
+.a-day-head em{font-style:normal;font-size:10.5px;font-weight:700;color:#8a5a12}
+.a-day.is-today .a-day-head b{background:var(--forest);color:var(--sage);padding:3px 8px;border-radius:999px}
+.a-day.is-past{opacity:.55}
+.a-day-body{position:relative;border-radius:12px;background:repeating-linear-gradient(to bottom,#e9e4da 0 1px,transparent 1px 44px),#f4f0e8}
+.a-block{position:absolute;left:4px;right:4px;border-radius:9px;padding:4px 7px;overflow:hidden;font-size:11.5px;line-height:1.25}
+.a-block.is-open{background:#dbe9d3;border:1px dashed #9cc08c;color:#2e5c3e}
+.a-block.is-booked{z-index:1;background:var(--forest);color:var(--paper);box-shadow:0 6px 14px -8px #0008}
+.a-block.is-pending{z-index:1;background:repeating-linear-gradient(135deg,#fdecc8 0 6px,#f7dfac 6px 12px);border:1px solid #e2b96a;color:#6b4a0f}
+.a-block b{display:block;font-size:11.5px}
+.a-block span{display:block;font-size:11px;opacity:.9}
+.a-day-closed{position:absolute;inset:8px 6px auto;padding:6px 8px;border-radius:8px;background:#ece7de;color:#7d8a82;font-size:11.5px;font-weight:600;text-align:center}
+.a-week-legend{list-style:none;display:flex;flex-wrap:wrap;gap:8px 18px;margin:14px 0 0;padding:0;font-size:12px;font-weight:600;color:#4c5952}
+.a-week-legend li{display:flex;align-items:center;gap:7px}
+.a-week-legend i{width:14px;height:14px;border-radius:4px}
+.a-week-legend i.is-open{background:#dbe9d3;border:1px dashed #9cc08c}
+.a-week-legend i.is-booked{background:var(--forest)}
+.a-week-legend i.is-pending{background:repeating-linear-gradient(135deg,#fdecc8 0 3px,#f7dfac 3px 6px);border:1px solid #e2b96a}
+.a-week-legend i.is-closed{background:#ece7de}
+.a-weekly{display:grid;gap:10px}
+.a-weekly-row{display:grid;grid-template-columns:170px 1fr;align-items:start;gap:14px;padding:12px 14px;border:1px solid #e4e0d6;border-radius:12px;background:#faf7f1}
+.a-weekly-row.is-off{background:transparent}
+.a-weekly-row.is-off .a-ranges{display:none}
+.a-switch-line{display:flex;align-items:center;gap:12px;font-size:14px;cursor:pointer;padding-top:6px}
+.a-ranges{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.a-range{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--line);border-radius:10px;background:var(--paper);font-size:13px}
+.a-range input{border:0;background:transparent;font:600 14px/1 var(--sans);color:var(--ink)}
+.a-add-range{padding:9px 14px;font-size:12px}
+.a-session{display:flex;flex-direction:column;gap:12px;padding:16px;border:1px solid #e4e0d6;border-radius:12px;background:#faf7f1}
+.a-session p{margin:0;font-size:14px}
+.a-saved{margin:0;text-align:right;font-size:12.5px;font-weight:700;color:#2e5c3e}
+.a-note{display:block;margin-top:3px;color:#7d8a82;font-size:12px;font-weight:500}
+.a-table tr.is-muted td{opacity:.55}
+.a-wide-btn{width:auto;padding:0 12px;font:700 12px/1 var(--sans)}
+.a-icon-btn.is-armed{background:#8a3a2f;border-color:#8a3a2f;color:#fff;width:auto;padding:0 10px;font:700 12px/1 var(--sans)}
+.a-inline-select{padding:7px 10px!important;font-size:13px!important}
+@media(max-width:860px){.a-weekly-row{grid-template-columns:1fr}}

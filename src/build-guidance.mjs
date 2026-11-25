@@ -2,12 +2,15 @@ import { access, cp, mkdir, rm, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import vm from 'node:vm';
 import { thumbSrc } from './commerce-core.js';
-import { guidanceRoutes, renderGuidancePage } from './guidance-pages.mjs';
+import { guidanceRoutes, renderGuidancePage, leaf } from './guidance-pages.mjs';
+import { coachingBookPage, coachingPayPage, coachingDonePage, formationsPage, coachingTitles } from './coaching-pages.mjs';
+import { leafArt } from './leaf-art.mjs';
+import { courses } from './courses.mjs';
 import { collectionPage, productPage, checkoutPage, pathPage, shopGroups } from './shop-pages.mjs';
 import { arGuidanceRoutes, renderGuidancePageAr } from './guidance-pages-ar.mjs';
 import { productPageAr, checkoutPageAr, collectionPageAr, pathPageAr } from './shop-pages-ar.mjs';
 import { collectionsAr, productsAr, pathsAr } from './catalog-ar.mjs';
-import { adminLoginPage, adminDashboardPage, adminProductsPage, adminPromoCodesPage, adminOrdersPage, adminSettingsPage } from './admin-pages.mjs';
+import { adminLoginPage, adminDashboardPage, adminProductsPage, adminPromoCodesPage, adminOrdersPage, adminSettingsPage, adminCoachingPage, adminCoursesPage } from './admin-pages.mjs';
 
 // French typography: a non-breaking space keeps ?, !, :, ; and » with the word before them (and « with
 // the word after it), so they never start a line on their own. Only text between tags is touched.
@@ -30,9 +33,9 @@ export async function buildGuidance(project, output, config) {
   for (const asset of ['rayda.jpg', 'reflection-journal.png', 'leaf-mark.svg']) {
     await cp(path.join(project, 'assets', 'brand', asset), path.join(output, 'assets', 'brand', asset));
   }
-  for (const file of ['guidance.css', 'commerce.css', 'polish.css', 'layers.css', 'emphasis.css', 'motion.css', 'header.css']) await cp(path.join(project, file), path.join(output, file));
+  for (const file of ['guidance.css', 'commerce.css', 'polish.css', 'layers.css', 'emphasis.css', 'motion.css', 'header.css', 'leaf.css', 'coaching.css']) await cp(path.join(project, file), path.join(output, file));
   await cp(path.join(project, 'src', 'admin.css'), path.join(output, 'admin.css'));
-  for (const file of ['guidance.js', 'social-menu.js', 'ux.js', 'motion.js', 'header.js', 'contact-ar.js', 'commerce.js', 'commerce-core.js', 'site-config.js', 'catalog.js', 'admin.js']) {
+  for (const file of ['guidance.js', 'social-menu.js', 'leaf.js', 'coaching.js', 'coaching-core.js', 'coaching-store.js', 'admin-coaching.js', 'ux.js', 'motion.js', 'header.js', 'contact-ar.js', 'commerce.js', 'commerce-core.js', 'site-config.js', 'catalog.js', 'admin.js']) {
     await cp(path.join(project, 'src', file), path.join(output, 'src', file));
   }
   await mkdir(path.join(output, 'assets', 'products'), { recursive: true });
@@ -58,9 +61,20 @@ export async function buildGuidance(project, output, config) {
     await mkdir(dir, { recursive: true });
     await writeFile(path.join(dir, 'index.html'), frenchSpacing(renderGuidancePage(route, config, catalog)));
   }
+  // Coaching (agenda, payment step, confirmation) and Formations, in both languages.
+  const whatsapp = 'https://wa.me/' + config.contact.phone.replace(/\D/g, '');
+  const art = className => leafArt(leaf, className);
+  const coachingRoutes = lang => [
+    { route: 'coaching', title: coachingTitles[lang].book, content: coachingBookPage(lang, whatsapp) },
+    { route: 'coaching/paiement', title: coachingTitles[lang].pay, content: coachingPayPage(lang) },
+    { route: 'coaching/confirmation', title: coachingTitles[lang].done, content: coachingDonePage(lang) },
+    { route: 'formations', title: coachingTitles[lang].formations, content: formationsPage(lang, whatsapp, art) }
+  ];
+  // The admin's Formations page starts from the same list as the public page.
+  await writeFile(path.join(output, 'src', 'courses-data.js'), 'window.ISSOLATEJ_COURSES = ' + JSON.stringify(courses) + ';');
   const shopRoutes = catalog.collections.map(collection => ({ route: 'collections/' + collection.slug, title: collection.name, content: collectionPage(collection, catalog) }))
     .concat(catalog.products.map(product => ({ route: 'products/' + product.slug, title: product.name, content: productPage(product, catalog) })), [{ route: 'checkout', title: 'Votre sélection, avec Rayda', content: checkoutPage }])
-    .concat((catalog.paths || []).map(path => ({ route: 'parcours/' + path.slug, title: path.name, content: pathPage(path, catalog) })));
+    .concat((catalog.paths || []).map(path => ({ route: 'parcours/' + path.slug, title: path.name, content: pathPage(path, catalog) })), coachingRoutes('fr'));
   for (const entry of shopRoutes) {
     const dir = path.join(output, entry.route);
     await mkdir(dir, { recursive: true });
@@ -78,14 +92,14 @@ export async function buildGuidance(project, output, config) {
   }
   const arShopRoutes = catalog.collections.filter(c => c.slug !== 'all').map(collection => ({ route: 'collections/' + collection.slug, title: collectionsAr[collection.slug]?.name || collection.name, content: null, kind: 'collection', data: collection }))
     .concat(catalog.products.map(product => ({ route: 'products/' + product.slug, title: productsAr[product.id]?.name || product.name, content: productPageAr(product, catalog) })), [{ route: 'checkout', title: 'اختياركم، مع رايدا', content: checkoutPageAr }])
-    .concat((catalog.paths || []).map(path => ({ route: 'parcours/' + path.slug, title: pathsAr[path.slug]?.name || path.name, content: pathPageAr(path, catalog) })));
+    .concat((catalog.paths || []).map(path => ({ route: 'parcours/' + path.slug, title: pathsAr[path.slug]?.name || path.name, content: pathPageAr(path, catalog) })), coachingRoutes('ar'));
   for (const entry of arShopRoutes) {
     const dir = path.join(output, 'ar', entry.route);
     await mkdir(dir, { recursive: true });
     const content = entry.kind === 'collection' ? collectionPageAr(entry.data, catalog) : entry.content;
     await writeFile(path.join(dir, 'index.html'), renderGuidancePageAr(entry.route, config, catalog, { title: entry.title, content }));
   }
-  const adminRoutes = [['login', adminLoginPage], ['', adminDashboardPage], ['products', adminProductsPage], ['promo-codes', adminPromoCodesPage], ['orders', adminOrdersPage], ['settings', adminSettingsPage]];
+  const adminRoutes = [['login', adminLoginPage], ['', adminDashboardPage], ['products', adminProductsPage], ['promo-codes', adminPromoCodesPage], ['orders', adminOrdersPage], ['coaching', adminCoachingPage], ['formations', adminCoursesPage], ['settings', adminSettingsPage]];
   for (const [route, render] of adminRoutes) {
     const dir = path.join(output, 'admin', route);
     await mkdir(dir, { recursive: true });

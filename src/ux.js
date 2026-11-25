@@ -93,6 +93,15 @@
         '<div class="g-capture-frame"><img alt="" decoding="async" /></div><p class="g-capture-note"></p>';
       document.body.appendChild(dialog);
       capture = { dialog: dialog, title: dialog.querySelector('#g-capture-title'), frame: dialog.querySelector('.g-capture-frame'), image: dialog.querySelector('img'), note: dialog.querySelector('.g-capture-note') };
+      // While the screenshot loads, the site's leaf opens and closes in its place (src/leaf.js).
+      if (window.IssolatejLeaf) {
+        var loading = window.IssolatejLeaf.loader(arabic ? 'جارٍ تحميل الصورة…' : 'Chargement de la capture…', true);
+        loading.classList.add('g-capture-loading');
+        capture.frame.appendChild(loading);
+      }
+      var loaded = function () { capture.frame.classList.remove('is-loading'); };
+      capture.image.addEventListener('load', loaded);
+      capture.image.addEventListener('error', loaded);
       dialog.querySelector('.s-dialog-close').addEventListener('click', function () { dialog.close(); });
       // A click on the dimmed page around the dialog closes it.
       dialog.addEventListener('click', function (event) {
@@ -116,7 +125,9 @@
         capture.image.width = Number(size[0]) || 900;
         capture.image.height = Number(size[1]) || 1200;
         capture.image.alt = link.getAttribute('data-capture-alt') || '';
+        capture.frame.classList.add('is-loading');
         capture.image.src = link.getAttribute('href');
+        if (capture.image.complete && capture.image.naturalWidth) capture.frame.classList.remove('is-loading');
         var name = document.createElement('bdi');
         name.className = 'g-review-name';
         name.lang = 'ar';

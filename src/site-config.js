@@ -17,6 +17,9 @@
     deliveryMessage: "Livraison en Tunisie : 7 TND · paiement à la livraison",
     contact: { phone: "+216 21 924 070", email: "", instagram: "https://www.instagram.com/issolaissola/", facebook: "https://www.facebook.com/Issola-Tej-1190361057642552/", youtube: "https://youtube.com/channel/UCflMVy1zHxDJd49sSuIk9ow" },
     checkoutMode: "local-demo",
+    // Coaching bookings: "preview" until Konnect payments and a server agenda are connected (see COACHING_LOGIC.md),
+    // then "live". In preview the pages say the hours are examples and that no payment is taken.
+    coaching: { mode: "preview", payment: "konnect" },
     reviews: [],
     atelierMedia: [
       { src: "/assets/brand/atelier-1.mp4", title: "Les détails d’un bijou" },

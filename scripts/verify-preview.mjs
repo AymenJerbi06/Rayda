@@ -6,6 +6,7 @@ const context = { window: {} };
 vm.runInNewContext(await readFile(new URL('src/catalog.js', root), 'utf8'), context);
 const catalog = context.window.STORE_CATALOG;
 const pages = ['/', '/a-propos/', '/accompagnement/', '/contact/', '/checkout/',
+  '/coaching/', '/coaching/paiement/', '/coaching/confirmation/', '/formations/', '/ar/coaching/', '/ar/formations/', '/admin/coaching/', '/admin/formations/',
   ...catalog.collections.map(c => '/collections/' + c.slug + '/'),
   ...catalog.products.map(p => '/products/' + p.slug + '/')];
 const images = [...new Set(catalog.products.flatMap(p => p.images.map(i => i.src))),
@@ -20,6 +21,8 @@ for (const [label, urls] of [['pages', pages], ['images', images]]) {
   }
   console.log('HTTP 200: ' + urls.length + ' ' + label);
 }
-const script = await fetch('http://127.0.0.1:4174/src/commerce-core.js');
-if (!/javascript/.test(script.headers.get('content-type') || '')) throw new Error('Incorrect JavaScript MIME type');
+for (const module of ['commerce-core.js', 'coaching.js', 'coaching-core.js', 'coaching-store.js', 'admin-coaching.js']) {
+  const script = await fetch('http://127.0.0.1:4174/src/' + module);
+  if (!script.ok || !/javascript/.test(script.headers.get('content-type') || '')) throw new Error('Incorrect JavaScript MIME type for ' + module);
+}
 console.log('Browser module MIME is JavaScript.');

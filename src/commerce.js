@@ -225,7 +225,8 @@ if (productRoot) {
     const existing = items.find(line=>line.productId===item.productId && line.variant===item.variant && line.palette===item.palette);
     if (existing) existing.quantity=Math.min(20,existing.quantity+item.quantity); else items.push(item);
     persist();
-    if (intent === 'buy') { window.location.href = (isAr ? '/ar' : '') + '/checkout/'; return; }
+    // "Commander" goes straight to the checkout; the leaf curtain grows from the button on the way (src/leaf.js).
+    if (intent === 'buy') { const checkout = (isAr ? '/ar' : '') + '/checkout/'; if (window.IssolatejLeaf) window.IssolatejLeaf.go(checkout, event.submitter); else window.location.href = checkout; return; }
     openDialog(selection,event.submitter);
   });
 }
@@ -303,6 +304,8 @@ if (selectionForm) {
     selectionForm.classList.add('is-complete');
     selectionForm.hidden = false;
     result.hidden = false;
+    // The order is in: the site's leaf blooms above the message.
+    window.IssolatejLeaf?.bloom(result);
     selectionForm.querySelector('[type="submit"]').disabled = true;
     result.tabIndex = -1;
     result.focus({ preventScroll: true });
